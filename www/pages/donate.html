@@ -1,0 +1,36 @@
+<div id="app" class="body-root" v-cloak="">
+	<div class="body-header" >
+		<div class="header-title">
+			<i class="fa fa-heart" aria-hidden="true"></i> {{ $t("donatePage.title") }}
+		</div>
+		<div class="header-subtitle" >
+			{{ $t("donatePage.subtitle") }}
+		</div>
+	</div>
+	<div class="body-content" >
+		<div class="panel">
+			<div class="body" >
+				<div class="header-title" >{{ $t("donatePage.webwalletBlock.title") }}</div>
+				<div class="content" >
+					<span v-html="$t('donatePage.webwalletBlock.content')" ></span>
+					<b>arqma:</b><br/>
+			<a href="#send?address=donations.arqma.com" >donations.arqma.com</a> <br/>
+			<a href="#send?address=" ></a><br/><br/>
+				</div>
+			</div>
+		</div>
+		<div class="panel inline">
+			<div class="body" >
+				<div class="header-title" >{{ $t("donatePage.arqmaFundBlock.title") }}</div>
+				<div class="content" >
+					<span v-html="$t('donatePage.arqmaFundBlock.content')" ></span><br/>
+					<b>arqma: </b><a href="#send?address=" ></a><br/><br/>
+					<!--<br/>
+					<b>Bitcoin exchange listing fund: </b>12mZoYDzorgZr44sxv9cD4KzpPFocySL8D<br/>
+					<b>Masari exchange listing fund: </b><a href="#send?address=9ppu34ocgmeZiv4nS2FyQTFLL5wBFQZkhAfph7wGcnFkc8fkCgTJqxnXuBkaw1v2BrUW7iMwKoQy2HXRXzDkRE76Cz7WXkD" >9ppu34ocgmeZiv4nS2FyQTFLL5wBFQZkhAfph7wGcnFkc8fkCgTJqxnXuBkaw1v2BrUW7iMwKoQy2HXRXzDkRE76Cz7WXkD</a><br/>
+					<b>Monero exchange listing fund: </b>84TPXgT4fBQTr4SHLxiLh8gLnvT7y8QAvQRSvk3hnfHdP3mc5ttrNgr51xiAsLw45LHBr7h4Kn62uL8EQkYoYFVGN6zzfqu<br/>-->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

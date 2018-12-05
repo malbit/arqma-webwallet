@@ -1,4 +1,5 @@
-/*
+<?php
+/**
  * Copyright (c) 2018, Gnock
  * Copyright (c) 2018, The Masari Project
  *
@@ -13,22 +14,16 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const workboxBuild = require('workbox-build');
+include 'config.php';
 
-// NOTE: This should be run *AFTER* all your assets are built
-const buildSW = () => {
-	// This will return a Promise
-	return workboxBuild.injectManifest({
-		swSrc: 'www/service-worker-raw.js',
-		swDest: 'www/service-worker.js',
-		globDirectory: 'www',
-		globPatterns: [
-			'**\/*.{js,css,html,json,png,ico,jpg}',
-		],
-		globIgnores:[
-			'd/Vue.js', 'www/service-worker-raw.js'
-		]
-	});
-};
+$curl = curl_init();
 
-buildSW();
+$body = file_get_contents('php://input');
+
+curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://'.$daemonAddress.':'.$rpcPort.'/sendrawtransaction', CURLOPT_POST => 1, CURLOPT_POSTFIELDS => $body));
+
+$resp = curl_exec($curl);
+curl_close($curl);
+
+header('Content-Type: application/json');
+echo $resp;

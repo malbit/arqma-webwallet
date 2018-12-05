@@ -13,22 +13,55 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const workboxBuild = require('workbox-build');
+import {DestructableView} from "../lib/numbersLab/DestructableView";
+import {VueVar} from "../lib/numbersLab/VueAnnotate";
+import {TransactionsExplorer} from "../model/TransactionsExplorer";
+import {WalletRepository} from "../model/WalletRepository";
+import {BlockchainExplorerRpc2} from "../model/blockchain/BlockchainExplorerRpc2";
+import {DependencyInjectorInstance} from "../lib/numbersLab/DependencyInjector";
+import {Constants} from "../model/Constants";
+import {Wallet} from "../model/Wallet";
+import {AppState} from "../model/AppState";
 
-// NOTE: This should be run *AFTER* all your assets are built
-const buildSW = () => {
-	// This will return a Promise
-	return workboxBuild.injectManifest({
-		swSrc: 'www/service-worker-raw.js',
-		swDest: 'www/service-worker.js',
-		globDirectory: 'www',
-		globPatterns: [
-			'**\/*.{js,css,html,json,png,ico,jpg}',
-		],
-		globIgnores:[
-			'd/Vue.js', 'www/service-worker-raw.js'
-		]
-	});
-};
+AppState.enableLeftMenu();
 
-buildSW();
+class NetworkView extends DestructableView{
+	@VueVar(0) networkHashrate !: number;
+	@VueVar(0) blockchainHeight !: number;
+	@VueVar(0) networkDifficulty !: number;
+	@VueVar(0) lastReward !: number;
+	@VueVar(0) lastBlockFound !: number;
+
+	private intervalRefreshStat = 0;
+
+	constructor(container : string){
+		super(container);
+
+		let self = this;
+		this.intervalRefreshStat = setInterval(function(){
+			self.refreshStats();
+		}, 30*1000);
+		this.refreshStats();
+	}
+
+	destruct(): Promise<void> {
+		clearInterval(this.intervalRefreshStat);
+		return super.destruct();
+	}
+
+	refreshStats() {
+		let self = this;
+		$.ajax({
+			url:config.apiUrl+'network.php'
+		}).done(function(data : any){
+			self.networkDifficulty = data.difficulty;
+			self.networkHashrate = data.difficulty/120/1000000;
+			self.blockchainHeight = data.height;
+			self.lastReward = data.reward/1000000000;
+			self.lastBlockFound = parseInt(data.timestamp);
+		});
+	}
+
+}
+
+new NetworkView('#app');
