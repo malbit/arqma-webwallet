@@ -40,6 +40,7 @@ type RawOutForTx = {
 	index: number,
 	global_index: number,
 	tx_pub_key: string,
+	rct: string,
 };
 
 type TxExtra = {
@@ -598,7 +599,7 @@ export class TransactionsExplorer {
 
 					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId, true).then(function (data: { raw: string, signed: any }) {
 						resolve(data);
-					}).catch(function (e) {
+					}).catch(function (e : any) {
 						reject(e);
 					});
 				});

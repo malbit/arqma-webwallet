@@ -293,7 +293,7 @@ class SendView extends DestructableView {
 								}).catch(reject);
 							}, 1);
 						});
-					}).then(function (rawTxData: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
+					}).then(function (rawTxData: { raw: string, signed: any }) {
 					blockchainExplorer.sendRawTx(rawTxData.raw.raw).then(function () {
 						//save the tx private key
 						wallet.addTxPrivateKeyWithTxHash(rawTxData.raw.hash, rawTxData.raw.prvkey);
