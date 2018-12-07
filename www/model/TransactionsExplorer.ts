@@ -574,7 +574,7 @@ export class TransactionsExplorer {
 
 				let amounts: string[] = [];
 				for (let l = 0; l < usingOuts.length; l++) {
-					amounts.push(usingOuts[l].rct ? "0" : usingOuts[l].amount.toString());
+					amounts.push(usingOuts[l].rct ? '0' : usingOuts[l].amount.toString());
 				}
 
 				obtainMixOutsCallback(amounts.length * (mixin + 1)).then(function (lotsMixOuts: any[]) {
