@@ -187,11 +187,11 @@ export class WalletRepository{
 
 		doc.text(110, 135, "DO NOT REVEAL THE PRIVATE KEY");
 
-		//adding masari logo
+		//adding Arqma logo
 		let c : HTMLCanvasElement|null = <HTMLCanvasElement>document.getElementById('canvasExport');
 		if(c !== null) {
 			let ctx = c.getContext("2d");
-			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("verticalArqmaLogo");
+			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("logoQrCode.png");
 			if (ctx !== null && img !== null) {
 				c.width = img.width;
 				c.height = img.height;

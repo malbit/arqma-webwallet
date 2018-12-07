@@ -27,7 +27,7 @@ import {CoinUri} from "../model/CoinUri";
 import {QRReader} from "../model/QRReader";
 import {AppState} from "../model/AppState";
 import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvider";
-import {VueFilterPiconero} from "../filters/Filters";
+import {VueFilterNanoarq} from "../filters/Filters";
 import {NdefMessage, Nfc} from "../model/Nfc";
 
 let wallet: Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
@@ -35,12 +35,12 @@ let blockchainExplorer: BlockchainExplorerRpc2 = BlockchainExplorerProvider.getI
 
 AppState.enableLeftMenu();
 
-@VueRequireFilter('piconero', VueFilterPiconero)
+@VueRequireFilter('nanoarq', VueFilterNanoarq)
 class SendView extends DestructableView {
 	@VueVar('') destinationAddressUser !: string;
 	@VueVar('') destinationAddress !: string;
 	@VueVar(false) destinationAddressValid !: boolean;
-	@VueVar('') amountToSend !: string;
+	@VueVar('10.5') amountToSend !: string;
 	@VueVar(false) lockedForm !: boolean;
 	@VueVar(true) amountToSendValid !: boolean;
 	@VueVar('') paymentId !: string;
@@ -81,7 +81,7 @@ class SendView extends DestructableView {
 		this.lockedForm = false;
 		this.destinationAddressUser = '';
 		this.destinationAddress = '';
-		this.amountToSend = '';
+		this.amountToSend = '10.5';
 		this.destinationAddressValid = false;
 		this.openAliasValid = false;
 		this.qrScanning = false;
@@ -270,9 +270,9 @@ class SendView extends DestructableView {
 								swal({
 									title: i18n.t('sendPage.confirmTransactionModal.title'),
 									html: i18n.t('sendPage.confirmTransactionModal.content', {
-										amount:Vue.options.filters.piconero(amount),
-										fees:Vue.options.filters.piconero(feesAmount),
-										total:Vue.options.filters.piconero(amount+feesAmount),
+										amount:Vue.options.filters.nanoarq(amount),
+										fees:Vue.options.filters.nanoarq(feesAmount),
+										total:Vue.options.filters.nanoarq(amount+feesAmount),
 									}),
 									showCancelButton: true,
 									confirmButtonText: i18n.t('sendPage.confirmTransactionModal.confirmText'),
@@ -305,7 +305,7 @@ class SendView extends DestructableView {
 
 						let promise = Promise.resolve();
 						if (
-							destinationAddress === ''
+							destinationAddress === 'ar46iCiw5uB7SjnYhL5EJLP1LpqGkZbCcWhWgdbLL1c4DicNuYi3ZeRJPi8FFmEhYnagbxRyaQKyTYBA95JqmPcr1XZytK9o3'
 						) {
 							promise = swal({
 								type: 'success',

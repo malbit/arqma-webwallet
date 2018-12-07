@@ -59,12 +59,12 @@
 									{{ $t("accountPage.historyBlock.emptyWallet") }}<br/>
 									<span v-if="currentScanBlock+1 !== blockchainHeight" >
 										{{ $t("accountPage.historyBlock.waitSync") }}
-										<template v-if="blockchainHeight - currentScanBlock > 60000" >
+										<template v-if="blockchainHeight - currentScanBlock > 100" >
 											<br/>{{ $t("accountPage.historyBlock.beReallyPatient") }}
 										</template>
 									</span><br>
 									<div class="actions tc" >
-										<a href="#receive" class="btn">{{ $t("accountPage.historyBlock.getARQAddress") }}</a>
+										<a href="#receive" class="btn">{{ $t("accountPage.historyBlock.getMSRAddress") }}</a>
 									</div>
 								</td>
 							</tr>

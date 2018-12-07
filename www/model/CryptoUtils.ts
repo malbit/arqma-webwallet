@@ -95,7 +95,7 @@ export class CryptoUtils{
 		return vali;
 	}
 
-	static decodeRctSimple(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
+	static decodeRct(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
 		// CHECK_AND_ASSERT_MES(rv.type == RCTTypeSimple || rv.type == RCTTypeSimpleBulletproof, false, "decodeRct called on non simple rctSig");
 		// CHECK_AND_ASSERT_THROW_MES(i < rv.ecdhInfo.size(), "Bad index");
 		// CHECK_AND_ASSERT_THROW_MES(rv.outPk.size() == rv.ecdhInfo.size(), "Mismatched sizes of rv.outPk and rv.ecdhInfo");
@@ -120,16 +120,8 @@ export class CryptoUtils{
 		// DP(Ctmp);
 		// if (equalKeys(C, Ctmp) == false) {
 		// 	CHECK_AND_ASSERT_THROW_MES(false, "warning, amount decoded incorrectly, will be unable to spend");
-	  // }
+		// }
 
-		return CryptoUtils.h2d(amount);
-	}
-
-	static decodeRct(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
-		let ecdh_info = cnUtil.decode_rct_ecdh(rv.ecdhInfo[i], sk);
-		let amount = ecdh_info.amount;
-		let C = rv.outPk[i].mask;
-		
 		return CryptoUtils.h2d(amount);
 	}
 
@@ -159,7 +151,7 @@ export class CryptoUtils{
 			{
 				case CryptoUtils.RCTTypeSimple:
 				case CryptoUtils.RCTTypeSimpleBulletproof:
-					// console.log('RCTTypeSimple');
+					console.log('Simple Arqma Bulletproof Transaction');
 					let realAmount = amount;
 					// for(let i = 0; i < 1000; ++i)
 					amount = CryptoUtils.decodeRctSimple(rv,
@@ -171,7 +163,7 @@ export class CryptoUtils{
 					break;
 				case CryptoUtils.RCTTypeFull:
 				case CryptoUtils.RCTTypeFullBulletproof:
-					// console.log('RCTTypeSimple');
+					console.log('Full Arqma Bulletproof Transaction');
 					amount = CryptoUtils.decodeRct(rv,
 						scalar1,
 						i,
@@ -215,8 +207,8 @@ export class CryptoUtils{
 	static generate_key_image_helper(ack:{view_secret_key:any,spend_secret_key:string, public_spend_key:string}, tx_public_key:any, real_output_index:any,recv_derivation:string|null)
 	{
 		if(recv_derivation === null)
-			recv_derivation = cnUtil.generate_key_derivation(tx_public_key, ack.view_secret_key);
-			// recv_derivation = CnUtilNative.generate_key_derivation(tx_public_key, ack.view_secret_key);
+			// recv_derivation = cnUtil.generate_key_derivation(tx_public_key, ack.view_secret_key);
+			recv_derivation = CnUtilNative.generate_key_derivation(tx_public_key, ack.view_secret_key);
 		// console.log('recv_derivation', recv_derivation);
 
 		// CHECK_AND_ASSERT_MES(r, false, "key image helper: failed to generate_key_derivation(" << tx_public_key << ", " << ack.m_view_secret_key << ")");
@@ -224,8 +216,8 @@ export class CryptoUtils{
 
 		// let start = Date.now();
 
-		let in_ephemeral_pub = cnUtil.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
-		// let in_ephemeral_pub = CnUtilNative.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
+		// let in_ephemeral_pub = cnUtil.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
+		let in_ephemeral_pub = CnUtilNative.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
 		// console.log('in_ephemeral_pub',in_ephemeral_pub);
 
 

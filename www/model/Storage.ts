@@ -19,6 +19,7 @@ interface StorageInterface {
 
 	keys(): Promise<string[]>;
 	remove(key: string): Promise<void>;
+
 	clear(): Promise<void>;
 }
 

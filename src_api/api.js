@@ -90,7 +90,7 @@ var ArqmaApi = new function(){
 		if(typeof options.description !== 'undefined')url += 'txDesc='+options.description+'&';
 		if(typeof options.destName !== 'undefined')url += 'destName='+options.destName+'&';
 
-		window.open(url,"Arqma",this.popupParameters);
+		window.open(url,"ArQmA",this.popupParameters);
 
 		return Promise.resolve();
 	};

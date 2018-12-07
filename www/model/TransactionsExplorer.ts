@@ -17,7 +17,7 @@ import {Transaction, TransactionIn, TransactionOut} from "./Transaction";
 import {CryptoUtils} from "./CryptoUtils";
 import {Wallet} from "./Wallet";
 import {MathUtil} from "./MathUtil";
-//import {CnUtilNative} from "./CnUtilNative";
+import {CnUtilNative} from "./CnUtilNative";
 
 export const TX_EXTRA_PADDING_MAX_COUNT = 255;
 export const TX_EXTRA_NONCE_MAX_COUNT = 255;
@@ -162,8 +162,8 @@ export class TransactionsExplorer {
 
 		let derivation = null;
 		try {
-			derivation = cnUtil.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);//9.7ms
-			// derivation = CnUtilNative.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);
+			// derivation = cnUtil.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);//9.7ms
+			derivation = CnUtilNative.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);
 		} catch (e) {
 			console.log('UNABLE TO CREATE DERIVATION', e);
 			return null;
@@ -178,8 +178,8 @@ export class TransactionsExplorer {
 			let amount = out.amount;
 			let output_idx_in_tx = iOut;
 
-			let generated_tx_pubkey = cnUtil.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
-			// let generated_tx_pubkey = CnUtilNative.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
+			// let generated_tx_pubkey = cnUtil.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
+			let generated_tx_pubkey = CnUtilNative.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
 
 			// check if generated public key matches the current output's key
 			let mine_output = (txout_k.key == generated_tx_pubkey);
@@ -564,7 +564,7 @@ export class TransactionsExplorer {
 				else if (usingOuts_amount.compare(totalAmount) === 0) {
 					//create random destination to keep 2 outputs always in case of 0 change
 					let fakeAddress = cnUtil.create_address(cnUtil.random_scalar()).public_addr;
-					console.log("Sending 0 ARQ to a fake address to keep tx uniform (no change exists): " + fakeAddress);
+					console.log("Sending 0 XMR to a fake address to keep tx uniform (no change exists): " + fakeAddress);
 					dsts.push({
 						address: fakeAddress,
 						amount: 0

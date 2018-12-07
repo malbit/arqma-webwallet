@@ -33,10 +33,10 @@
 		clickButton.disabled = false;
 		clickButton.addEventListener("click", function(){
 			ArqmaApi.makeTransfer({
-				amount:10,
+				amount:5,
 				address:'donations.arqma.com',
 				description:'Description',
-				destName:'Arqma Dev-Team',
+				destName:'Webwallet',
 				redirect:encodeURIComponent(window.location.href)
 			}).then(function(txHash){
 

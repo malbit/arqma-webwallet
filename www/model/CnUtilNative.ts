@@ -108,7 +108,7 @@ if(typeof (<any>self).Module_native !== 'undefined') {
 	derive_public_key_bind = (<any>self).Module_native.cwrap('derive_public_key', null, ['number', 'number', 'number', 'number']);
 	CnUtilNative.generate_key_derivation = CnUtilNative.generate_key_derivation_native;
 	CnUtilNative.derive_public_key = CnUtilNative.derive_public_key_native;
-}else{
+} else {
 	CnUtilNative.generate_key_derivation = function(pub : any, sec : any){return cnUtil.generate_key_derivation(pub, sec)};
 	CnUtilNative.derive_public_key = function(derivation : string,output_idx_in_tx : number,pubSpend : string){return cnUtil.derive_public_key(derivation, output_idx_in_tx, pubSpend)}
 }
