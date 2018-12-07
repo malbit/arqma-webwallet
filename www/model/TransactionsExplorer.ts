@@ -409,7 +409,7 @@ export class TransactionsExplorer {
 					splittedDsts, usingOuts,
 					mix_outs, mixin, neededFee,
 					payment_id, pid_encrypt,
-					realDestViewKey, 0);
+					realDestViewKey, 0, rct);
 
 			} catch (e) {
 				reject("Failed to create transaction: " + e);
