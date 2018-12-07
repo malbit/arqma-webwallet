@@ -95,7 +95,7 @@ export class CryptoUtils{
 		return vali;
 	}
 
-	static decodeRctSimple(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
+	static decodeRctSimple(rv : any, sk : any, i : number, mask : any, hwdev : any=null) {
 		// CHECK_AND_ASSERT_MES(rv.type == RCTTypeSimple || rv.type == RCTTypeSimpleBulletproof, false, "decodeRct called on non simple rctSig");
 		// CHECK_AND_ASSERT_THROW_MES(i < rv.ecdhInfo.size(), "Bad index");
 		// CHECK_AND_ASSERT_THROW_MES(rv.outPk.size() == rv.ecdhInfo.size(), "Mismatched sizes of rv.outPk and rv.ecdhInfo");
@@ -125,7 +125,7 @@ export class CryptoUtils{
 		return CryptoUtils.h2d(amount);
 	}
 
-	static decodeRct(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
+	static decodeRct(rv : any, sk : any, i : number, mask : any, hwdev : any=null) {
 		let ecdh_info = cnUtil.decode_rct_ecdh(rv.ecdhInfo[i], sk);
 		let amount = ecdh_info.amount;
 		let C = rv.outPk[i].mask;
@@ -137,7 +137,7 @@ export class CryptoUtils{
 	static RCTTypeFullBulletproof = 3;
 	static RCTTypeSimpleBulletproof = 4;
 
-	static decode_ringct(rv:any,
+	static decode_ringct(rv : any,
 						   pub : any,
 						   sec : any,
 						   i : number,
@@ -145,7 +145,7 @@ export class CryptoUtils{
 						   amount : any,
 						   derivation : string|null)
 	{
-		if(derivation===null)
+		if(derivation === null)
 			derivation = cnUtil.generate_key_derivation(pub, sec);//[10;11]ms
 
 		let scalar1 = cnUtil.derivation_to_scalar(derivation, i);//[0.2ms;1ms]
@@ -213,8 +213,8 @@ export class CryptoUtils{
 	static generate_key_image_helper(ack:{view_secret_key:any,spend_secret_key:string, public_spend_key:string}, tx_public_key:any, real_output_index:any,recv_derivation:string|null)
 	{
 		if(recv_derivation === null)
-			// recv_derivation = cnUtil.generate_key_derivation(tx_public_key, ack.view_secret_key);
-			recv_derivation = CnUtilNative.generate_key_derivation(tx_public_key, ack.view_secret_key);
+			recv_derivation = cnUtil.generate_key_derivation(tx_public_key, ack.view_secret_key);
+			// recv_derivation = CnUtilNative.generate_key_derivation(tx_public_key, ack.view_secret_key);
 		// console.log('recv_derivation', recv_derivation);
 
 		// CHECK_AND_ASSERT_MES(r, false, "key image helper: failed to generate_key_derivation(" << tx_public_key << ", " << ack.m_view_secret_key << ")");
@@ -222,8 +222,8 @@ export class CryptoUtils{
 
 		// let start = Date.now();
 
-		// let in_ephemeral_pub = cnUtil.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
-		let in_ephemeral_pub = CnUtilNative.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
+		let in_ephemeral_pub = cnUtil.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
+		// let in_ephemeral_pub = CnUtilNative.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
 		// console.log('in_ephemeral_pub',in_ephemeral_pub);
 
 
