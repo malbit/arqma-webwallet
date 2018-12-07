@@ -355,6 +355,7 @@ export class TransactionsExplorer {
 					index: out.outputIdx,
 					global_index: out.globalIndex,
 					tx_pub_key: tr.txPubKey,
+					rct: rct,
 				});
 			}
 		}
@@ -387,8 +388,9 @@ export class TransactionsExplorer {
 		mixin: number,
 		neededFee: number,
 		payment_id: string,
-	): Promise<{ raw: string, signed: any }> {
-		return new Promise<{ raw: string, signed: any }>(function (resolve, reject) {
+		isTrusted: boolean
+	): Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
+		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
 			let signed;
 			try {
 				console.log('Destinations: ');
@@ -416,8 +418,8 @@ export class TransactionsExplorer {
 				reject("Failed to create transaction: " + e);
 			}
 			console.log("signed tx: ", signed);
-			let raw_tx = cnUtil.serialize_tx(signed);
-			resolve({ raw: raw_tx, signed: signed });
+			let raw_tx_and_hash = cnUtil.serialize_rct_tx_with_hash(signed);
+			resolve({ raw: raw_tx_and_hash, signed: signed });
 		});
 	}
 
@@ -429,8 +431,8 @@ export class TransactionsExplorer {
 		obtainMixOutsCallback: (quantity: number) => Promise<any[]>,
 		confirmCallback: (amount: number, feesAmount: number) => Promise<void>,
 		mixin : number = config.defaultMixin):
-		Promise<{ raw: string, signed: any }> {
-		return new Promise<{ raw: string, signed: any }>(function (resolve, reject) {
+		Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
+		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
 			// few multiplayers based on uint64_t wallet2::get_fee_multiplier
 			let fee_multiplayers = [1, 4, 20, 166];
 			let default_priority = 2;
@@ -597,7 +599,7 @@ export class TransactionsExplorer {
 					}
 					console.log('mix_outs', mix_outs);
 
-					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId, true).then(function (data: { raw: string, signed: any }) {
+					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId, true).then(function (data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
 						resolve(data);
 					}).catch(function (e : any) {
 						reject(e);
