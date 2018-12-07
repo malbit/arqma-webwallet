@@ -598,7 +598,7 @@ export class TransactionsExplorer {
 					}
 					console.log('mix_outs', mix_outs);
 
-					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId).then(function (data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
+					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId, true).then(function (data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
 						resolve(data);
 					}).catch(function (e : any) {
 						reject(e);
