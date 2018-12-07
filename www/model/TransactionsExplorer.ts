@@ -387,7 +387,8 @@ export class TransactionsExplorer {
 		mix_outs: any[] = [],
 		mixin: number,
 		neededFee: number,
-		payment_id: string
+		payment_id: string,
+		isTrusted: boolean
 	): Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
 		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
 			let signed;
