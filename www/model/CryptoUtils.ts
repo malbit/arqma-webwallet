@@ -95,7 +95,7 @@ export class CryptoUtils{
 		return vali;
 	}
 
-	static decodeRct(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
+	static decodeRctSimple(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
 		// CHECK_AND_ASSERT_MES(rv.type == RCTTypeSimple || rv.type == RCTTypeSimpleBulletproof, false, "decodeRct called on non simple rctSig");
 		// CHECK_AND_ASSERT_THROW_MES(i < rv.ecdhInfo.size(), "Bad index");
 		// CHECK_AND_ASSERT_THROW_MES(rv.outPk.size() == rv.ecdhInfo.size(), "Mismatched sizes of rv.outPk and rv.ecdhInfo");
@@ -125,6 +125,12 @@ export class CryptoUtils{
 		return CryptoUtils.h2d(amount);
 	}
 
+	static decodeRct(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
+		let ecdh_info = cnUtil.decode_rct_ecdh(rv.ecdhInfo[i], sk);
+		let amount = ecdh_info.amount;
+		let C = rv.outPk[i].mask;
+		return CryptoUtils.h2d(amount);
+	}
 
 	static RCTTypeFull = 1;
 	static RCTTypeSimple = 2;
