@@ -29,7 +29,7 @@ export class WalletWorker{
 
 	intervalSave = 0;
 
-	constructor(wallet: Wallet, password:string) {
+	constructor(wallet: Wallet, password: string) {
 		this.wallet = wallet;
 		this.password = password;
 		let self = this;

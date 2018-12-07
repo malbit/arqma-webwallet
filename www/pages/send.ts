@@ -30,7 +30,7 @@ import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvide
 import {VueFilterNanoarq} from "../filters/Filters";
 import {NdefMessage, Nfc} from "../model/Nfc";
 
-let wallet: Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
+let wallet: Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', true);
 let blockchainExplorer: BlockchainExplorerRpc2 = BlockchainExplorerProvider.getInstance();
 
 AppState.enableLeftMenu();
@@ -40,7 +40,7 @@ class SendView extends DestructableView {
 	@VueVar('') destinationAddressUser !: string;
 	@VueVar('') destinationAddress !: string;
 	@VueVar(false) destinationAddressValid !: boolean;
-	@VueVar('10.5') amountToSend !: string;
+	@VueVar('') amountToSend !: string;
 	@VueVar(false) lockedForm !: boolean;
 	@VueVar(true) amountToSendValid !: boolean;
 	@VueVar('') paymentId !: string;
@@ -81,7 +81,7 @@ class SendView extends DestructableView {
 		this.lockedForm = false;
 		this.destinationAddressUser = '';
 		this.destinationAddress = '';
-		this.amountToSend = '10.5';
+		this.amountToSend = '';
 		this.destinationAddressValid = false;
 		this.openAliasValid = false;
 		this.qrScanning = false;
@@ -305,7 +305,7 @@ class SendView extends DestructableView {
 
 						let promise = Promise.resolve();
 						if (
-							destinationAddress === 'ar46iCiw5uB7SjnYhL5EJLP1LpqGkZbCcWhWgdbLL1c4DicNuYi3ZeRJPi8FFmEhYnagbxRyaQKyTYBA95JqmPcr1XZytK9o3'
+							destinationAddress === ''
 						) {
 							promise = swal({
 								type: 'success',
@@ -431,7 +431,7 @@ if (wallet !== null && blockchainExplorer !== null)
 	new SendView('#app');
 else {
 	AppState.askUserOpenWallet(false).then(function () {
-		wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
+		wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', true);
 		if (wallet === null)
 			throw 'e';
 		new SendView('#app');

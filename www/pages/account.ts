@@ -22,7 +22,7 @@ import {AppState} from "../model/AppState";
 import {Transaction, TransactionIn} from "../model/Transaction";
 import {VueFilterNanoarq} from "../filters/Filters";
 
-let wallet : Wallet = DependencyInjectorInstance().getInstance(Wallet.name,'default', false);
+let wallet : Wallet = DependencyInjectorInstance().getInstance(Wallet.name,'default', true);
 let blockchainExplorer = DependencyInjectorInstance().getInstance(Constants.BLOCKCHAIN_EXPLORER);
 (<any>window).wallet = wallet;
 
