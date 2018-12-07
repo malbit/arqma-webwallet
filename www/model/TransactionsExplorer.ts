@@ -39,7 +39,6 @@ type RawOutForTx = {
 	public_key: string,
 	index: number,
 	global_index: number,
-	rct: string,
 	tx_pub_key: string,
 };
 
@@ -354,7 +353,6 @@ export class TransactionsExplorer {
 					public_key: out.pubKey,
 					index: out.outputIdx,
 					global_index: out.globalIndex,
-					rct: rct,
 					tx_pub_key: tr.txPubKey,
 				});
 			}
@@ -388,9 +386,8 @@ export class TransactionsExplorer {
 		mixin: number,
 		neededFee: number,
 		payment_id: string,
-		isTrusted: boolean
-	): Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
-		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
+	): Promise<{ raw: string, signed: any }> {
+		return new Promise<{ raw: string, signed: any }>(function (resolve, reject) {
 			let signed;
 			try {
 				console.log('Destinations: ');
@@ -412,14 +409,14 @@ export class TransactionsExplorer {
 					splittedDsts, usingOuts,
 					mix_outs, mixin, neededFee,
 					payment_id, pid_encrypt,
-					realDestViewKey, 0, rct);
+					realDestViewKey, 0);
 
 			} catch (e) {
 				reject("Failed to create transaction: " + e);
 			}
 			console.log("signed tx: ", signed);
-			let raw_tx_and_hash = cnUtil.serialize_rct_tx_with_hash(signed);
-			resolve({raw: raw_tx_and_hash, signed: signed});
+			let raw_tx = cnUtil.serialize_tx(signed);
+			resolve({ raw: raw_tx, signed: signed });
 		});
 	}
 
@@ -431,8 +428,8 @@ export class TransactionsExplorer {
 		obtainMixOutsCallback: (quantity: number) => Promise<any[]>,
 		confirmCallback: (amount: number, feesAmount: number) => Promise<void>,
 		mixin : number = config.defaultMixin):
-		Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
-		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
+		Promise<{ raw: string, signed: any }> {
+		return new Promise<{ raw: string, signed: any }>(function (resolve, reject) {
 			// few multiplayers based on uint64_t wallet2::get_fee_multiplier
 			let fee_multiplayers = [1, 4, 20, 166];
 			let default_priority = 2;
@@ -524,7 +521,7 @@ export class TransactionsExplorer {
 
 			console.log("Selected outs:", usingOuts);
 			if (usingOuts.length > 1) {
-				let newNeededFee = JSBigInt(Math.ceil(cnUtil.estimateRctSize(usingOuts.length, mixin, 2) / 1024)).multiply(feePerKB).multiply(fee_multiplayer);
+				let newNeededFee = 100000; //JSBigInt(Math.ceil(cnUtil.estimateRctSize(usingOuts.length, mixin, 2) / 1024)).multiply(feePerKB).multiply(fee_multiplayer);
 				totalAmount = totalAmountWithoutFee.add(newNeededFee);
 				//add outputs 1 at a time till we either have them all or can meet the fee
 				while (usingOuts_amount.compare(totalAmount) < 0 && unusedOuts.length > 0) {
@@ -532,7 +529,7 @@ export class TransactionsExplorer {
 					usingOuts.push(out);
 					usingOuts_amount = usingOuts_amount.add(out.amount);
 					console.log("Using output: " + cnUtil.formatMoney(out.amount) + " - " + JSON.stringify(out));
-					newNeededFee = JSBigInt(Math.ceil(cnUtil.estimateRctSize(usingOuts.length, mixin, 2) / 1024)).multiply(feePerKB).multiply(fee_multiplayer);
+					newNeededFee = JSBigInt(Math.ceil((usingOuts.length, mixin, 2) / 1024)).multiply(feePerKB).multiply(fee_multiplayer);
 					totalAmount = totalAmountWithoutFee.add(newNeededFee);
 				}
 				console.log("New fee: " + cnUtil.formatMoneySymbol(newNeededFee) + " for " + usingOuts.length + " inputs");
@@ -575,7 +572,7 @@ export class TransactionsExplorer {
 
 				let amounts: string[] = [];
 				for (let l = 0; l < usingOuts.length; l++) {
-					amounts.push(usingOuts[l].rct ? '0' : usingOuts[l].amount.toString());
+					amounts.push(usingOuts[l].amount.toString());
 				}
 
 				obtainMixOutsCallback(amounts.length * (mixin + 1)).then(function (lotsMixOuts: any[]) {
@@ -599,9 +596,9 @@ export class TransactionsExplorer {
 					}
 					console.log('mix_outs', mix_outs);
 
-					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId, true).then(function (data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
+					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId, true).then(function (data: { raw: string, signed: any }) {
 						resolve(data);
-					}).catch(function (e : any) {
+					}).catch(function (e) {
 						reject(e);
 					});
 				});
