@@ -821,6 +821,14 @@ export namespace Cn{
 		return keys;
 	}
 
+	export function is_subaddress(address: string) {
+		let dec = cnBase58.decode(address);
+		let expectedPrefixSub = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX);
+		let prefix = dec.slice(0, expectedPrefixSub.length);
+
+		return (prefix === expectedPrefixSub);
+	}
+
 	export function decode_address(address: string) : {
 		spend: string,
 		view: string,
@@ -843,38 +851,37 @@ export namespace Cn{
 		if (prefix === undefined) {
 				throw "Invalid address prefix";
 		}
-		dec = dec.slice(expectedPrefix.length);
+		dec = dec.slice(prefix.length);
 		let spend = dec.slice(0, 64);
 		let view = dec.slice(64, 128);
-		let checksum : string|null = null;
-		let expectedChecksum : string|null = null;
-		let intPaymentId : string|null = null;
 		if (prefix === expectedPrefixInt){
-			let intPaymentId = dec.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
-			checksum = dec.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
-			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
-		} else {
-			checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
-			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
-		}
-		if (checksum !== expectedChecksum) {
-			throw "Invalid checksum";
-		}
-
-		return {
-			spend: spend,
-			view: view,
-			intPaymentId: intPaymentId
-		};
-	}
-
-	export function is_subaddress(addr : string) {
-		let decoded = cnBase58.decode(addr);
-		let subaddressPrefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX);
-		let prefix = decoded.slice(0, subaddressPrefix.length);
-
-		return (prefix === subaddressPrefix);
-	}
+				let intPaymentId = dec.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
+        let checksum = dec.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
+        let expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+    } else if (prefix === expectedPrefix) {
+        let checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
+        let expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+    } else {
+    // if its not regular address, nor integrated, than it must be subaddress
+        let checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
+        let expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+    }
+    if (checksum !== expectedChecksum) {
+            throw "Invalid checksum";
+    }
+    if (intPaymentId){
+        return {
+            spend: spend,
+            view: view,
+            intPaymentId: intPaymentId
+        };
+    } else {
+        return {
+            spend: spend,
+            view: view
+        };
+    }
+  };
 
 	export function valid_keys(view_pub : string, view_sec : string, spend_pub : string, spend_sec : string) {
 		let expected_view_pub = CnUtils.sec_key_to_pub(view_sec);
