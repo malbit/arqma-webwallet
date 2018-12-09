@@ -998,12 +998,14 @@ export namespace CnTransactions{
 			switch (rv.type)
 			{
 				case CnVars.RCT_TYPE.Simple:
+				case CnVars.RCT_TYPE.SimpleBulletproof:
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
 						mask);//[5;10]ms
 					break;
 				case CnVars.RCT_TYPE.Full:
+				case CnVars.RCT_TYPE.FullBulletproof:
 					// console.log('RCTTypeSimple');
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
