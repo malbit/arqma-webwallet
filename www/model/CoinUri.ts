@@ -168,7 +168,7 @@ export class CoinUri{
 	static encodeWalletKeys(address : string, spendKey : string, viewKey : string|null=null, height:number|null=null, encryptMethod:string|null=null,nonce:string|null=null){
 		let encoded = this.coinWalletPrefix + address;
 		try {
-			cnUtil.decode_address(address);
+			Cn.decode_address(address);
 		}catch(e){
 			throw 'invalid_address_length';
 		}
