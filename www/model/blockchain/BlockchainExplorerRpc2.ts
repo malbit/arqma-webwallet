@@ -235,21 +235,21 @@ export class WalletWatchdog{
 					}
 
 					self.processTransactions(transactions);
-					setTimeout(function () {
+					setTimeout(function() {
 						self.loadHistory();
 					}, 1);
 				}).catch(function(){
-					setTimeout(function () {
+					setTimeout(function() {
 						self.loadHistory();
 					}, 30*1000);//retry 30s later if an error occurred
 				});
-			}else{
-				setTimeout(function () {
+			} else {
+				setTimeout(function() {
 					self.loadHistory();
 				}, 30*1000);
 			}
 		}).catch(function(){
-			setTimeout(function () {
+			setTimeout(function() {
 				self.loadHistory();
 			}, 30*1000);//retry 30s later if an error occurred
 		});
@@ -277,12 +277,12 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 				method: 'POST',
 				data: JSON.stringify({
 				})
-			}).done(function (raw: any) {
+			}).done(function(raw: any) {
 				// self.heightCache = raw.height;
 				// resolve(raw.height);
 				self.heightCache = parseInt(raw);
 				resolve(self.heightCache);
-			}).fail(function (data: any) {
+			}).fail(function(data: any) {
 				reject(data);
 			});
 		});
@@ -471,15 +471,15 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 		});
 	}
 
-	resolveOpenAlias(domain : string) : Promise<{address:string, name:string|null}>{
+	resolveOpenAlias(domain: string) : Promise<{address:string, name:string|null}>{
 		let self = this;
 		return new Promise(function(resolve, reject){
 			$.ajax({
 				url: self.serverAddress+'openAlias.php?domain='+domain,
 				method: 'GET',
-			}).done(function (response: any) {
+			}).done(function(response: any) {
 				resolve(response);
-			}).fail(function (data: any) {
+			}).fail(function(data: any) {
 				reject(data);
 			});
 		});

@@ -48,18 +48,18 @@ export class WalletOptions{
 
 export type RawWallet = {
 	transactions : any[],
-	txPrivateKeys?:any,
+	txPrivateKeys?: any,
 	lastHeight : number,
-	encryptedKeys?:string|Array<number>,
-	nonce:string,
-	keys?:UserKeys,
-	creationHeight?:number,
-	options?:RawWalletOptions,
-	coinAddressPrefix?:any,
+	encryptedKeys?: string | Array<number>,
+	nonce: string,
+	keys?: UserKeys,
+	creationHeight?: number,
+	options?: RawWalletOptions,
+	coinAddressPrefix?: any,
 }
 export type RawFullyEncryptedWallet = {
-	data:number[],
-	nonce:string
+	data: number[],
+	nonce: string
 }
 
 export class Wallet extends Observable{
@@ -73,7 +73,7 @@ export class Wallet extends Observable{
 	private modified = true;
 	creationHeight : number = 0;
 	txPrivateKeys : {[id: string]: string} = {};
-	coinAddressPrefix:any = config.addressPrefix;
+	coinAddressPrefix: any = config.addressPrefix;
 
 	keys !: UserKeys;
 

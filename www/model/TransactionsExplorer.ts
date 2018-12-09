@@ -438,7 +438,7 @@ export class TransactionsExplorer {
 			let feePerKB = new JSBigInt((<any>window).config.feePerKB);
 			let priority = default_priority;
 			let fee_multiplayer = fee_multiplayers[priority - 1];
-			let neededFee = feePerKB.multiply(4).multiply(fee_multiplayer);
+			let neededFee = feePerKB.multiply(13).multiply(fee_multiplayer);
 			let pid_encrypt = false; //don't encrypt payment ID unless we find an integrated one
 
 			let totalAmountWithoutFee = new JSBigInt(0);

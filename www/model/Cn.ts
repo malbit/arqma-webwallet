@@ -821,7 +821,7 @@ export namespace Cn{
 		return keys;
 	}
 
-	export function decode_address(address : string) : {
+	export function decode_address(address: string) : {
 		spend: string,
 		view: string,
 		intPaymentId: string|null
@@ -831,10 +831,17 @@ export namespace Cn{
 		let expectedPrefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
 		let expectedPrefixInt = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
 		let expectedPrefixSub = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX);
-		let prefix = dec.slice(0, expectedPrefix.length);
-		console.log(prefix,expectedPrefixInt,expectedPrefix);
-		if (prefix !== expectedPrefix && prefix !== expectedPrefixInt && prefix !== expectedPrefixSub) {
-			throw "Invalid address prefix";
+		let prefixes = [expectedPrefix, expectedPrefixInt, expectedPrefixSub];
+		let prefix;
+		for (let i = 0; i < prefixes.length; i++) {
+				let pre = prefixes[i];
+				if (dec.slice(0, pre.lenght) == pre) {
+						prefix = pre;
+						break;
+				}
+		}
+		if (prefix === undefined) {
+				throw "Invalid address prefix";
 		}
 		dec = dec.slice(expectedPrefix.length);
 		let spend = dec.slice(0, 64);
@@ -1777,14 +1784,14 @@ export namespace CnTransactions{
 			prvkey: '',
 			vin: [],
 			vout: [],
-			rct_signatures:{
-				ecdhInfo:[],
-				outPk:[],
-				pseudoOuts:[],
-				txnFee:'',
-				type:0,
+			rct_signatures: {
+				ecdhInfo: [],
+				outPk: [],
+				pseudoOuts: [],
+				txnFee: '',
+				type: 0,
 			},
-			signatures:[]
+			signatures: []
 		};
 		tx.prvkey = txkey.sec;
 
@@ -1821,7 +1828,7 @@ export namespace CnTransactions{
 			sources[i].in_ephemeral = res.in_ephemeral;
 		}
 		//sort ins
-		sources.sort(function(a, b){
+		sources.sort(function(a,b){
 			return JSBigInt.parse(a.key_image, 16).compare(JSBigInt.parse(b.key_image, 16)) * -1 ;
 		});
 		//copy the sorted sources data to tx
@@ -1940,32 +1947,32 @@ export namespace CnTransactions{
 		return tx;
 	}
 
-	export function create_transaction(pub_keys:{spend:string,view:string},
+	export function create_transaction(pub_keys:{spend: string, view: string},
 									   sec_keys:{spend:string,view:string},
 									   dsts : CnTransactions.Destination[],
 									   outputs : {
-										   amount:number,
-										   public_key:string,
-										   index:number,
-										   global_index:number,
-										   rct:string,
-										   tx_pub_key:string,
+										   amount: number,
+										   public_key: string,
+										   index: number,
+										   global_index: number,
+										   rct: string,
+										   tx_pub_key: string,
 									   }[],
 									   mix_outs:{
-										   outputs:{
+										   outputs: {
 											   rct: string,
-											   public_key:string,
-											   global_index:number
+											   public_key: string,
+											   global_index: number
 										   }[],
 										   amount:0
 									   }[] = [],
-									   fake_outputs_count:number,
-									   fee_amount : any/*JSBigInt*/,
-									   payment_id : string,
-									   pid_encrypt : boolean,
-									   realDestViewKey : string|undefined,
-									   unlock_time : number = 0,
-									   rct:boolean
+									   fake_outputs_count: number,
+									   fee_amount: any/*JSBigInt*/,
+									   payment_id: string,
+									   pid_encrypt: boolean,
+									   realDestViewKey: string|undefined,
+									   unlock_time: number = 0,
+									   rct: boolean
 	) : CnTransactions.Transaction{
 		let i, j;
 		if (dsts.length === 0) {
@@ -2010,12 +2017,12 @@ export namespace CnTransactions{
 			let src : CnTransactions.Source = {
 				outputs: [],
 				amount: '',
-				real_out_tx_key:'',
-				real_out:0,
-				real_out_in_tx:0,
-				mask:null,
-				key_image:'',
-				in_ephemeral:{
+				real_out_tx_key: '',
+				real_out: 0,
+				real_out_in_tx: 0,
+				mask: null,
+				key_image: '',
+				in_ephemeral: {
 					pub: '',
 					sec: '',
 					mask: ''
@@ -2024,13 +2031,13 @@ export namespace CnTransactions{
 			src.amount = new JSBigInt(outputs[i].amount).toString();
 			if (mix_outs.length !== 0) {
 				// Sort fake outputs by global index
-				console.log('mix outs before sort',mix_outs[i].outputs);
-				mix_outs[i].outputs.sort(function(a, b) {
+				console.log('mix outs before sort', mix_outs[i].outputs);
+				mix_outs[i].outputs.sort(function(a,b) {
 					return new JSBigInt(a.global_index).compare(b.global_index);
 				});
 				j = 0;
 
-				console.log('mix outs sorted',mix_outs[i].outputs);
+				console.log('mix outs sorted', mix_outs[i].outputs);
 
 				while ((src.outputs.length < fake_outputs_count) && (j < mix_outs[i].outputs.length)) {
 					let out = mix_outs[i].outputs[j];
@@ -2045,9 +2052,9 @@ export namespace CnTransactions{
 						key:out.public_key,
 						commit:''
 					};
-					if (rct){
-						if (out.rct){
-							oe.commit = out.rct.slice(0,64); //add commitment from rct mix outs
+					if (rct) {
+						if (out.rct) {
+							oe.commit = out.rct.slice(0, 64); //add commitment from rct mix outs
 						} else {
 							if (outputs[i].rct) {throw "mix rct outs missing commit";}
 							oe.commit = zeroCommit(CnUtils.d2s(src.amount)); //create identity-masked commitment for non-rct mix input
@@ -2062,10 +2069,10 @@ export namespace CnTransactions{
 				key:outputs[i].public_key,
 				commit:'',
 			};
-			console.log('OUT FOR REAL:',outputs[i].global_index);
+			console.log('OUT FOR REAL:', outputs[i].global_index);
 			if (rct){
 				if (outputs[i].rct) {
-					real_oe.commit = outputs[i].rct.slice(0,64); //add commitment for real input
+					real_oe.commit = outputs[i].rct.slice(0, 64); //add commitment for real input
 				} else {
 					console.log('ZERO COMMIT');
 					real_oe.commit = zeroCommit(CnUtils.d2s(src.amount)); //create identity-masked commitment for non-rct input
@@ -2088,7 +2095,7 @@ export namespace CnTransactions{
 			console.log('check mask', outputs, rct, i);
 			if (rct){
 				if (outputs[i].rct) {
-					src.mask = outputs[i].rct.slice(64,128); //encrypted or idenity mask for coinbase txs.
+					src.mask = outputs[i].rct.slice(64, 128); //encrypted or idenity mask for coinbase txs.
 				} else {
 					console.log('NULL MASK');
 					src.mask = null; //will be set by generate_key_image_helper_rct

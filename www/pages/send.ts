@@ -186,7 +186,7 @@ class SendView extends DestructableView {
 				self.destinationAddressUser = txDetails.address;
 				parsed = true;
 			}
-		} catch (e) {
+		} catch(e) {
 		}
 
 		if (!parsed)
@@ -196,7 +196,7 @@ class SendView extends DestructableView {
 
 	stopScan() {
 		if (typeof window.QRScanner !== 'undefined') {
-			window.QRScanner.cancelScan(function (status:any) {
+			window.QRScanner.cancelScan(function(status: any) {
 				console.log(status);
 			});
 			window.QRScanner.hide();
@@ -385,7 +385,7 @@ class SendView extends DestructableView {
 						self.domainAliasAddress = data.address;
 						self.destinationAddressValid = true;
 						self.openAliasValid = true;
-					} catch (e) {
+					} catch(e) {
 						self.destinationAddressValid = false;
 						self.openAliasValid = false;
 					}
@@ -423,7 +423,7 @@ class SendView extends DestructableView {
 				(this.paymentId.length === 16 && (/^[0-9a-fA-F]{16}$/.test(this.paymentId))) ||
 				(this.paymentId.length === 64 && (/^[0-9a-fA-F]{64}$/.test(this.paymentId)))
 			;
-		} catch (e) {
+		} catch(e) {
 			this.paymentIdValid = false;
 		}
 	}

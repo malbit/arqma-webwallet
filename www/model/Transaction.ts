@@ -14,18 +14,18 @@
  */
 
 export class TransactionOut{
-	amount : number = 0;
-	keyImage : string = '';
-	outputIdx : number = 0;
-	globalIndex : number = 0;
+	amount: number = 0;
+	keyImage: string = '';
+	outputIdx: number = 0;
+	globalIndex: number = 0;
 
-	ephemeralPub:string='';
-	pubKey:string='';
-	rtcOutPk:string='';
-	rtcMask:string='';
-	rtcAmount:string='';
+	ephemeralPub: string = '';
+	pubKey: string = '';
+	rtcOutPk: string = '';
+	rtcMask: string = '';
+	rtcAmount: string = '';
 
-	static fromRaw(raw : any){
+	static fromRaw(raw: any){
 		let nout = new TransactionOut();
 		nout.keyImage = raw.keyImage;
 		nout.outputIdx = raw.outputIdx;
