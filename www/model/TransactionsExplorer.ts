@@ -285,7 +285,7 @@ export class TransactionsExplorer {
 					let txOut = wallet.getOutWithGlobalIndex(ownTx);
 					if (txOut !== null) {
 						let transactionIn = new TransactionIn();
-						transactionIn.amount = -txOut.amount;
+						transactionIn.amount = txOut.amount;
 						transactionIn.keyImage = txOut.keyImage;
 
 						ins.push(transactionIn);
@@ -389,7 +389,7 @@ export class TransactionsExplorer {
 		neededFee: number,
 		payment_id: string
 	): Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
-		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
+		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function(resolve, reject) {
 			try {
 				console.log('Destinations: ');
 				//need to get viewkey for encrypting here, because of splitting and sorting
@@ -429,9 +429,9 @@ export class TransactionsExplorer {
 		blockchainHeight: number,
 		obtainMixOutsCallback: (quantity: number) => Promise<any[]>,
 		confirmCallback: (amount: number, feesAmount: number) => Promise<void>,
-		mixin : number = config.defaultMixin):
+		mixin: number = config.defaultMixin):
 		Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
-		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
+		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function(resolve, reject) {
 			// few multiplayers based on uint64_t wallet2::get_fee_multiplier
 			let fee_multiplayers = [1, 4, 20, 166];
 			let default_priority = 2;
@@ -516,7 +516,7 @@ export class TransactionsExplorer {
 				console.log("Using output: " + out.amount + " - " + JSON.stringify(out));
 			}
 
-			const calculateFeeWithBytes = function (fee_per_kb: number, bytes: number, fee_multiplier: number) {
+			const calculateFeeWithBytes = function(fee_per_kb: number, bytes: number, fee_multiplier: number) {
 				let kB = (bytes + 1023) / 1024;
 				return kB * fee_per_kb * fee_multiplier;
 			};
@@ -541,7 +541,7 @@ export class TransactionsExplorer {
 			// neededFee = neededFee / 3 * 2;
 
 			console.log('using amount of ' + usingOuts_amount + ' for sending ' + totalAmountWithoutFee + ' with fees of ' + (neededFee / 1000000000));
-			confirmCallback(totalAmountWithoutFee, neededFee).then(function () {
+			confirmCallback(totalAmountWithoutFee, neededFee).then(function() {
 				if (usingOuts_amount.compare(totalAmount) < 0) {
 					console.log("Not enough spendable outputs / balance too low (have "
 						+ Cn.formatMoneyFull(usingOuts_amount) + " but need "
@@ -577,8 +577,8 @@ export class TransactionsExplorer {
 					amounts.push(usingOuts[l].amount.toString());
 				}
 
-				obtainMixOutsCallback(amounts.length * (mixin + 1)).then(function (lotsMixOuts: any[]) {
-					console.log('------------------------------mix_outs', lotsMixOuts);
+				obtainMixOutsCallback(amounts.length * (mixin + 1)).then(function(lotsMixOuts: any[]) {
+					console.log('mix_outs', lotsMixOuts);
 					console.log('amounts', amounts);
 					console.log('lots_mix_outs', lotsMixOuts);
 
@@ -598,9 +598,9 @@ export class TransactionsExplorer {
 					}
 					console.log('mix_outs', mix_outs);
 
-					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId).then(function (data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
+					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId).then(function(data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
 						resolve(data);
-					}).catch(function (e : any) {
+					}).catch(function(e : any) {
 						reject(e);
 					});
 				});

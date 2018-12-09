@@ -249,10 +249,10 @@ class SendView extends DestructableView {
 					}
 				});
 				TransactionsExplorer.createTx([{address: destinationAddress, amount: amountToSend}], self.paymentId, wallet, blockchainHeight,
-					function (numberOuts: number): Promise<any[]> {
+					function(numberOuts: number): Promise<any[]> {
 						return blockchainExplorer.getRandomOuts(numberOuts);
 					}
-					, function (amount: number, feesAmount: number): Promise<void> {
+					, function(amount: number, feesAmount: number): Promise<void> {
 						if (amount + feesAmount > wallet.unlockedAmount(blockchainHeight)) {
 							swal({
 								type: 'error',
@@ -278,7 +278,7 @@ class SendView extends DestructableView {
 									showCancelButton: true,
 									confirmButtonText: i18n.t('sendPage.confirmTransactionModal.confirmText'),
 									cancelButtonText: i18n.t('sendPage.confirmTransactionModal.cancelText'),
-								}).then(function (result: any) {
+								}).then(function(result: any) {
 									if (result.dismiss) {
 										reject('');
 									} else {
@@ -294,9 +294,9 @@ class SendView extends DestructableView {
 								}).catch(reject);
 							}, 1);
 						});
-					}).then(function (rawTxData: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
+					}).then(function(rawTxData: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
 					console.log('raw tx', rawTxData);
-					blockchainExplorer.sendRawTx(rawTxData.raw.raw).then(function () {
+					blockchainExplorer.sendRawTx(rawTxData.raw.raw).then(function() {
 						//save the tx private key
 						wallet.addTxPrivateKeyWithTxHash(rawTxData.raw.hash, rawTxData.raw.prvkey);
 
@@ -323,12 +323,12 @@ class SendView extends DestructableView {
 								confirmButtonText: i18n.t('sendPage.transferSentModal.confirmText'),
 							});
 
-						promise.then(function () {
+						promise.then(function() {
 							if (self.redirectUrlAfterSend !== null) {
 								window.location.href = self.redirectUrlAfterSend.replace('{TX_HASH}', rawTxData.raw.hash);
 							}
 						});
-					}).catch(function (data: any) {
+					}).catch(function(data: any) {
 						swal({
 							type: 'error',
 							title: i18n.t('sendPage.transferExceptionModal.title'),
@@ -337,7 +337,7 @@ class SendView extends DestructableView {
 						});
 					});
 					swal.close();
-				}).catch(function (error: any) {
+				}).catch(function(error: any) {
 					console.log(error);
 					if (error && error !== '') {
 						if (typeof error === 'string')
@@ -376,8 +376,8 @@ class SendView extends DestructableView {
 			if (this.timeoutResolveAlias !== 0)
 				clearTimeout(this.timeoutResolveAlias);
 
-			this.timeoutResolveAlias = setTimeout(function () {
-				blockchainExplorer.resolveOpenAlias(self.destinationAddressUser).then(function (data: { address: string, name: string | null }) {
+			this.timeoutResolveAlias = setTimeout(function() {
+				blockchainExplorer.resolveOpenAlias(self.destinationAddressUser).then(function(data: { address: string, name: string | null }) {
 					try {
 						// cnUtil.decode_address(data.address);
 						self.txDestinationName = data.name;
@@ -390,7 +390,7 @@ class SendView extends DestructableView {
 						self.openAliasValid = false;
 					}
 					self.timeoutResolveAlias = 0;
-				}).catch(function () {
+				}).catch(function() {
 					self.openAliasValid = false;
 					self.timeoutResolveAlias = 0;
 				});
@@ -434,12 +434,12 @@ class SendView extends DestructableView {
 if (wallet !== null && blockchainExplorer !== null)
 	new SendView('#app');
 else {
-	AppState.askUserOpenWallet(false).then(function () {
+	AppState.askUserOpenWallet(false).then(function() {
 		wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', true);
 		if (wallet === null)
 			throw 'e';
 		new SendView('#app');
-	}).catch(function () {
+	}).catch(function() {
 		window.location.href = '#index';
 	});
 }

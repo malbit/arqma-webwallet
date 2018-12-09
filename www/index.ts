@@ -225,12 +225,12 @@ if (!isCordovaApp && 'serviceWorker' in navigator) {
 	const showRefreshUI = function(registration : any){
 		console.log(registration);
 		swal({
-			type:'info',
-			title:i18n.t('global.newVersionModal.title'),
-			html:i18n.t('global.newVersionModal.content'),
-			confirmButtonText:i18n.t('global.newVersionModal.confirmText'),
+			type: 'info',
+			title: i18n.t('global.newVersionModal.title'),
+			html: i18n.t('global.newVersionModal.content'),
+			confirmButtonText: i18n.t('global.newVersionModal.confirmText'),
 			showCancelButton: true,
-			cancelButtonText:i18n.t('global.newVersionModal.cancelText'),
+			cancelButtonText: i18n.t('global.newVersionModal.cancelText'),
 		}).then(function(value : any){
 			if(!value.dismiss){
 				registration.waiting.postMessage('force-activate');

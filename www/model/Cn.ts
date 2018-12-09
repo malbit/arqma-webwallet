@@ -1098,7 +1098,7 @@ export namespace CnTransactions{
 		};
 	}
 
-	export function estimateRctSize(inputs : number, mixin : number, outputs : number) {
+	export function estimateRctSize(inputs: number, mixin: number, outputs: number) {
 		let size = 0;
 		size += outputs * 6306;
 		size += ((mixin + 1) * 4 + 32 + 8) * inputs; //key offsets + key image + amount
@@ -1107,7 +1107,7 @@ export namespace CnTransactions{
 		return size;
 	}
 
-	export function decompose_tx_destinations(dsts : {address:string, amount:number}[], rct : boolean) : {address:string, amount:number}[] {
+	export function decompose_tx_destinations(dsts: {address: string, amount: number}[], rct: boolean) : {address: string, amount: number}[] {
 		let out = [];
 		if (rct) {
 			for (let i = 0; i < dsts.length; i++) {
@@ -1821,7 +1821,7 @@ export namespace CnTransactions{
 			sources[i].in_ephemeral = res.in_ephemeral;
 		}
 		//sort ins
-		sources.sort(function(a,b){
+		sources.sort(function(a, b){
 			return JSBigInt.parse(a.key_image, 16).compare(JSBigInt.parse(b.key_image, 16)) * -1 ;
 		});
 		//copy the sorted sources data to tx
@@ -2034,7 +2034,7 @@ export namespace CnTransactions{
 
 				while ((src.outputs.length < fake_outputs_count) && (j < mix_outs[i].outputs.length)) {
 					let out = mix_outs[i].outputs[j];
-					console.log('chekcing mixin',out, outputs[i]);
+					console.log('chekcing mixin', out, outputs[i]);
 					if (out.global_index === outputs[i].global_index) {
 						console.log('got mixin the same as output, skipping');
 						j++;
