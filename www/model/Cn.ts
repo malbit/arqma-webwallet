@@ -854,6 +854,9 @@ export namespace Cn{
 		dec = dec.slice(prefix.length);
 		let spend = dec.slice(0, 64);
 		let view = dec.slice(64, 128);
+		let checksum : string|null = null;
+		let expectedChecksum : string|null = null;
+		let intPaymentId : string|null = null;
 		if (prefix === expectedPrefixInt){
 				let intPaymentId = dec.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
         let checksum = dec.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
@@ -912,7 +915,7 @@ export namespace Cn{
 		return cnBase58.encode(data + checksum.slice(0, ADDRESS_CHECKSUM_SIZE * 2));
 	}
 
-	export function formatMoneyFull(units : number|string) {
+	export function formatMoneyFull(units: number|string) {
 		let unitsStr = (units).toString();
 		let symbol = unitsStr[0] === '-' ? '-' : '';
 		if (symbol === '-') {

@@ -27,7 +27,7 @@ import {CoinUri} from "../model/CoinUri";
 import {QRReader} from "../model/QRReader";
 import {AppState} from "../model/AppState";
 import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvider";
-import {VueFilterNanoarq} from "../filters/Filters";
+import {VueFilterPiconero} from "../filters/Filters";
 import {NdefMessage, Nfc} from "../model/Nfc";
 import {Cn} from "../model/Cn";
 
@@ -36,7 +36,7 @@ let blockchainExplorer: BlockchainExplorerRpc2 = BlockchainExplorerProvider.getI
 
 AppState.enableLeftMenu();
 
-@VueRequireFilter('nanoarq', VueFilterNanoarq)
+@VueRequireFilter('piconero', VueFilterPiconero)
 class SendView extends DestructableView {
 	@VueVar('') destinationAddressUser !: string;
 	@VueVar('') destinationAddress !: string;
@@ -271,9 +271,9 @@ class SendView extends DestructableView {
 								swal({
 									title: i18n.t('sendPage.confirmTransactionModal.title'),
 									html: i18n.t('sendPage.confirmTransactionModal.content', {
-										amount: Vue.options.filters.nanoarq(amount),
-										fees: Vue.options.filters.nanoarq(feesAmount),
-										total: Vue.options.filters.nanoarq(amount + feesAmount),
+										amount: Vue.options.filters.piconero(amount),
+										fees: Vue.options.filters.piconero(feesAmount),
+										total: Vue.options.filters.piconero(amount + feesAmount),
 									}),
 									showCancelButton: true,
 									confirmButtonText: i18n.t('sendPage.confirmTransactionModal.confirmText'),
