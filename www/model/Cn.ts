@@ -835,7 +835,7 @@ export namespace Cn{
 		let prefix;
 		for (let i = 0; i < prefixes.length; i++) {
 				let pre = prefixes[i];
-				if (dec.slice(0, pre.lenght) == pre) {
+				if (dec.slice(0, pre.length) == pre) {
 						prefix = pre;
 						break;
 				}
