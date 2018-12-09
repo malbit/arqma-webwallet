@@ -26,7 +26,7 @@ export class WalletWatchdog{
 	wallet : Wallet;
 	explorer : BlockchainExplorerRpc2;
 
-	constructor(wallet: Wallet, explorer : BlockchainExplorerRpc2) {
+	constructor(wallet: Wallet, explorer: BlockchainExplorerRpc2) {
 		this.wallet = wallet;
 		this.explorer = explorer;
 

@@ -38,9 +38,6 @@ else{
 			'height'=>$blockHeader['height'],
 			'timestamp'=>$blockHeader['timestamp'],
 			'difficulty'=>$blockHeader['difficulty'],
-			'hashrate'=>$blockHeader['difficulty']*60*2,
+			'hashrate'=>$blockHeader['difficulty']*120,
 	));
 }
-
-
-

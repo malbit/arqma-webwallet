@@ -31,7 +31,7 @@ import {VueFilterNanoarq} from "../filters/Filters";
 import {NdefMessage, Nfc} from "../model/Nfc";
 import {Cn} from "../model/Cn";
 
-let wallet: Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', true);
+let wallet: Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
 let blockchainExplorer: BlockchainExplorerRpc2 = BlockchainExplorerProvider.getInstance();
 
 AppState.enableLeftMenu();
@@ -223,7 +223,7 @@ class SendView extends DestructableView {
 
 	send() {
 		let self = this;
-		blockchainExplorer.getHeight().then(function (blockchainHeight: number) {
+		blockchainExplorer.getHeight().then(function(blockchainHeight: number) {
 			let amount = parseFloat(self.amountToSend);
 			if (self.destinationAddress !== null) {
 				//todo use BigInteger
@@ -266,8 +266,8 @@ class SendView extends DestructableView {
 							throw '';
 						}
 
-						return new Promise<void>(function (resolve, reject) {
-							setTimeout(function () {//prevent bug with swal when code is too fast
+						return new Promise<void>(function(resolve, reject) {
+							setTimeout(function() {//prevent bug with swal when code is too fast
 								swal({
 									title: i18n.t('sendPage.confirmTransactionModal.title'),
 									html: i18n.t('sendPage.confirmTransactionModal.content', {
@@ -435,7 +435,7 @@ if (wallet !== null && blockchainExplorer !== null)
 	new SendView('#app');
 else {
 	AppState.askUserOpenWallet(false).then(function() {
-		wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', true);
+		wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
 		if (wallet === null)
 			throw 'e';
 		new SendView('#app');
