@@ -829,7 +829,7 @@ export namespace Cn{
 		return (prefix === expectedPrefixSub);
 	}
 
-	export function decode_address(address: string) : {
+	export function decode_address(address : string) : {
 		spend: string,
 		view: string,
 		intPaymentId: string|null
@@ -839,52 +839,34 @@ export namespace Cn{
 		let expectedPrefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
 		let expectedPrefixInt = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
 		let expectedPrefixSub = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX);
-		let prefixes = [expectedPrefix, expectedPrefixInt, expectedPrefixSub];
-		let prefix;
-		for (let i = 0; i < prefixes.length; i++) {
-				let pre = prefixes[i];
-				if (dec.slice(0, pre.length) == pre) {
-						prefix = pre;
-						break;
-				}
+		let prefix = dec.slice(0, expectedPrefix.length);
+		console.log(prefix,expectedPrefixInt,expectedPrefix);
+		if (prefix !== expectedPrefix && prefix !== expectedPrefixInt && prefix !== expectedPrefixSub) {
+			throw "Invalid address prefix";
 		}
-		if (prefix === undefined) {
-				throw "Invalid address prefix";
-		}
-		dec = dec.slice(prefix.length);
+		dec = dec.slice(expectedPrefix.length);
 		let spend = dec.slice(0, 64);
 		let view = dec.slice(64, 128);
 		let checksum : string|null = null;
 		let expectedChecksum : string|null = null;
 		let intPaymentId : string|null = null;
 		if (prefix === expectedPrefixInt){
-				let intPaymentId = dec.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
-        let checksum = dec.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
-        let expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
-    } else if (prefix === expectedPrefix) {
-        let checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
-        let expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
-    } else {
-    // if its not regular address, nor integrated, than it must be subaddress
-        let checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
-        let expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
-    }
-    if (checksum !== expectedChecksum) {
-            throw "Invalid checksum";
-    }
-    if (intPaymentId){
-        return {
-            spend: spend,
-            view: view,
-            intPaymentId: intPaymentId
-        };
-    } else {
-        return {
-            spend: spend,
-            view: view
-        };
-    }
-  };
+			let intPaymentId = dec.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
+			checksum = dec.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
+			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+		} else {
+			checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
+			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+		}
+		if (checksum !== expectedChecksum) {
+			throw "Invalid checksum";
+		}
+		return {
+			spend: spend,
+			view: view,
+			intPaymentId: intPaymentId
+		};
+	}
 
 	export function valid_keys(view_pub : string, view_sec : string, spend_pub : string, spend_sec : string) {
 		let expected_view_pub = CnUtils.sec_key_to_pub(view_sec);
