@@ -14,10 +14,10 @@ import {VueClass} from "./VueAnnotate";
 @VueClass()
 export class DestructableView extends Vue{
 
-    static setCurrentAppView(view : DestructableView|null){
+    static setCurrentAppView(view : DestructableView){
         Context.getGlobalContextStorage()['currentAppView'] = view;
     }
-    static getCurrentAppView() : DestructableView|null{
+    static getCurrentAppView() : DestructableView{
         return typeof Context.getGlobalContextStorage()['currentAppView'] === 'undefined' ? null : Context.getGlobalContextStorage()['currentAppView'];
     }
 
