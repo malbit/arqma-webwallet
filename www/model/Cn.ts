@@ -263,7 +263,7 @@ export namespace CnUtils{
 		let exp = new RegExp("[0-9a-fA-F]{" + hex.length + "}");
 		return exp.test(hex);
 	}
-	
+
 	export function ge_scalarmult_base(sec : string) : string{
 		return CnUtils.sec_key_to_pub(sec);
 	}
@@ -785,7 +785,7 @@ export namespace Cn{
 		let checksum = CnUtils.cn_fast_hash(data);
 		return cnBase58.encode(data + checksum.slice(0, ADDRESS_CHECKSUM_SIZE * 2));
 	}
-	
+
 	export function create_address(seed : string) : {
 		spend:{
 			sec:string,
@@ -830,23 +830,28 @@ export namespace Cn{
 		let dec = cnBase58.decode(address);
 		console.log(dec,CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX,CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
 		let expectedPrefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
+
 		let expectedPrefixInt = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
 		let expectedPrefixSub = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX);
 		let prefix = dec.slice(0, expectedPrefix.length);
+			let prefixs = dec.slice(0, expectedPrefixInt.length);
 		console.log(prefix,expectedPrefixInt,expectedPrefix);
-		if (prefix !== expectedPrefix && prefix !== expectedPrefixInt && prefix !== expectedPrefixSub) {
+		if (prefix !== expectedPrefix && prefixs !== expectedPrefixInt && prefix !== expectedPrefixSub) {
 			throw "Invalid address prefix";
 		}
+			let decs = dec.slice(expectedPrefixInt.length);
 		dec = dec.slice(expectedPrefix.length);
 		let spend = dec.slice(0, 64);
 		let view = dec.slice(64, 128);
 		let checksum : string|null = null;
 		let expectedChecksum : string|null = null;
 		let intPaymentId : string|null = null;
-		if (prefix === expectedPrefixInt){
-			let intPaymentId = dec.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
-			checksum = dec.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
-			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+		if (prefixs === expectedPrefixInt){
+			spend = decs.slice(0, 64);
+			view = decs.slice(64, 128);
+			let intPaymentId = decs.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
+			let checksum = decs.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
+			let expectedChecksum = this.cn_fast_hash(prefixs + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
 		} else {
 			checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
 			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
@@ -1399,7 +1404,7 @@ export namespace CnTransactions{
 			prvkey: tx.prvkey
 		};
 	}
-	
+
 	export function get_tx_prefix_hash(tx : CnTransactions.Transaction) {
 		let prefix = CnTransactions.serialize_tx(tx, true);
 		return CnUtils.cn_fast_hash(prefix);
