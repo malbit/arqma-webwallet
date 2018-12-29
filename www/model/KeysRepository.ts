@@ -28,6 +28,13 @@ export type UserKeys = {
 
 export class KeysRepository{
 
+	static get() : UserKeys|null{
+		return null;
+		// let raw = window.localStorage.getItem('userKeys');
+		// if(raw === null)return null;
+		// return JSON.parse(raw);
+	}
+
 	static fromPriv(spend : string, view : string) : UserKeys{
 		let pubView = CnUtils.sec_key_to_pub(view);
 		let pubSpend = CnUtils.sec_key_to_pub(spend);
@@ -41,6 +48,10 @@ export class KeysRepository{
 				spend:spend,
 			}
 		}
+	}
+
+	static save(keys : UserKeys){
+	window.localStorage.setItem('userKeys', JSON.stringify(keys));
 	}
 
 }

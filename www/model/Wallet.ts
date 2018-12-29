@@ -168,7 +168,19 @@ export class Wallet extends Observable{
 	}
 
 	getAll(forceReload=false) : Transaction[]{
-		return this.transactions.slice();
+		if(this.transactions.length > 0 && !forceReload)
+			return this.transactions;
+
+		let data = window.localStorage.getItem('transactions');
+		if(data === null)
+			return [];
+		let decoded = JSON.parse(data);
+		let news : Array<Transaction> = [];
+		for(let rawTransac of decoded){
+			news.push(Transaction.fromRaw(rawTransac));
+		}
+		this.transactions = news;
+		return news;
 	}
 
 	getAllOuts() : TransactionOut[]{

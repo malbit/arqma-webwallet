@@ -47,12 +47,11 @@ export class WalletWatchdog{
 				if(message.type === 'processed'){
 					let transactions = message.transactions;
 					if(transactions.length > 0) {
-						for(let tx of transactions)
-							self.wallet.addNew(Transaction.fromRaw(tx));
+						self.wallet.addNew(Transaction.fromRaw(transactions[0]));
 						self.signalWalletUpdate();
 					}
-					if(self.workerCurrentProcessing.length>0) {
-						let transactionHeight = self.workerCurrentProcessing[self.workerCurrentProcessing.length-1].height;
+					if(self.workerCurrentProcessing) {
+						let transactionHeight = self.workerCurrentProcessing.height;
 						if(typeof transactionHeight !== 'undefined')
 							self.wallet.lastHeight = transactionHeight;
 					}
@@ -118,7 +117,7 @@ export class WalletWatchdog{
 	terminateWorker(){
 		this.workerProcessing.terminate();
 		this.workerProcessingReady = false;
-		this.workerCurrentProcessing = [];
+		this.workerCurrentProcessing = null;
 		this.workerProcessingWorking = false;
 		this.workerCountProcessed = 0;
 	}
@@ -129,7 +128,7 @@ export class WalletWatchdog{
 	workerProcessing !: Worker;
 	workerProcessingReady = false;
 	workerProcessingWorking = false;
-	workerCurrentProcessing : RawDaemon_Transaction[] = [];
+	workerCurrentProcessing : null|RawDaemon_Transaction = null;
 	workerCountProcessed = 0;
 
 	checkTransactions(rawTransactions : RawDaemon_Transaction[]){
@@ -164,12 +163,12 @@ export class WalletWatchdog{
 			return;
 		}
 
-		let transactionsToProcess : RawDaemon_Transaction[] = this.transactionsToProcess.splice(0, 30);
-		if(transactionsToProcess.length > 0) {
+		let transactionsToProcess = this.transactionsToProcess.shift();
+		if(transactionsToProcess !== undefined) {
 			this.workerCurrentProcessing = transactionsToProcess;
 			this.workerProcessing.postMessage({
 				type:'process',
-				transactions:transactionsToProcess
+				transactions:[transactionsToProcess]
 			});
 			++this.workerCountProcessed;
 			this.workerProcessingWorking = true;
@@ -223,17 +222,15 @@ export class WalletWatchdog{
 			if(self.lastBlockLoading !== height){
 				let previousStartBlock = self.lastBlockLoading;
 				let startBlock = Math.floor(self.lastBlockLoading/100)*100;
+				let endBlock = height;
+				if(endBlock - startBlock > 100){
+					endBlock = startBlock + 100;
+				}
 				// console.log('=>',self.lastBlockLoading, endBlock, height, startBlock, self.lastBlockLoading);
-				console.log('load block from '+startBlock);
+				console.log('load block from '+startBlock+' to '+endBlock);
 				self.explorer.getTransactionsForBlocks(previousStartBlock).then(function(transactions : RawDaemon_Transaction[]){
 					//to ensure no pile explosion
-					if(transactions.length > 0){
-						let lastTx = transactions[transactions.length-1];
-						if(typeof lastTx.height !== 'undefined') {
-							self.lastBlockLoading = lastTx.height + 1;
-						}
-					}
-
+					self.lastBlockLoading = endBlock;
 					self.processTransactions(transactions);
 					setTimeout(function () {
 						self.loadHistory();

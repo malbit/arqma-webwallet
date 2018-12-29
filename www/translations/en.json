@@ -61,8 +61,8 @@
 	  "github": "GitHub"
 	},
 	"homepage": {
-	  "mainTitle": "Secured Masari Wallet",
-	  "tagLine": "The simplest way to use Masari - anywhere and any time",
+	  "mainTitle": "Secured Arqma Wallet",
+	  "tagLine": "The simplest way to use Arqma - anywhere and any time",
 	  "actions": {
 		"loadWallet": "Load my wallet",
 		"importWallet": "Import a wallet",
@@ -80,7 +80,7 @@
 		},
 		"technology": {
 		  "title": "Unique Technology",
-		  "description": "Connected directly to the Masari blockchain!"
+		  "description": "Connected directly to the Arqma blockchain!"
 		},
 		"openSource": {
 		  "title": "Fully Open-source",
@@ -141,7 +141,7 @@
 	  },
 	  "finalizationStep":{
 		"title":"That was simple. Your account is ready!",
-		"subtitle":"Be ready to use Masari like you never have",
+		"subtitle":"Be ready to use Arqma like you never have",
 		"passwordSelectionBlock":{
 		  "label":"Protect your wallet"
 		},
@@ -151,10 +151,8 @@
 		"validPassword":"Use this password",
 		"backupBlock":{
 		  "title":"Save your private credentials for recovery.",
-		  "option1":"Option 1: ",
-		  "option2":"Option 2: ",
-		  "titlePdf":"Download a PDF copy",
-		  "titleManualWrite":"Write down my keys",
+		  "titlePdf":"Option 1: Download a PDF copy",
+      "titleManualWrite":"Option 2: Write down my keys",
 		  "privateKeys":"Private key",
 		  "mnemonicPhrase":"Mnemonic phrase",
 		  "separatorManualMethodsSolution":" or ",
@@ -165,7 +163,7 @@
 	  },
 	  "disclaimerBlock":{
 		"title":"Risk of Using Arqma-Wallet",
-		"content":"MasariWallet is a web-based interface. It helps you use Masari without running a full Arqma node. <br/>We recommend you treat Arqma-Wallet like you will treat your actual wallet."
+		"content":"Arqma-Wallet is a web-based interface. It helps you use Arqma without running a full Arqma node. <br/>We recommend you treat Arqma-Wallet like you will treat your actual wallet."
 	  }
 	},
 	"donatePage":{
@@ -231,7 +229,7 @@
 	  },
 	  "thankYouDonationModal":{
 		"title":"Thank you for your donation!",
-		"content":"Your help is appreciated. <br/>This donation will help make Masari better",
+		"content":"Your help is appreciated. <br/>This donation will help make Arqma better",
 		"confirmText":"OK"
 	  },
 	  "transferSentModal":{
@@ -261,10 +259,6 @@
 		"content":"Amount: {amount}<br/>Fees: {fees}<br/>Total: {total}",
 		"confirmText":"Confirm",
 		"cancelText":"Cancel"
-	  },
-	  "waitingNfcModal":{
-		  "title":"Waiting for NFC",
-		  "content":"Bring your phone closer to the other device"
 	  }
 	},
 	"receivePage":{
@@ -284,14 +278,6 @@
 	  },
 	  "qrBlock":{
 		"title":"Your customized QR code"
-	  },
-	  "waitingNfcToWriteModal":{
-		  "title":"Waiting for NFC",
-		  "titleSuccess":"NFC Tag Written",
-		  "content":"Bring your phone closer to the NFC tag to write"
-	  },
-	  "nfcErrorModal":{
-		"titleInsufficientCapacity":"Tag capacity insufficient"
 	  }
 	},
 	"miningPage":{
@@ -310,15 +296,12 @@
 		"hashrate":"Hashrate",
 		"maxHashrate":"Max Hashrate",
 		"dedicatedHardware":"With dedicating mining software and hardware, you could earn more and help decentralize the network.",
-		"miningHandledBy":"This mining is handled by the mining pool get.masaricoin.com"
+		"miningHandledBy":"This mining is handled by the mining pool pool.arqma.com"
 	  }
 	},
 	"settingsPage":{
 	  "title":"Settings",
 	  "subtitle":"Change your parameters here",
-	  "versionBlock":{
-		"versionNumber":"Version number: ",
-		"versionCode":"Version code: "
 	  },
 	  "settingsBlock":{
 		"speed":{
@@ -327,9 +310,6 @@
 		  "fast":"Fast",
 		  "medium":"Medium",
 		  "slow":"Slow"
-		},
-		"language":{
-		  "label":"Language"
 		},
 		"readMinerTx":{
 		  "label":"Read miner transactions (only for solo mining)"
@@ -475,6 +455,7 @@
 	}
   },
   "number":{
+    
   },
   "date":{
 	"short": {

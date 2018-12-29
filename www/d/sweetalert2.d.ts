@@ -9,7 +9,6 @@ declare function swal(params : {
 	focusConfirm?:boolean,
 	preConfirm?:Function
 	onOpen?:Function,
-	onClose?:Function,
 	inputOptions?:Map<string,string>|any,
 	reverseButtons?:boolean,
 	cancelButtonText?:string,

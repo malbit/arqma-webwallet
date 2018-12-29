@@ -22,8 +22,6 @@ import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvide
 import {Mnemonic} from "../model/Mnemonic";
 import {AppState} from "../model/AppState";
 import {WalletRepository} from "../model/WalletRepository";
-import {Translations} from "../model/Translations";
-import {MnemonicLang} from "../model/MnemonicLang";
 import {Cn, CnNativeBride, CnRandom} from "../model/Cn";
 
 let blockchainExplorer : BlockchainExplorerRpc2 = BlockchainExplorerProvider.getInstance();
@@ -66,20 +64,9 @@ class CreateViewWallet extends DestructableView{
 				newWallet.creationHeight = height;
 
 				self.newWallet = newWallet;
-
-				Translations.getLang().then(function(userLang : string){
-					let langToExport = 'english';
-					for(let lang of MnemonicLang.getLangs()){
-						if(lang.shortLang === userLang){
-							langToExport = lang.name;
-							break;
-						}
-					}
-					let phrase = Mnemonic.mn_encode(newWallet.keys.priv.spend, langToExport);
-					if(phrase !== null)
-						self.mnemonicPhrase = phrase;
-
-				});
+				let phrase = Mnemonic.mn_encode(newWallet.keys.priv.spend, 'english');
+				if(phrase !== null)
+					self.mnemonicPhrase = phrase;
 
 				setTimeout(function(){
 					self.step = 1;
@@ -94,11 +81,6 @@ class CreateViewWallet extends DestructableView{
 			this.insecurePassword = true;
 		}else
 			this.insecurePassword = false;
-	}
-
-	@VueWatched()
-	stepWatch(){
-		$("html, body").animate({ scrollTop: 0 }, "fast");
 	}
 
 	forceInsecurePasswordCheck(){
@@ -118,9 +100,8 @@ class CreateViewWallet extends DestructableView{
 	}
 
 	exportStep(){
-		if(this.walletPassword !== '' && (!this.insecurePassword || this.forceInsecurePassword)) {
+		if(this.walletPassword !== '' && (!this.insecurePassword || this.forceInsecurePassword))
 			this.step = 2;
-		}
 	}
 
 	downloadBackup(){

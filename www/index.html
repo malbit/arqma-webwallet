@@ -3,15 +3,13 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Masari Web Wallet</title>
-	<meta property="og:title" content="Masari Web Wallet" />
+	<meta property="og:title" content="Arqma Web Wallet" />
 	<meta property="twitter:title" content="" />
 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta name="viewport" content="width=device-width, user-scalable=yes">
 
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://www.masariwallet.com 'unsafe-eval' ; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
 	<meta name="referrer" content="none">
-	<meta name="msapplication-tap-highlight" content="no">
 
 	<link rel="stylesheet" href="assets/css/main.css" />
 	<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
@@ -21,7 +19,7 @@
 	<!-- Add to home screen for Safari on iOS -->
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<meta name="apple-mobile-web-app-title" content="Masari">
+	<meta name="apple-mobile-web-app-title" content="Arqma">
 
 	<link rel="icon" href="./assets/img/favicon.ico" />
 	<link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
@@ -37,13 +35,13 @@
 	<meta property="twitter:description" content="" />
 
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://www.masariwallet.com/" />
-	<meta property="og:image" content="https://www.masariwallet.com/images/icons/icon-144x144.png" />
+	<meta property="og:url" content="https://test.myarqma.com/" />
+	<meta property="og:image" content="https://test.myarqma.com/images/icons/icon-144x144.png" />
 
 	<meta property="twitter:card" content="summary" />
-	<meta property="twitter:site" content="https://www.masariwallet.com/" />
+	<meta property="twitter:site" content="https://arqma.com/" />
 
-	<meta property="twitter:creator" content="@masaricurrency" />
+	<meta property="twitter:creator" content="@ArQmA_Network" />
 
 	<meta name="fragment" content="!">
 
@@ -74,8 +72,8 @@
 
 <div id="page" ></div>
 
-<div id="copyright" v-cloak="" class="hideOnNative">
-	<div>© 2018 www.masariwallet.com</div>
+<div id="copyright" v-cloak="" class="">
+	<div class="hideOnNative">© 2018 arqma.com</div>
 	<div class="right" >
 		<select v-model="language">
 			<option value="en">English</option>
@@ -89,8 +87,8 @@
 		<a href="#!support" >{{ $t("bottom.support") }}</a>
 		<a href="#!donate" >{{ $t("bottom.donate") }}</a>
 		<a href="#!network" >{{ $t("bottom.network") }}</a>
-		<a href="https://get.masaricoin.com" target="_blank" >{{ $t("bottom.miningPool") }}</a>
-		<a href="https://github.com/gnock/masari-webwallet" target="_blank">{{ $t("bottom.github") }}</a>
+<!--		<a href="https://get.masaricoin.com" target="_blank" >{{ $t("bottom.miningPool") }}</a>
+		<a href="https://github.com/gnock/masari-webwallet" target="_blank">{{ $t("bottom.github") }}</a> -->
 	</div>
 	<div class="cb" ></div>
 </div>
@@ -118,7 +116,6 @@
 <script src="lib/base58.js"></script>
 <script src="lib/jspdf.min.js"></script>
 <!--<script src="lib/mnemonic.js"></script>-->
-<script src="lib/cn_utils_native.js"></script>
 <script src="lib/FileSaver.min.js"></script>
 <script data-main="index.js" src="lib/require.js"></script>
 

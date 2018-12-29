@@ -148,14 +148,12 @@ export class TransactionsExplorer {
 						paymentId += String.fromCharCode(extra.data[i]);
 					}
 					paymentId = CnUtils.bintohex(paymentId);
-					break;
 				} else if (extra.data[0] === TX_EXTRA_NONCE_ENCRYPTED_PAYMENT_ID) {
 					encryptedPaymentId = '';
 					for (let i = 1; i < extra.data.length; ++i) {
 						encryptedPaymentId += String.fromCharCode(extra.data[i]);
 					}
 					encryptedPaymentId = CnUtils.bintohex(encryptedPaymentId);
-					break;
 				}
 			}
 		}

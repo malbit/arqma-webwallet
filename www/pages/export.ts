@@ -13,13 +13,14 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {VueVar} from "../lib/numbersLab/VueAnnotate";
+import {VueClass, VueVar} from "../lib/numbersLab/VueAnnotate";
 import {DependencyInjectorInstance} from "../lib/numbersLab/DependencyInjector";
 import {Wallet} from "../model/Wallet";
 import {DestructableView} from "../lib/numbersLab/DestructableView";
 import {Constants} from "../model/Constants";
 import {WalletRepository} from "../model/WalletRepository";
 import {Mnemonic} from "../model/Mnemonic";
+import {CoinUri} from "../model/CoinUri";
 
 let wallet: Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
 let blockchainExplorer = DependencyInjectorInstance().getInstance(Constants.BLOCKCHAIN_EXPLORER);
@@ -27,14 +28,12 @@ let blockchainExplorer = DependencyInjectorInstance().getInstance(Constants.BLOC
 
 class ExportView extends DestructableView {
 	@VueVar('') publicAddress: string;
-	@VueVar(false) nativePlatform !: boolean;
 
 	constructor(container: string) {
 		super(container);
 		let self = this;
 
 		this.publicAddress = wallet.getPublicAddress();
-		this.nativePlatform = window.native;
 	}
 
 	destruct(): Promise<void> {
@@ -43,29 +42,26 @@ class ExportView extends DestructableView {
 
 	askUserPassword(): Promise<{ wallet: Wallet, password: string } | null> {
 		return swal({
+			title: 'Wallet password',
 			input: 'password',
 			showCancelButton: true,
-			title: i18n.t('global.openWalletModal.title'),
-			confirmButtonText: i18n.t('exportPage.mnemonicLangSelectionModal.confirmText'),
-			cancelButtonText: i18n.t('exportPage.mnemonicKeyModal.confirmText'),
+			confirmButtonText: 'Export',
 		}).then((result: any) => {
 			if (result.value) {
-				let savePassword : string = result.value;
+				let savePassword = result.value;
 				// let password = prompt();
 				// let wallet = WalletRepository.getMain();
-				return WalletRepository.getLocalWalletWithPassword(savePassword).then((wallet : Wallet|null) : { wallet: Wallet, password: string }|null => {
-					if (wallet !== null) {
-						return {wallet: wallet, password: savePassword};
-					} else {
-						swal({
-							type: 'error',
-							title: i18n.t('global.invalidPasswordModal.title'),
-							text: i18n.t('global.invalidPasswordModal.content'),
-							confirmButtonText: i18n.t('global.invalidPasswordModal.confirmText'),
-						});
-					}
-					return null;
-				});
+				let wallet = WalletRepository.getLocalWalletWithPassword(savePassword);
+				if (wallet !== null) {
+					return {wallet: wallet, password: savePassword};
+				} else {
+					swal({
+						type: 'error',
+						title: i18n.t('global.invalidPasswordModal.title'),
+						text: i18n.t('global.invalidPasswordModal.content'),
+						confirmButtonText: i18n.t('global.invalidPasswordModal.confirmText'),
+					});
+				}
 			}
 			return null;
 		});
@@ -76,7 +72,7 @@ class ExportView extends DestructableView {
 			if (params !== null && params.wallet !== null) {
 				swal({
 					title: i18n.t('exportPage.walletKeysModal.title'),
-					confirmButtonText: i18n.t('exportPage.walletKeysModal.confirmText'),
+					confirmButtonText: i18n.t('exportPage.walletKeysModal.title'),
 					html: i18n.t('exportPage.walletKeysModal.content', {
 						privViewKey: params.wallet.keys.priv.view,
 						privSpendKey: params.wallet.keys.priv.spend
@@ -108,9 +104,9 @@ class ExportView extends DestructableView {
 						'russian': 'Russian',
 						'spanish': 'Spanish',
 					}
-				}).then((mnemonicLangResult: {value?:string}) => {
-					if(mnemonicLangResult.value) {
+				}).then((mnemonicLangResult: any) => {
 						let mnemonic = Mnemonic.mn_encode(params.wallet.keys.priv.spend, mnemonicLangResult.value);
+
 						swal({
 							title: i18n.t('exportPage.mnemonicKeyModal.title'),
 							confirmButtonText: i18n.t('exportPage.mnemonicKeyModal.confirmText'),
@@ -118,7 +114,7 @@ class ExportView extends DestructableView {
 								mnemonic: mnemonic,
 							}),
 						});
-					}
+						
 				});
 			}
 		});
