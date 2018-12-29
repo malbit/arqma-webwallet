@@ -851,7 +851,7 @@ export namespace Cn{
 			view = decs.slice(64, 128);
 			let intPaymentId = decs.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
 			let checksum = decs.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
-			let expectedChecksum = this.cn_fast_hash(prefixs + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+			let expectedChecksum = CnUtils.cn_fast_hash(prefixs + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
 		} else {
 			checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
 			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);

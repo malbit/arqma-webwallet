@@ -128,7 +128,7 @@ export class WalletWatchdog{
 	workerProcessing !: Worker;
 	workerProcessingReady = false;
 	workerProcessingWorking = false;
-	workerCurrentProcessing : null|RawDaemonTransaction = null;
+	workerCurrentProcessing : null|RawDaemon_Transaction = null;
 	workerCountProcessed = 0;
 
 	checkTransactions(rawTransactions : RawDaemon_Transaction[]){
