@@ -22,9 +22,9 @@
 			<div class="body" >
 				<div class="header-title" >{{ $t("accountPage.balanceBlock.title") }}</div>
 				<div class="content" >
-					<span class="walletAmount" >{{ $n(walletAmount / currencyDivider) }}</span> MSR
+					<span class="walletAmount" >{{ $n(walletAmount / currencyDivider) }}</span> ARQ
 					<tempate class="amount unlocked" v-if="unlockedWalletAmount !== walletAmount" >
-						<br/><span class="walletAmount" >{{ $t("accountPage.balanceBlock.unlocked") }}: {{ $n(unlockedWalletAmount / currencyDivider) }}</span> MSR
+						<br/><span class="walletAmount" >{{ $t("accountPage.balanceBlock.unlocked") }}: {{ $n(unlockedWalletAmount / currencyDivider) }}</span> ARQ
 					</tempate>
 				</div>
 			</div>
@@ -59,7 +59,7 @@
 									{{ $t("accountPage.historyBlock.emptyWallet") }}<br/>
 									<span v-if="currentScanBlock+1 !== blockchainHeight" >
 										{{ $t("accountPage.historyBlock.waitSync") }}
-										<template v-if="blockchainHeight - currentScanBlock > 100000" >
+										<template v-if="blockchainHeight - currentScanBlock > 50000" >
 											<br/>{{ $t("accountPage.historyBlock.beReallyPatient") }}
 										</template>
 									</span><br>

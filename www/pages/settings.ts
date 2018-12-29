@@ -31,7 +31,7 @@ let blockchainExplorer : BlockchainExplorerRpc2 = BlockchainExplorerProvider.get
 let walletWatchdog : WalletWatchdog = DependencyInjectorInstance().getInstance(WalletWatchdog.name,'default', false);
 
 class SendView extends DestructableView{
-	@VueVar(10) readSpeed !: number;
+	@VueVar(25) readSpeed !: number;
 	@VueVar(false) checkMinerTx !: boolean;
 
 	@VueVar(0) creationHeight !: number;
