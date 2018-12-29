@@ -96,7 +96,8 @@ class AccountView extends DestructableView{
 			this.amount !== '' ? this.amount : null,
 			this.recipientName !== '' ? this.recipientName: null,
 			this.txDescription !== '' ? this.txDescription: null,
-		};
+		);
+
 		let el = kjua({
 			text: address,
 			image:document.getElementById('arqmaQrCodeLogo'),
