@@ -25,7 +25,7 @@ export type RawWalletOptions = {
 
 export class WalletOptions{
 	checkMinerTx:boolean = false;
-	readSpeed:number = 25;
+	readSpeed:number = 10;
 
 	static fromRaw(raw : RawWalletOptions){
 		let options = new WalletOptions();
