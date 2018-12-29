@@ -667,7 +667,7 @@ export namespace CnNativeBride{
 		return sigs;
 	}
 
-/*	export function generate_key_derivation(pub : any, sec : any){
+	export function generate_key_derivation(pub : any, sec : any){
 		let generate_key_derivation_bind = (<any>self).Module_native.cwrap('generate_key_derivation', null, ['number', 'number', 'number']);
 
 		let pub_b = CnUtils.hextobin(pub);
@@ -690,9 +690,9 @@ export namespace CnNativeBride{
 		Module_native._free(derivation_m);
 
 		return CnUtils.bintohex(res);
-	} */
+	}
 
-/*	export function derive_public_key(derivation : string,
+	export function derive_public_key(derivation : string,
 		output_idx_in_tx : number,
 		pubSpend : string){
 		let derive_public_key_bind = (<any>self).Module_native.cwrap('derive_public_key', null, ['number', 'number', 'number', 'number']);
@@ -719,7 +719,7 @@ export namespace CnNativeBride{
 		Module_native._free(derived_key_m);
 
 		return CnUtils.bintohex(res);
-	} */
+	}
 }
 
 export namespace Cn{
