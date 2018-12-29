@@ -160,7 +160,7 @@ class ImportView extends DestructableView{
 					}
 				}catch(e){}
 
-				self.qrScanning = false;
+				self.qrScanning = false
 				self.stopScan();
 			});
 		}
@@ -196,6 +196,10 @@ class ImportView extends DestructableView{
 		self.forceInsecurePassword = true;
 	}
 
+	destruct(): Promise<void> {
+		this.stopScan();
+		return super.destruct();
+	}
 }
 
 new ImportView('#app');

@@ -91,7 +91,7 @@ function loadLangTranslation(lang : string) : Promise<void>{
 }
 
 loadLangTranslation(userLang).catch(function () {
-	loadLangTranslation('en')
+	loadLangTranslation('en');
 });
 
 //========================================================

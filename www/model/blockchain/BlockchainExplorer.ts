@@ -36,7 +36,7 @@ export type RawDaemon_Transaction = {
 	ctsig_prunable:any,
 	global_index_start?:number,
 	height?:number,
-	ts?:number,
+	ts?:number
 	hash?:string,
 };
 

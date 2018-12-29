@@ -130,7 +130,6 @@ export class AppState{
 								let blockchainHeightToRescan = Object.keys(blockchainHeightToRescanObj);
 								if(blockchainHeightToRescan.length > 0){
 									let blockchainExplorer : BlockchainExplorerRpc2 = DependencyInjectorInstance().getInstance(Constants.BLOCKCHAIN_EXPLORER);
-
 									let promisesBlocks = [];
 									for(let height of blockchainHeightToRescan){
 										promisesBlocks.push(blockchainExplorer.getTransactionsForBlocks(parseInt(height)));
@@ -141,7 +140,7 @@ export class AppState{
 												if(wallet !== null) {
 													let tx = TransactionsExplorer.parse(rawTx, wallet);
 													if(tx !== null)
-													wallet.addNew(tx);
+														wallet.addNew(tx);
 												}
 											}
 										}
@@ -162,10 +161,8 @@ export class AppState{
 								});
 								reject();
 							}
-						}else {
+						}else
 							swal.close();
-							window.location.href = '#account';
-						}
 					}else
 						reject();
 				},1);

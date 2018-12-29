@@ -62,6 +62,7 @@ class ExportView extends DestructableView {
 						confirmButtonText: i18n.t('global.invalidPasswordModal.confirmText'),
 					});
 				}
+
 			}
 			return null;
 		});
@@ -72,7 +73,7 @@ class ExportView extends DestructableView {
 			if (params !== null && params.wallet !== null) {
 				swal({
 					title: i18n.t('exportPage.walletKeysModal.title'),
-					confirmButtonText: i18n.t('exportPage.walletKeysModal.title'),
+					confirmButtonText: i18n.t('exportPage.walletKeysModal.confirmText'),
 					html: i18n.t('exportPage.walletKeysModal.content', {
 						privViewKey: params.wallet.keys.priv.view,
 						privSpendKey: params.wallet.keys.priv.spend
@@ -89,7 +90,7 @@ class ExportView extends DestructableView {
 					title: i18n.t('exportPage.mnemonicLangSelectionModal.title'),
 					input: 'select',
 					showCancelButton: true,
-					confirmButtonText: i18n.t('exportPage.mnemonicLangSelectionModal.confirmText'),
+					confirmButtonText: i18n.t('exportPage.mnemonicLangSelectionModal.title'),
 					inputOptions: {
 						'english': 'English',
 						'chinese': 'Chinese (simplified)',
@@ -105,16 +106,16 @@ class ExportView extends DestructableView {
 						'spanish': 'Spanish',
 					}
 				}).then((mnemonicLangResult: any) => {
-						let mnemonic = Mnemonic.mn_encode(params.wallet.keys.priv.spend, mnemonicLangResult.value);
+					let mnemonic = Mnemonic.mn_encode(params.wallet.keys.priv.spend, mnemonicLangResult.value);
 
-						swal({
-							title: i18n.t('exportPage.mnemonicKeyModal.title'),
-							confirmButtonText: i18n.t('exportPage.mnemonicKeyModal.confirmText'),
-							html: i18n.t('exportPage.mnemonicKeyModal.content', {
-								mnemonic: mnemonic,
-							}),
-						});
-						
+					swal({
+						title: i18n.t('exportPage.mnemonicKeyModal.title'),
+						confirmButtonText: i18n.t('exportPage.mnemonicKeyModal.confirmText'),
+						html: i18n.t('exportPage.mnemonicKeyModal.content', {
+							mnemonic: mnemonic,
+						}),
+					});
+
 				});
 			}
 		});

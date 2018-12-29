@@ -17,7 +17,6 @@ import {RawFullyEncryptedWallet, RawWallet, Wallet} from "./Wallet";
 import {CoinUri} from "./CoinUri";
 
 export class WalletRepository{
-
 	static hasOneStored(){
 		return window.localStorage.getItem('wallet') !== null;
 	}
@@ -71,11 +70,11 @@ export class WalletRepository{
 
 	static getLocalWalletWithPassword(password : string) : Wallet|null{
 		let existingWallet = window.localStorage.getItem('wallet');
-		if(existingWallet !== null){
-			return this.decodeWithPassword(JSON.parse(existingWallet), password);
-		}else{
-			return null;
-		}
+			if(existingWallet !== null){
+				return this.decodeWithPassword(JSON.parse(existingWallet), password);
+			}else{
+				return null;
+			}
 	}
 
 	static save(wallet : Wallet, password : string){

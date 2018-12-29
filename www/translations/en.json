@@ -151,7 +151,7 @@
 		"validPassword":"Use this password",
 		"backupBlock":{
 		  "title":"Save your private credentials for recovery.",
-		  "titlePdf":"Option 1: Download a PDF copy",
+      "titlePdf":"Option 1: Download a PDF copy",
       "titleManualWrite":"Option 2: Write down my keys",
 		  "privateKeys":"Private key",
 		  "mnemonicPhrase":"Mnemonic phrase",
@@ -302,7 +302,6 @@
 	"settingsPage":{
 	  "title":"Settings",
 	  "subtitle":"Change your parameters here",
-	  },
 	  "settingsBlock":{
 		"speed":{
 		  "label":"Speed to update the wallet (will consume more resources)",
@@ -455,7 +454,7 @@
 	}
   },
   "number":{
-    
+
   },
   "date":{
 	"short": {

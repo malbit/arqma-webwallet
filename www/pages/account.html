@@ -43,7 +43,7 @@
 										<i v-if="transaction.ins.length == 0" class="fa fa-level-down" aria-hidden="true"></i>
 										<i v-else="" class="fa fa-level-up" aria-hidden="true"></i>
 									</td><!--LEfT-->
-									<td class="timestamp" v-if="transaction.blockHeight > 0">{{transaction.timestamp | date}}</td>
+									<td class="timestamp" v-if="transaction.blockHeight > 0">{{$d(new Date(transaction.timestamp*1000), 'long')}}</td>
 									<td class="timestamp" v-else="">{{ $t("accountPage.historyBlock.pendingTxStatus") }}...</td>
 									<td :class="'amount '+(transaction.getAmount() > 0 ? 'more' : 'less')" >{{transaction.getAmount() | piconero}}</td>
 									<td class="moreInfo">

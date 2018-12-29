@@ -128,7 +128,7 @@ export class WalletWatchdog{
 	workerProcessing !: Worker;
 	workerProcessingReady = false;
 	workerProcessingWorking = false;
-	workerCurrentProcessing : null|RawDaemon_Transaction = null;
+	workerCurrentProcessing : null|RawDaemonTransaction = null;
 	workerCountProcessed = 0;
 
 	checkTransactions(rawTransactions : RawDaemon_Transaction[]){
@@ -390,15 +390,15 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 						continue;
 					}
 
-				  /*let output_idx_in_tx = Math.floor(Math.random()*out.vout.length);
-				  let extras = TransactionsExplorer.parseExtra(tx.extra);
+					// let output_idx_in_tx = Math.floor(Math.random()*out.vout.length);
+					/*let extras = TransactionsExplorer.parseExtra(tx.extra);
 					let publicKey = '';
 					for(let extra of extras)
 						if(extra.type === TX_EXTRA_TAG_PUBKEY){
 							for (let i = 0; i < 32; ++i) {
 								publicKey += String.fromCharCode(extra.data[i]);
 							}
-							publicKey = CnUtils.bintohex(publicKey);
+							publicKey = CryptoUtils.bintohex(publicKey);
 							break;
 						}*/
 

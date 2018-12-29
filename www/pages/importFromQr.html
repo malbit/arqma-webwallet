@@ -7,7 +7,6 @@
 			{{ $t("importFromQrPage.subtitle") }}
 		</div>
 	</div>
-
 	<div class="body-content" >
 		<div class="panel">
 			<div class="body" >
@@ -54,10 +53,10 @@
 				</div>
 			</div>
 		</div>
-	</div>
-</div>
 
-<div class="qrCodeScanningContainer" :class="(qrScanning ? '' : 'hidden')">
+	</div>
+
+	<div class="qrCodeScanningContainer" :class="(qrScanning ? '' : 'hidden')">
 		<div class="close" @click="stopScan()">
 			<i class="fa fa-close" aria-hidden="true"></i>
 		</div>
@@ -65,4 +64,5 @@
 		<div class="videoContainer" >
 			<video width="100" id="cameraVideoFluxForDelivery" autoplay></video>
 		</div>
+	</div>
 </div>

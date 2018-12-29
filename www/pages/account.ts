@@ -67,8 +67,8 @@ class AccountView extends DestructableView{
 		//save wallet if modified
 		// if(wallet.hasBeenModified()){
 		// 	this.refreshWallet();
-			// let walletExported = wallet.exportToRaw();
-			// window.localStorage.setItem('wallet', JSON.stringify(walletExported));
+		// let walletExported = wallet.exportToRaw();
+		// window.localStorage.setItem('wallet', JSON.stringify(walletExported));
 		// }
 	}
 

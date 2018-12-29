@@ -34,11 +34,6 @@ let injector = DependencyInjectorInstance();
 
 let blockchainExplorer = BlockchainExplorerProvider.getInstance();
 
-let wallet : Wallet = DependencyInjectorInstance().getInstance(Wallet.name,'default', false);
-if(wallet !== null){
-	window.location.href = '#account';
-}
-
 class IndexView extends DestructableView{
 	@VueVar(false) hasLocalWallet : boolean;
 	@VueVar(false) isWalletLoaded : boolean;
