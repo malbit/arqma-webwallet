@@ -72,7 +72,7 @@ export class WalletRepository{
 	static getLocalWalletWithPassword(password : string) : Wallet|null{
 		let existingWallet = window.localStorage.getItem('wallet');
 		if(existingWallet !== null){
-			return this.getWithPassword(JSON.parse(existingWallet), password);
+			return this.decodeWithPassword(JSON.parse(existingWallet), password);
 		}else{
 			return null;
 		}
