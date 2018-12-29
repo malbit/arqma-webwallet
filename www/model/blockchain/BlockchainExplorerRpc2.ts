@@ -393,7 +393,7 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 						continue;
 					}
 
-				  let output_idx_in_tx = Math.floor(Math.random()*out.vout.length);
+				  let output_idx_in_tx = Math.floor(Math.random()*iOut.vout.length);
 				  let extras = TransactionsExplorer.parseExtra(tx.extra);
 					let publicKey = '';
 					for(let extra of extras)
