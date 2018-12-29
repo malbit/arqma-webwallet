@@ -9,8 +9,8 @@ global.config = {
 	testnetExplorerUrlBlock: "https://blocks.arqma.com/block/{ID}",
 	testnet: false,
 	coinUnitPlaces: 9,
-	txMinConfirms: 4,         // corresponds to CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE in cryptonote_config.h
-	txCoinbaseMinConfirms: 18, // corresponds to CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW in cryptonote_config.h
+	txMinConfirms: 4,         // corresponds to CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE in Monero
+	txCoinbaseMinConfirms: 18, // corresponds to CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW in Monero
 	addressPrefix: 0x2cca,
 	integratedAddressPrefix: 0x116bc7,
 	addressPrefixTestnet: 0x53ca,
@@ -26,7 +26,7 @@ global.config = {
 
 	coinSymbol: 'ARQ',
 	openAliasPrefix: "arq",
-	coinName: 'ArQmA',
+	coinName: 'Arqma',
 	coinUriPrefix: 'arqma:',
 	avgBlockTime: 120,
 	maxBlockNumber: 500000000,

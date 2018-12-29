@@ -24,7 +24,7 @@ export class WalletRepository{
 			return wallet !== null;
 		});
 	}
-
+	
 	static decodeWithPassword(rawWallet : RawWallet|RawFullyEncryptedWallet, password : string) : Wallet|null{
 		if(password.length > 32)
 			password = password.substr(0 , 32);
@@ -81,7 +81,7 @@ export class WalletRepository{
 			}
 		});
 	}
-
+	
 	static save(wallet : Wallet, password : string) : Promise<void>{
 		return Storage.setItem('wallet', JSON.stringify(this.getEncrypted(wallet, password)));
 	}
@@ -145,7 +145,7 @@ export class WalletRepository{
 		let doc = new jsPDF('landscape');
 
 		//creating background
-		doc.setFillColor(17,0,117);
+		doc.setFillColor(35,31,39);
 		doc.rect(0,0,297,210, 'F');
 
 		//white blocks
@@ -153,17 +153,17 @@ export class WalletRepository{
 		doc.rect(108,10,80,80, 'F');
 		doc.rect(10,115,80,80, 'F');
 
-		//blue blocks
-		doc.setFillColor(0, 85, 255);
+		//green blocks
+		doc.setFillColor(76, 184, 96);
 		doc.rect(108,115,80,80, 'F');
 
-		//light blue background for texts
-		doc.setFillColor(70, 132, 255);
+		//green background for texts
+		doc.setFillColor(76, 184, 96);
 
 		doc.rect(108,15,80,20, 'F');
 		doc.rect(10,120,80,20, 'F');
 
-		doc.setTextColor(8, 0, 78);
+		doc.setTextColor(255, 255, 255);
 		doc.setFontSize(30);
 		doc.text(15, 135, "Public address");
 		doc.text(123,30, "Private key");
@@ -183,15 +183,15 @@ export class WalletRepository{
 		doc.setTextColor(255, 255, 255);
 		doc.setFontSize(10);
 		doc.text(110, 120, "To deposit funds to this paper wallet, send ");
-		doc.text(110, 125, "Arqma to the public address");
+		doc.text(110, 125, "Masari to the public address");
 
 		doc.text(110, 135, "DO NOT REVEAL THE PRIVATE KEY");
 
-		//adding Arqma logo
+		//adding masari logo
 		let c : HTMLCanvasElement|null = <HTMLCanvasElement>document.getElementById('canvasExport');
 		if(c !== null) {
 			let ctx = c.getContext("2d");
-			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("logoQrCode.png");
+			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("verticalMasariLogo");
 			if (ctx !== null && img !== null) {
 				c.width = img.width;
 				c.height = img.height;

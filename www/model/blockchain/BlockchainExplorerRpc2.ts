@@ -26,7 +26,7 @@ export class WalletWatchdog{
 	wallet : Wallet;
 	explorer : BlockchainExplorerRpc2;
 
-	constructor(wallet: Wallet, explorer: BlockchainExplorerRpc2) {
+	constructor(wallet: Wallet, explorer : BlockchainExplorerRpc2) {
 		this.wallet = wallet;
 		this.explorer = explorer;
 
@@ -235,21 +235,21 @@ export class WalletWatchdog{
 					}
 
 					self.processTransactions(transactions);
-					setTimeout(function() {
+					setTimeout(function () {
 						self.loadHistory();
 					}, 1);
 				}).catch(function(){
-					setTimeout(function() {
+					setTimeout(function () {
 						self.loadHistory();
 					}, 30*1000);//retry 30s later if an error occurred
 				});
-			} else {
-				setTimeout(function() {
+			}else{
+				setTimeout(function () {
 					self.loadHistory();
 				}, 30*1000);
 			}
 		}).catch(function(){
-			setTimeout(function() {
+			setTimeout(function () {
 				self.loadHistory();
 			}, 30*1000);//retry 30s later if an error occurred
 		});
@@ -277,12 +277,12 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 				method: 'POST',
 				data: JSON.stringify({
 				})
-			}).done(function(raw: any) {
+			}).done(function (raw: any) {
 				// self.heightCache = raw.height;
 				// resolve(raw.height);
 				self.heightCache = parseInt(raw);
 				resolve(self.heightCache);
-			}).fail(function(data: any) {
+			}).fail(function (data: any) {
 				reject(data);
 			});
 		});
@@ -352,11 +352,14 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 
 		return this.getHeight().then(function(height : number){
 			let txs : RawDaemon_Transaction[] = [];
-			let promises = [];
+			let promiseGetCompressedBlocks : Promise<void> = Promise.resolve();
 
 			let randomBlocksIndexesToGet : number[] = [];
 			let numOuts = height;
 
+			let compressedBlocksToGet : {[key : string] : boolean} = {};
+
+			//select blocks for the final mixin. selection is made with a triangular selection
 			for(let i = 0; i < nbOutsNeeded; ++i){
 				let selectedIndex : number = -1;
 				do{
@@ -366,13 +369,19 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 				}while(selectedIndex === -1 || randomBlocksIndexesToGet.indexOf(selectedIndex) !== -1);
 				randomBlocksIndexesToGet.push(selectedIndex);
 
-				let promise = self.getTransactionsForBlocks(Math.floor(selectedIndex/100)*100).then(function(rawTransactions : RawDaemon_Transaction[]){
-					txs.push.apply(txs,rawTransactions);
-				});
-				promises.push(promise);
+				compressedBlocksToGet[Math.floor(selectedIndex/100)*100] = true;
 			}
 
-			return Promise.all(promises).then(function(){
+			//load compressed blocks (100 blocks) containing the blocks referred by their index
+			for(let compressedBlock in compressedBlocksToGet) {
+				promiseGetCompressedBlocks = promiseGetCompressedBlocks.then(()=>{
+					return self.getTransactionsForBlocks(parseInt(compressedBlock)).then(function (rawTransactions: RawDaemon_Transaction[]) {
+						txs.push.apply(txs, rawTransactions);
+					});
+				});
+			}
+
+			return promiseGetCompressedBlocks.then(function(){
 				let txCandidates : any = {};
 				for(let iOut  = 0; iOut < txs.length; ++iOut) {
 					let tx = txs[iOut];
@@ -471,15 +480,15 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 		});
 	}
 
-	resolveOpenAlias(domain: string) : Promise<{address:string, name:string|null}>{
+	resolveOpenAlias(domain : string) : Promise<{address:string, name:string|null}>{
 		let self = this;
 		return new Promise(function(resolve, reject){
 			$.ajax({
 				url: self.serverAddress+'openAlias.php?domain='+domain,
 				method: 'GET',
-			}).done(function(response: any) {
+			}).done(function (response: any) {
 				resolve(response);
-			}).fail(function(data: any) {
+			}).fail(function (data: any) {
 				reject(data);
 			});
 		});

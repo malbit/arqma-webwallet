@@ -26,7 +26,7 @@ import {AppState} from "../model/AppState";
 AppState.enableLeftMenu();
 
 class NetworkView extends DestructableView{
-	@VueVar(0) networkHashrate !: string;
+	@VueVar(0) networkHashrate !: number;
 	@VueVar(0) blockchainHeight !: number;
 	@VueVar(0) networkDifficulty !: number;
 	@VueVar(0) lastReward !: number;
@@ -34,7 +34,7 @@ class NetworkView extends DestructableView{
 
 	private intervalRefreshStat = 0;
 
-	constructor(container: string){
+	constructor(container : string){
 		super(container);
 
 		let self = this;
@@ -53,11 +53,11 @@ class NetworkView extends DestructableView{
 		let self = this;
 		$.ajax({
 			url:config.apiUrl+'network.php'
-		}).done(function(data: any){
+		}).done(function(data : any){
 			self.networkDifficulty = data.difficulty;
-			self.networkHashrate = (data.difficulty/120/1000000).toFixed(2);
+			self.networkHashrate = data.difficulty/120/1000000;
 			self.blockchainHeight = data.height;
-			self.lastReward = data.reward/1000000000;
+			self.lastReward = data.reward/1000000000000;
 			self.lastBlockFound = parseInt(data.timestamp);
 		});
 	}
