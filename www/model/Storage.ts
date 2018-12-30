@@ -41,3 +41,32 @@ class LocalStorage implements StorageInterface{
 		return Promise.resolve();
 	}
 }
+
+export class Storage{
+	static _storage : StorageInterface = new LocalStorage();
+
+	static clear(): Promise<void> {
+		return Storage._storage.clear();
+	}
+
+	static getItem(key: string, defaultValue: any = null): Promise<any> {
+		return Storage._storage.getItem(key,defaultValue);
+	}
+
+	static keys(): Promise<string[]> {
+		return Storage._storage.keys();
+	}
+
+	static remove(key: string): Promise<void> {
+		return Storage._storage.remove(key);
+	}
+
+	static removeItem(key: string): Promise<void> {
+		return Storage._storage.remove(key);
+	}
+
+	static setItem(key: string, value: any): Promise<void> {
+		return Storage._storage.setItem(key,value);
+	}
+
+}
