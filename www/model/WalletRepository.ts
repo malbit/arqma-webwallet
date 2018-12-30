@@ -18,7 +18,7 @@ import {CoinUri} from "./CoinUri";
 import {Storage} from "./Storage";
 
 export class WalletRepository{
-	static hasOneStored() : Promise<boolean>{
+	static hasOneStored(){
 		return Storage.getItem('wallet', null).then(function (wallet : any) {
 			return wallet !== null;
 		});
@@ -71,7 +71,7 @@ export class WalletRepository{
 		return null;
 	}
 
-	static getLocalWalletWithPassword(password : string) : Promise<Wallet|null>{
+	static getLocalWalletWithPassword(password : string) : Wallet|null{
 		return Storage.getItem('wallet', null).then((existingWallet : any) => {
 			if(existingWallet !== null){
 				return this.decodeWithPassword(JSON.parse(existingWallet), password);
@@ -81,7 +81,7 @@ export class WalletRepository{
 		});
 	}
 
-	static save(wallet : Wallet, password : string) : Promise<void>{
+	static save(wallet : Wallet, password : string){
 		return Storage.setItem('wallet', JSON.stringify(this.getEncrypted(wallet, password)));
 	}
 
@@ -113,7 +113,7 @@ export class WalletRepository{
 		return fullEncryptedWallet;
 	}
 
-	static deleteLocalCopy() : Promise<void>{
+	static deleteLocalCopy(){
 		return Storage.remove('wallet');
 	}
 
