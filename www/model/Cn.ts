@@ -823,13 +823,25 @@ export namespace Cn{
 		return keys;
 	}
 
+	export function create_addr_prefix(seed : string) : {
+		let first;
+		if (seed.length !== 64) {
+			first = CnUtils.cn_fast_hash(seed);
+		} else {
+			first = seed;
+		}
+		let spend = Cn.generate_keys(first);
+		let prefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
+		return cnBase58.encode(prefix + spend.pub).slice(0, 44);
+	}
+
 	export function decode_address(address : string) : {
 		spend: string,
 		view: string,
 		intPaymentId: string|null
 	}{
 		let dec = cnBase58.decode(address);
-		console.log(dec,CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX,CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
+			console.log(dec,CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX,CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
 		let expectedPrefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
 
 		let expectedPrefixInt = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
