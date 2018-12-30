@@ -1063,7 +1063,7 @@ export namespace CnTransactions{
 
 		// CHECK_AND_ASSERT_MES(r, false, "key image helper: failed to derive_public_key(" << recv_derivation << ", " << real_output_index <<  ", " << ack.m_account_address.m_spend_public_key << ")");
 		//
-		let in_ephemeral_sec = Cn.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
+		let in_ephemeral_sec = CnNativeBride.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
 		// let in_ephemeral_sec = CnNativeBride.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
 		// console.log('in_ephemeral_sec',in_ephemeral_sec);
 
@@ -1102,7 +1102,7 @@ export namespace CnTransactions{
 
 		let ephemeral_pub = Cn.derive_public_key(recv_derivation, out_index, keys.spend.pub);
 		if (!ephemeral_pub) throw "Failed to generate key image";
-		let ephemeral_sec = Cn.derive_secret_key(recv_derivation, out_index, keys.spend.sec);
+		let ephemeral_sec = CnNativeBride.derive_secret_key(recv_derivation, out_index, keys.spend.sec);
 		let image = CnNativeBride.generate_key_image_2(ephemeral_pub, ephemeral_sec);
 		return {
 			in_ephemeral: {
