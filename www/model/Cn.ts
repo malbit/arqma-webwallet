@@ -1566,7 +1566,7 @@ export namespace CnTransactions{
 		return sig;
 	}
 
-	export function proveRangeBulletproof(commitMaskObj : {C:string,mask:string}, amount : string, nrings : number, enc_seed : number, exponent : number) : CnTransactions.RangeProveBulletproofSignature{
+/*	export function proveRangeBulletproof(commitMaskObj : {C:string,mask:string}, amount : string, nrings : number, enc_seed : number, exponent : number) : CnTransactions.RangeProveBulletproofSignature{
 		let mask = CnRandom.random_scalar();
 
 		let proof : CnTransactions.RangeProveBulletproofSignature = bulletproof_PROVE(amount, mask);
@@ -1580,7 +1580,7 @@ export namespace CnTransactions{
 		try { return bulletproof_VERIFY(proof); }
 			// we can get deep throws from ge_frombytes_vartime if input isn't valid
 		catch (e) { return false; }
-	}
+	} */
 
 	// Gen creates a signature which proves that for some column in the keymatrix "pk"
 	//   the signer knows a secret key for each row in that column
