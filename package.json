@@ -10,12 +10,12 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/malbit/arqma-webwallet.git"
+    "url": "git+https://github.com/arqma/arqma-webwallet.git"
   },
-  "author": "Gnock",
+  "author": "Gnock + m@lbit (Arqma version) + ArqTras (Website Visuals)",
   "license": "BSD-3",
   "bugs": {
-    "url": "https://github.com/malbit/arqma-webwallet/issues"
+    "url": "https://github.com/arqma/arqma-webwallet/issues"
   },
-  "homepage": "https://github.com/malbit/arqma-webwallet#readme"
+  "homepage": "https://github.com/arqma/arqma-webwallet#readme"
 }

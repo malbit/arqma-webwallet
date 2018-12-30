@@ -1,14 +1,14 @@
-# Translating the web wallet 
-You can help Masari by translating the wallet into your native language, it's very easy!
+# Translating the web wallet
+You can help Arqma by translating the wallet into your native language, it's very easy!
 
 # Steps
 - Copy/paste the content of [the english translation](src/translations/en.json) in a text editor (Notepad, Word, etc.)
 - Translate the parts between quotes that are always after ":"
-For example, if you have this: 
+For example, if you have this:
 ```
 "disableSecurity":"Disable this security, I understand the risk",
 ```
-- You need to translate: 
+- You need to translate:
 ```
 Disable this security, I understand the risk
 ```

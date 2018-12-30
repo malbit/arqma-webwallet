@@ -1,5 +1,5 @@
-# Official Masari Web Wallet - Fully client-side 
-This web wallet is doing everything client-side to give the best privacy to users.
+# Official Arqma Web-Wallet - Fully client-side
+This Web-Wallet is doing everything client-side to give the best privacy to users.
 The server is currently only used to optimize the communication with the daemon and compress the blockchain.  
 
 Note: This requirement may be removed in the future once daemons evolve and return enough data.  
@@ -25,7 +25,7 @@ Translations:
 # Contributing
 - You can help Masari by translation the wallet in your native language, it's really easy!  
 Read [the translations guide](TRANSLATIONS.md) to get instructions on how to do that
-- Report bugs & ideas to help us improve the web wallet by opening an issue 
+- Report bugs & ideas to help us improve the web wallet by opening an issue
 - [Make a donation to Masari](https://www.masariwallet.com/#!donate)
 
 # Forks / Other Coins

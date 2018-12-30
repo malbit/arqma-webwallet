@@ -437,7 +437,7 @@ export class TransactionsExplorer {
 			let feePerKB = new JSBigInt((<any>window).config.feePerKB);
 			let priority = default_priority;
 			let fee_multiplayer = fee_multiplayers[priority - 1];
-			let neededFee = feePerKB.multiply(13).multiply(fee_multiplayer);
+			let neededFee = feePerKB.multiply(6).multiply(fee_multiplayer);
 			let pid_encrypt = false; //don't encrypt payment ID unless we find an integrated one
 
 			let totalAmountWithoutFee = new JSBigInt(0);
@@ -539,7 +539,7 @@ export class TransactionsExplorer {
 
 			// neededFee = neededFee / 3 * 2;
 
-			console.log('using amount of ' + usingOuts_amount + ' for sending ' + totalAmountWithoutFee + ' with fees of ' + (neededFee / 1000000000000));
+			console.log('using amount of ' + usingOuts_amount + ' for sending ' + totalAmountWithoutFee + ' with fees of ' + (neededFee / 1000000000));
 			confirmCallback(totalAmountWithoutFee, neededFee).then(function () {
 				if (usingOuts_amount.compare(totalAmount) < 0) {
 					console.log("Not enough spendable outputs / balance too low (have "
@@ -563,7 +563,7 @@ export class TransactionsExplorer {
 				else if (usingOuts_amount.compare(totalAmount) === 0) {
 					//create random destination to keep 2 outputs always in case of 0 change
 					let fakeAddress = Cn.create_address(CnRandom.random_scalar()).public_addr;
-					console.log("Sending 0 XMR to a fake address to keep tx uniform (no change exists): " + fakeAddress);
+					console.log("Sending 0 ARQ to a fake address to keep tx uniform (no change exists): " + fakeAddress);
 					dsts.push({
 						address: fakeAddress,
 						amount: 0
