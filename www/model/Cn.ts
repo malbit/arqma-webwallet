@@ -968,7 +968,7 @@ export namespace CnTransactions{
 		return C;
 	}
 
-	export function decodeRctSimple(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
+	export function decodeRctSimple(rv : any, sk  :any, i : number, mask : any) {
 		// CHECK_AND_ASSERT_MES(rv.type == RCTTypeSimple || rv.type == RCTTypeSimpleBulletproof, false, "decodeRct called on non simple rctSig");
 		// CHECK_AND_ASSERT_THROW_MES(i < rv.ecdhInfo.size(), "Bad index");
 		// CHECK_AND_ASSERT_THROW_MES(rv.outPk.size() == rv.ecdhInfo.size(), "Mismatched sizes of rv.outPk and rv.ecdhInfo");
@@ -1020,29 +1020,25 @@ export namespace CnTransactions{
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask,
-						hwdev);//[5;10]ms
+						mask);//[5;10]ms
 					break;
 				case CnVars.RCT_TYPE.Full:
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask,
-						hwdev);
+						mask);
 					break;
 				case CnVars.RCT_TYPE.SimpleBulletproof:
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask,
-						hwdev);
+						mask);
 					break;
 				case CnVars.RCT_TYPE.FullBulletproof:
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask,
-						hwdev);
+						mask);
 					break;
 				default:
 					console.log('Unsupported rc type', rv.type);
@@ -1575,7 +1571,7 @@ export namespace CnTransactions{
 
 		let proof : CnTransactions.RangeProveBulletproofSignature = bulletproof_PROVE(amount, mask);
 
-		CHECK_AND_ASSERT_THROW_MES(proof.V.length == 1, "V has not exactly one element");
+		//CHECK_AND_ASSERT_THROW_MES(proof.V.length == 1, "V has not exactly one element");
 		commitMaskObj.C = proof.V[0];
 		commitMaskObj.mask = mask;
 		return proof;
