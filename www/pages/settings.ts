@@ -22,7 +22,6 @@ import {DependencyInjectorInstance} from "../lib/numbersLab/DependencyInjector";
 import {Constants} from "../model/Constants";
 import {Wallet} from "../model/Wallet";
 import {AppState} from "../model/AppState";
-import {Storage} from "../model/Storage";
 import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvider";
 
 let wallet : Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);

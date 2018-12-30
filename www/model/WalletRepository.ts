@@ -15,13 +15,10 @@
 
 import {RawFullyEncryptedWallet, RawWallet, Wallet} from "./Wallet";
 import {CoinUri} from "./CoinUri";
-import {Storage} from "./Storage";
 
 export class WalletRepository{
 	static hasOneStored(){
-		return Storage.getItem('wallet', null).then(function (wallet : any) {
-			return wallet !== null;
-		});
+		return window.localStorage.getItem('wallet') !== null;
 	}
 
 	static decodeWithPassword(rawWallet : RawWallet|RawFullyEncryptedWallet, password : string) : Wallet|null{
@@ -71,18 +68,17 @@ export class WalletRepository{
 		return null;
 	}
 
-	static getLocalWalletWithPassword(password : string) : Promise<Wallet|null>{
-		return Storage.getItem('wallet', null).then((existingWallet : any) => {
+	static getLocalWalletWithPassword(password : string) : Wallet|null{
+		let existingWallet = window.localStorage.getItem('wallet');
 			if(existingWallet !== null){
 				return this.decodeWithPassword(JSON.parse(existingWallet), password);
 			}else{
 				return null;
 			}
-		});
 	}
 
 	static save(wallet : Wallet, password : string){
-		return Storage.setItem('wallet', JSON.stringify(this.getEncrypted(wallet, password)));
+		window.localStorage.setItem('wallet', JSON.stringify(this.getEncrypted(wallet, password)));
 	}
 
 	static getEncrypted(wallet : Wallet, password : string) : RawFullyEncryptedWallet{
@@ -114,7 +110,7 @@ export class WalletRepository{
 	}
 
 	static deleteLocalCopy(){
-		return Storage.remove('wallet');
+		window.localStorage.removeItem('wallet');
 	}
 
 
