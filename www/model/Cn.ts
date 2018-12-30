@@ -1020,25 +1020,29 @@ export namespace CnTransactions{
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask);//[5;10]ms
+						mask,
+						hwdev);//[5;10]ms
 					break;
 				case CnVars.RCT_TYPE.Full:
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask);
+						mask,
+						hwdev);
 					break;
 				case CnVars.RCT_TYPE.SimpleBulletproof:
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask);
+						mask,
+						hwdev);
 					break;
 				case CnVars.RCT_TYPE.FullBulletproof:
 					amount = CnTransactions.decodeRctSimple(rv,
 						scalar1,
 						i,
-						mask);
+						mask,
+						hwdev);
 					break;
 				default:
 					console.log('Unsupported rc type', rv.type);
@@ -1809,8 +1813,8 @@ export namespace CnTransactions{
 				let teststart = new Date().getTime();
 				if(!bulletproof)
 					p.rangeSigs[i] = CnTransactions.proveRange(cmObj, outAmounts[i], nrings, 0, 0);
-				// else
-				// 	p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
+				else
+				p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
 
 				let testfinish = new Date().getTime() - teststart;
 				console.log("Time take for range proof " + i + ": " + testfinish);
