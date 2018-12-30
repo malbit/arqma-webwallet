@@ -17,7 +17,6 @@ import {Router} from "./lib/numbersLab/Router";
 import {Mnemonic} from "./model/Mnemonic";
 import {DestructableView} from "./lib/numbersLab/DestructableView";
 import {VueClass, VueVar, VueWatched} from "./lib/numbersLab/VueAnnotate";
-import {Storage} from "./model/Storage";
 
 //========================================================
 //bridge for cnUtil with the new mnemonic class
@@ -38,11 +37,11 @@ const i18n = new VueI18n({
 let browserUserLang = ''+(navigator.language || (<any>navigator).userLanguage);
 browserUserLang = browserUserLang.toLowerCase().split('-')[0];
 
-Storage.getItem('user-lang', browserUserLang).then(function(userLang : string){
-	Translations.loadLangTranslation(userLang).catch(function () {
-		Translations.loadLangTranslation('en');
-	});
-});
+let userLang = browserUserLang;
+let storedUserLang = window.localStorage.getItem('user-lang');
+if(storedUserLang !== null){
+	userLang = storedUserLang;
+}
 
 let storedTranslations : any = {};
 
