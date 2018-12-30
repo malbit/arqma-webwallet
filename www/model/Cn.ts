@@ -823,7 +823,7 @@ export namespace Cn{
 		return keys;
 	}
 
-	export function create_addr_prefix(seed : string) : {
+	export function create_addr_prefix(seed : string) {
 		let first;
 		if (seed.length !== 64) {
 			first = CnUtils.cn_fast_hash(seed);
