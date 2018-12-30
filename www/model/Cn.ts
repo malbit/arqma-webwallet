@@ -1809,8 +1809,8 @@ export namespace CnTransactions{
 				let teststart = new Date().getTime();
 				if(!bulletproof)
 					p.rangeSigs[i] = CnTransactions.proveRange(cmObj, outAmounts[i], nrings, 0, 0);
-				else
-				p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
+				//else
+				//p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
 
 				let testfinish = new Date().getTime() - teststart;
 				console.log("Time take for range proof " + i + ": " + testfinish);
