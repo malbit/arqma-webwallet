@@ -667,7 +667,12 @@ export namespace CnNativeBride{
 		return sigs;
 	}
 
-	export function generate_key_derivation(pub : any, sec : any){
+	let pub_b = CnUtils.hextobin(pub);
+	let sec_b = CnUtils.hextobin(sec);
+	let derivation_b = CnUtils.hextobin(derivation);
+	let pub_spend_b = CnUtils.hextobin(pubSpend);
+
+/*	export function generate_key_derivation(pub : any, sec : any){
 		let generate_key_derivation_bind = (<any>self).Module_native.cwrap('generate_key_derivation', null, ['number', 'number', 'number']);
 
 		let pub_b = CnUtils.hextobin(pub);
@@ -719,7 +724,7 @@ export namespace CnNativeBride{
 		Module_native._free(derived_key_m);
 
 		return CnUtils.bintohex(res);
-	}
+	} */
 }
 
 export namespace Cn{
