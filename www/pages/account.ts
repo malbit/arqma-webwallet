@@ -27,7 +27,6 @@ let blockchainExplorer = DependencyInjectorInstance().getInstance(Constants.BLOC
 (<any>window).wallet = wallet;
 
 @VueRequireFilter('date',VueFilterDate)
-@VueRequireFilter('piconero',VueFilterPiconero)
 class AccountView extends DestructableView{
 	@VueVar([]) transactions !: Transaction[];
 	@VueVar(0) walletAmount !: number;
