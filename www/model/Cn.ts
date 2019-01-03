@@ -1055,8 +1055,8 @@ export namespace CnTransactions{
 
 		return amount;
 	}
-
-	export function generate_key_image_helper(ack:{view_secret_key:any,spend_secret_key:string, public_spend_key:string}, tx_public_key:any, real_output_index:any,recv_derivation:string|null)
+/*
+	export function generate_key_image_helper(ack:{view_secret_key:any,spend_secret_key:string, public_spend_key:string}, tx_public_key:any, real_output_index:any, recv_derivation:string|null)
 	{
 		if(recv_derivation === null)
 		recv_derivation = Cn.generate_key_derivation(tx_public_key, ack.view_secret_key);
@@ -1093,7 +1093,7 @@ export namespace CnTransactions{
 			key_image:ki
 		};
 	}
-
+*/
 	//TODO duplicate above
 	export function generate_key_image_helper_rct(keys : {view:{sec:string}, spend:{pub:string,sec:string}}, tx_pub_key : string, out_index : number, enc_mask : string) {
 		let recv_derivation = Cn.generate_key_derivation(tx_pub_key, keys.view.sec);
