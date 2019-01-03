@@ -342,11 +342,11 @@ export class Wallet extends Observable{
 					}
 					for (let out of tx.outs) {
 						if (out.keyImage === '') {
-							let m_key_image = CnTransactions.generate_key_image_helper_rct({
+							let m_key_image = CnTransactions.generate_key_image_helper({
 								view_secret_key: this.keys.priv.view,
 								spend_secret_key: this.keys.priv.spend,
 								public_spend_key: this.keys.pub.spend,
-							}, tx.txPubKey, out.outputIdx, enc_mask);
+							}, tx.txPubKey, out.outputIdx, derivation);
 
 							out.keyImage = m_key_image.key_image;
 							out.ephemeralPub = m_key_image.ephemeral_pub;
