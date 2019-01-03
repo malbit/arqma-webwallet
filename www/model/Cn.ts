@@ -968,7 +968,7 @@ export namespace CnTransactions{
 		return C;
 	}
 
-	export function decodeRctSimple(rv : any, sk  :any, i : number, mask : any) {
+	export function decodeRctSimple(rv : any, sk  :any, i : number, mask : any, hwdev : any=null) {
 		// CHECK_AND_ASSERT_MES(rv.type == RCTTypeSimple || rv.type == RCTTypeSimpleBulletproof, false, "decodeRct called on non simple rctSig");
 		// CHECK_AND_ASSERT_THROW_MES(i < rv.ecdhInfo.size(), "Bad index");
 		// CHECK_AND_ASSERT_THROW_MES(rv.outPk.size() == rv.ecdhInfo.size(), "Mismatched sizes of rv.outPk and rv.ecdhInfo");
@@ -1780,7 +1780,7 @@ export namespace CnTransactions{
 		console.log('======t');
 
 		let rv : RctSignature = {
-			type: inSk.length === 1 ? CnVars.RCT_TYPE.Full : CnVars.RCT_TYPE.Simple,
+			type: inSk.length === 3 ? CnVars.RCT_TYPE.FullBulletproof : CnVars.RCT_TYPE.Simple,
 			message: message,
 			outPk: [],
 			p: {

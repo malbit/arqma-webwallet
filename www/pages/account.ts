@@ -34,6 +34,7 @@ class AccountView extends DestructableView{
 
 	@VueVar(0) currentScanBlock !: number;
 	@VueVar(0) blockchainHeight !: number;
+	@VueVar(Math.pow(10, config.coinUnitPlaces)) currencyDivider !: number;
 
 	intervalRefresh : number = 0;
 
