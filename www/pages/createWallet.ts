@@ -22,7 +22,7 @@ import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvide
 import {Mnemonic} from "../model/Mnemonic";
 import {AppState} from "../model/AppState";
 import {WalletRepository} from "../model/WalletRepository";
-import {Cn, CnNativeBride, CnRandom} from "../model/Cn";
+//import {Cn, CnNativeBride, CnRandom} from "../model/Cn";
 
 let blockchainExplorer : BlockchainExplorerRpc2 = BlockchainExplorerProvider.getInstance();
 
@@ -53,8 +53,8 @@ class CreateViewWallet extends DestructableView{
 		let self = this;
 		setTimeout(function(){
 			blockchainExplorer.getHeight().then(function(currentHeight){
-				let seed = CnNativeBride.sc_reduce32(CnRandom.rand_32());
-				let keys = Cn.create_address(seed);
+				let seed = cnUtil.sc_reduce32(cnUtil.rand_32());
+				let keys = cnUtil.create_address(seed);
 
 				let newWallet = new Wallet();
 				newWallet.keys = KeysRepository.fromPriv(keys.spend.sec, keys.view.sec);

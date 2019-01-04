@@ -24,7 +24,7 @@ import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvide
 import {BlockchainExplorerRpc2} from "../model/blockchain/BlockchainExplorerRpc2";
 import {Mnemonic} from "../model/Mnemonic";
 import {MnemonicLang} from "../model/MnemonicLang";
-import {Cn} from "../model/Cn";
+//import {Cn} from "../model/Cn";
 
 AppState.enableLeftMenu();
 
@@ -93,7 +93,7 @@ class ImportView extends DestructableView{
 
 			let mnemonic_decoded = Mnemonic.mn_decode(mnemonic, current_lang);
 			if(mnemonic_decoded !== null) {
-				let keys = Cn.create_address(mnemonic_decoded);
+				let keys = cnUtil.create_address(mnemonic_decoded);
 
 				let newWallet = new Wallet();
 				newWallet.keys = KeysRepository.fromPriv(keys.spend.sec, keys.view.sec);

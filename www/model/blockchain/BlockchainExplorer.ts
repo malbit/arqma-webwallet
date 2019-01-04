@@ -14,7 +14,7 @@
  */
 
 import {Wallet} from "../Wallet";
-import {CnTransactions} from "../Cn";
+//import {CnTransactions} from "../Cn";
 
 /*
 export type RawDaemon_RctSignature = {
@@ -25,7 +25,7 @@ export type RawDaemon_RctSignature = {
 	type:number
 }
 */
-
+/*
 export type RawDaemon_Transaction = {
 	extra : number[],
 	vout : CnTransactions.Vout[],
@@ -39,7 +39,7 @@ export type RawDaemon_Transaction = {
 	ts?:number
 	hash?:string,
 };
-
+*/
 export interface BlockchainExplorer{
 	getHeight() : Promise<number>;
 	getScannedHeight() : number;

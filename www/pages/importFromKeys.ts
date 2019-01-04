@@ -22,7 +22,7 @@ import {Wallet} from "../model/Wallet";
 import {KeysRepository} from "../model/KeysRepository";
 import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvider";
 import {BlockchainExplorerRpc2} from "../model/blockchain/BlockchainExplorerRpc2";
-import {Cn, CnUtils} from "../model/Cn";
+//import {Cn, CnUtils} from "../model/Cn";
 
 AppState.enableLeftMenu();
 
@@ -68,7 +68,7 @@ class ImportView extends DestructableView{
 		blockchainExplorer.getHeight().then(function(currentHeight){
 			let newWallet = new Wallet();
 			if(self.viewOnly){
-				let decodedPublic = Cn.decode_address(self.publicAddress.trim());
+				let decodedPublic = cnUtil.decode_address(self.publicAddress.trim());
 				newWallet.keys = {
 					priv:{
 						spend:'',
@@ -83,7 +83,7 @@ class ImportView extends DestructableView{
 				console.log(1);
 				let viewkey = self.privateViewKey.trim();
 				if(viewkey === ''){
-					viewkey = Cn.generate_keys(CnUtils.cn_fast_hash(self.privateSpendKey.trim())).sec;
+					viewkey = cnUtil.generate_keys(cnUtil.cn_fast_hash(self.privateSpendKey.trim())).sec;
 				}
 				console.log(1, viewkey);
 				newWallet.keys = KeysRepository.fromPriv(self.privateSpendKey.trim(), viewkey);
@@ -136,7 +136,7 @@ class ImportView extends DestructableView{
 	@VueWatched()
 	publicAddressWatch(){
 		try{
-			Cn.decode_address(this.publicAddress.trim());
+			cnUtil.decode_address(this.publicAddress.trim());
 			this.validPublicAddress = true;
 		}catch(e){
 			this.validPublicAddress = false;

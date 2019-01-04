@@ -1,4 +1,5 @@
-declare var nacl : {
+declare var nacl : any;
+/*declare var nacl : {
 	ll:{
 		ge_scalarmult:(a : Uint8Array, b : Uint8Array)=>Uint8Array,
 		ge_double_scalarmult_base_vartime:(a : Uint8Array, b : Uint8Array, c : Uint8Array)=>Uint8Array,
@@ -14,4 +15,4 @@ declare var nacl : {
 	randomBytes:(bits : number) => Uint8Array
 };
 
-declare function keccak_256(bin : Uint8Array) : string;
+declare function keccak_256(bin : Uint8Array) : string; */
