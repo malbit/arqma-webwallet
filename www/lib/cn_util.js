@@ -148,6 +148,8 @@ var cnUtil = (function(initConfig) {
         return C;
     }
 
+    this.zeroCommit = zeroCommit;
+
     this.decode_rct_ecdh = function(ecdh, key) {
         var first = this.hash_to_scalar(key);
         var second = this.hash_to_scalar(first);
@@ -200,6 +202,8 @@ var cnUtil = (function(initConfig) {
     function d2s(integer){
         return swapEndian(d2h(integer));
     }
+
+    this.d2s = d2s;
 
     //scalar to integer (string)
     function s2d(scalar){
@@ -264,6 +268,9 @@ var cnUtil = (function(initConfig) {
         }
         return out.join("");
     }
+
+    this.bintohex = bintohex;
+	  this.hextobin = hextobin;
 
     // Generate a 256-bit crypto random
     this.rand_32 = function() {

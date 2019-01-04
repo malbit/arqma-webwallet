@@ -14,10 +14,11 @@
  */
 
 import {Transaction, TransactionIn, TransactionOut} from "./Transaction";
+import {CryptoUtils} from "./CryptoUtils";
 import {Wallet} from "./Wallet";
 import {MathUtil} from "./MathUtil";
 //import {Cn, CnNativeBride, CnRandom, CnTransactions, CnUtils} from "./Cn";
-import {RawDaemonTransaction} from "./blockchain/BlockchainExplorer";
+//import {RawDaemonTransaction} from "./blockchain/BlockchainExplorer";
 
 export const TX_EXTRA_PADDING_MAX_COUNT = 255;
 export const TX_EXTRA_NONCE_MAX_COUNT = 255;
@@ -191,7 +192,7 @@ export class TransactionsExplorer {
 					minerTx = true;
 				} else {
 					let mask = rawTransaction.rct_signatures.ecdhInfo[output_idx_in_tx].mask;
-					let r = cnUtil.decode_ringct(rawTransaction.rct_signatures,
+					let r = CryptoUtils.decode_ringct(rawTransaction.rct_signatures,
 						tx_pub_key,
 						wallet.keys.priv.view,
 						output_idx_in_tx,
@@ -223,7 +224,7 @@ export class TransactionsExplorer {
 				}
 
 				if (wallet.keys.priv.spend !== null && wallet.keys.priv.spend !== '') {
-					let m_key_image = cnUtil.generate_key_image({
+					let m_key_image = CryptoUtils.generate_key_image_helper({
 						view_secret_key: wallet.keys.priv.view,
 						spend_secret_key: wallet.keys.priv.spend,
 						public_spend_key: wallet.keys.pub.spend,
