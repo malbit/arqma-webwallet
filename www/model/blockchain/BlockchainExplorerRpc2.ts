@@ -420,7 +420,7 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 						if(typeof tx.global_index_start !== 'undefined')
 							globalIndex += tx.global_index_start;
 
-						if(parseInt(tx.vout[output_idx_in_tx].amount) !== 0){//check if miner tx
+						if(tx.vout[output_idx_in_tx].amount !== 0){//check if miner tx
 							rct = cnUtil.zeroCommit(cnUtil.d2s(tx.vout[output_idx_in_tx].amount));
 						}else {
 							let rtcOutPk = tx.rct_signatures.outPk[output_idx_in_tx];

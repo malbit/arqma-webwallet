@@ -110,7 +110,7 @@ export class TransactionsExplorer {
 	static isMinerTx(rawTransaction: RawDaemonTransaction) {
 		if (rawTransaction.vin.length > 0)
 			return false;
-		return parseInt(rawTransaction.vout[0].amount) !== 0;
+		return rawTransaction.vout[0].amount !== 0;
 	}
 
 	//static parse(rawTransaction: RawDaemon_Transaction, wallet: Wallet): Transaction | null {
@@ -140,7 +140,7 @@ export class TransactionsExplorer {
 		if (tx_pub_key === '') {
 			return null;
 		}
-		tx_pub_key = cnUtil.bintohex(tx_pub_key);
+		tx_pub_key = CryptoUtils.bintohex(tx_pub_key);
 		let encryptedPaymentId: string | null = null;
 
 		for (let extra of tx_extras) {
@@ -150,13 +150,13 @@ export class TransactionsExplorer {
 					for (let i = 1; i < extra.data.length; ++i) {
 						paymentId += String.fromCharCode(extra.data[i]);
 					}
-					paymentId = cnUtil.bintohex(paymentId);
+					paymentId = CryptoUtils.bintohex(paymentId);
 				} else if (extra.data[0] === TX_EXTRA_NONCE_ENCRYPTED_PAYMENT_ID) {
 					encryptedPaymentId = '';
 					for (let i = 1; i < extra.data.length; ++i) {
 						encryptedPaymentId += String.fromCharCode(extra.data[i]);
 					}
-					encryptedPaymentId = cnUtil.bintohex(encryptedPaymentId);
+					encryptedPaymentId = CryptoUtils.bintohex(encryptedPaymentId);
 				}
 			}
 		}
@@ -176,7 +176,7 @@ export class TransactionsExplorer {
 		for (let iOut = 0; iOut < rawTransaction.vout.length; ++iOut) {
 			let out = rawTransaction.vout[iOut];
 			let txout_k = out.target;
-			let amount : number = parseInt(out.amount);
+			let amount = out.amount;
 			let output_idx_in_tx = iOut;
 
 			let generated_tx_pubkey = cnUtil.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
@@ -308,7 +308,7 @@ export class TransactionsExplorer {
 			if (encryptedPaymentId !== null) {
 				transaction.paymentId = cnUtil.decrypt_payment_id(encryptedPaymentId, tx_pub_key, wallet.keys.priv.view);
 			}
-			transaction.fees = parseInt(rawTransaction.rct_signatures.txnFee);
+			transaction.fees = rawTransaction.rct_signatures.txnFee;
 			transaction.outs = outs;
 			transaction.ins = ins;
 		}
@@ -348,7 +348,7 @@ export class TransactionsExplorer {
 				if (out.rtcAmount !== '') {
 					rct = out.rtcOutPk + out.rtcMask + out.rtcAmount;
 				} else {
-					rct = cnUtil.zeroCommit(CnUtils.d2s(out.amount));
+					rct = cnUtil.zeroCommit(cnUtil.d2s(out.amount));
 				}
 				unspentOuts.push({
 					keyImage: out.keyImage,
