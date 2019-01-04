@@ -452,7 +452,7 @@ export class TransactionsExplorer {
 			for (let dest of userDestinations) {
 				totalAmountWithoutFee = totalAmountWithoutFee.add(dest.amount);
 				let target = cnUtil.decode_address(dest.address);
-				if (target.intPaymentId !== null) {
+				if (typeof target.intPaymentId !== 'undefined') {
 					++paymentIdIncluded;
 					paymentId = target.intPaymentId;
 					pid_encrypt = true;
