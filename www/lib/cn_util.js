@@ -47,8 +47,8 @@ var cnUtil = (function(initConfig) {
 	var OLD_TX_VERSION = 1;
 	var RCTTypeFull = 1;
 	var RCTTypeSimple = 2;
-        var RCTTypeFullBulletproof = 3;
-        var RCTTypeSimpleBulletproof = 4;
+  var RCTTypeFullBulletproof = 3;
+  var RCTTypeSimpleBulletproof = 4;
 	var TX_EXTRA_NONCE_MAX_COUNT = 255;
 	var TX_EXTRA_TAGS = {
 		PADDING: '00',
@@ -1293,6 +1293,102 @@ var cnUtil = (function(initConfig) {
 		if (inAmounts.length !== inSk.length){throw "mismatched inAmounts/inSk";}
 		if (indices.length !== inSk.length){throw "mismatched indices/inSk";}
 
+    rv = {
+			type: RCTTypeFullBulletproof,
+			message: message,
+        outPk: [],
+        p: {
+          rangeSigs: [],
+					bp: [],
+          MGs: [],
+          pseudoOuts: []
+				},
+				ecdhInfo: [],
+        txnFee: txnFee.toString(),
+        pseudoOuts: []
+      };
+
+			var sumout = Z;
+			if (rv.type !== 4) {//borromean
+				var cmObj = {
+          C: null,
+          mask: null
+        };
+				var nrings = 64; //for base 2/current
+				//compute range proofs, etc
+        for (i = 0; i < outAmounts.length; i++){
+					var teststart = new Date().getTime();
+					rv.p.rangeSigs[i] = this.proveRange(cmObj, outAmounts[i], nrings, 0, 0);
+          var testfinish = new Date().getTime() - teststart;
+          //console.log("Time take for range proof " + i + ": " + testfinish);
+          rv.outPk[i] = cmObj.C;
+          sumout = this.sc_add(sumout, cmObj.mask);
+          rv.ecdhInfo[i] = this.encode_rct_ecdh({mask: cmObj.mask, amount: d2s(outAmounts[i])}, amountKeys[i]);
+        }
+			} else {//bulletproofs
+				//bulletproof stuff
+				var svs = [], gamma = [];
+        for (i = 0; i < outAmounts.length; i++) {
+          svs[i] = outAmounts[i];
+          gamma[i] = this.random_scalar();
+          sumout = this.sc_add(sumout, gamma[i]);
+          rv.ecdhInfo[i] = this.encode_rct_ecdh({mask: gamma[i], amount: d2s(outAmounts[i])}, amountKeys[i]);
+        }
+        rv.p.bp.push(this.bulletproof_PROVE(svs, gamma));
+        for (i = 0; i < outAmounts.length; i++) {
+          rv.outPk[i] = this.ge_scalarmult(rv.p.bp[0].V[i], d2s("8"));
+        }
+      }
+
+			//simple (1 input) OR bulletproof is always simple
+			if (rv.type !== 1){
+				var ai = [];
+				var sumpouts = Z;
+        //create pseudoOuts
+        for (i = 0; i < inAmounts.length - 1; i++){
+          ai[i] = random_scalar();
+          sumpouts = sc_add(sumpouts, ai[i]);
+					if (rv.type === 2) {
+						rv.pseudoOuts[i] = commit(d2s(inAmounts[i]), ai[i]);
+					} else {//pseudoOuts moved to prunable with bulletproofs
+						rv.p.pseudoOuts[i] = commit(d2s(inAmounts[i]), ai[i]);
+					}
+				}
+				ai[i] = sc_sub(sumout, sumpouts);
+				if (rv.type === 2) {
+					rv.pseudoOuts[i] = commit(d2s(inAmounts[i]), ai[i]);
+				} else {//pseudoOuts moved to prunable with bulletproofs
+					rv.p.pseudoOuts[i] = commit(d2s(inAmounts[i]), ai[i]);
+				}
+				//console.log(rv);
+					rv.p.MGs.push(this.proveRctMG(full_message, mixRing[i], inSk[i], kimg[i], ai[i], (rv.type === 2 ? rv.pseudoOuts[i] : rv.p.pseudoOuts[i]), indices[i]));
+				}
+			} else {
+				var sumC = I;
+				//get sum of output commitments to use in MLSAG
+        var buf2 = this.serialize_rct_base(tx.rct_signatures);
+        hashes += this.cn_fast_hash(buf2);
+        buf += buf2;
+				var buf3 = serialize_range_proofs(tx.rct_signatures, true);
+				//add MGs
+        for (var i = 0; i < tx.rct_signatures.p.MGs.length; i++) {
+            for (var j = 0; j < tx.rct_signatures.p.MGs[i].ss.length; j++) {
+            }
+            buf3 += tx.rct_signatures.p.MGs[i].cc;
+        }
+        if (tx.rct_signatures.type === 3) {
+            for (var i = 0; i < tx.rct_signatures.p.pseudoOuts.length; i++) {
+                buf3 += tx.rct_signatures.p.pseudoOuts[i];
+            }
+        }
+        hashes += this.cn_fast_hash(buf3);
+        buf += buf3;
+        var hash = this.cn_fast_hash(hashes);
+			}
+			return rv;
+		};
+
+/*
 		rv = {
 			type: inSk.length === 1 ? RCTTypeFull : RCTTypeSimple,
 			message: message,
@@ -1352,7 +1448,7 @@ var cnUtil = (function(initConfig) {
 		}
 		return rv;
 	};
-
+*/
 	//end RCT functions
 
 
