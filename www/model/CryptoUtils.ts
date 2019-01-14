@@ -44,7 +44,7 @@ export class CryptoUtils{
 		return res;
 	}
 
-	static swapEndian(hex:any){
+	static swapEndian(hex: any){
 		if (hex.length % 2 !== 0){return "length must be a multiple of 2!";}
 		let data = "";
 		for (let i=1; i <= hex.length / 2; i++){
@@ -209,8 +209,40 @@ export class CryptoUtils{
 
 	}
 
+  static generate_key_image_helper_rct(keys : {view: {sec: string}, spend: {pub: string, sec: string}}, tx_pub_key : string, out_index : number, enc_mask : string) {
+		let recv_derivation = cnUtil.generate_key_derivation(tx_pub_key, keys.view.sec);
+		if (!recv_derivation) throw "Failed to generate key image";
+
+		let mask;
+
+		if (enc_mask === cnUtil.I)
+		{
+			// this is for ringct coinbase txs (rct type 0). they are ringct tx that have identity mask
+			mask = enc_mask; // enc_mask is idenity mask returned by backend.
+		}
+		else
+		{
+			// for other ringct types or for non-ringct txs to this.
+			mask = enc_mask ? cnUtil.sc_sub(enc_mask, cnUtil.hash_to_scalar(cnUtil.derivation_to_scalar(recv_derivation, out_index))) : cnUtil.I; //decode mask, or d2s(1) if no mask
+		}
+
+		let ephemeral_pub = cnUtil.derive_public_key(recv_derivation, out_index, keys.spend.pub);
+		if (!ephemeral_pub) throw "Failed to generate key image";
+		let ephemeral_sec = cnUtil.derive_secret_key(recv_derivation, out_index, keys.spend.sec);
+		let image = cnUtil.generate_key_image_2(ephemeral_pub, ephemeral_sec);
+		return {
+			in_ephemeral: {
+				pub: ephemeral_pub,
+				sec: ephemeral_sec,
+				mask: mask
+			},
+			image: image
+		};
+	};
+
+
 //CNutil.generate_key_image alternative ??????
-	static generate_key_image_helper(ack : {view_secret_key : any, spend_secret_key : string, public_spend_key : string}, tx_public_key : any, real_output_index : any, recv_derivation : string|null)
+	static generate_key_image_helper(ack : {view_secret_key : string, spend_secret_key : string, public_spend_key : string}, tx_public_key : any, real_output_index : any, recv_derivation : string|null)
 	{
 		if(recv_derivation === null)
 			// recv_derivation = cnUtil.generate_key_derivation(tx_public_key, ack.view_secret_key);
@@ -235,7 +267,7 @@ export class CryptoUtils{
 
 
 
-		let image = cnUtil.generate_key_image_2(ephemeral_pub, ephemeral_sec);
+		let k_image = cnUtil.generate_key_image_2(ephemeral_pub, ephemeral_sec);
 
 		// let end = Date.now();
 		// console.log(end-start);
@@ -243,7 +275,7 @@ export class CryptoUtils{
 		return {
 			pub: ephemeral_pub,
 			sec: ephemeral_sec,
-			key_image: image
+			key_image: k_image
 		};
 	}
 

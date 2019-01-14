@@ -46,8 +46,8 @@ interface CnUtilClass{
 	decompose_tx_destinations(dest : {address: string, amount: number}[], rct : boolean) : {address: string, amount: number}[];
 
 	create_transaction(
-		pub_keys:{spend: string, view: string},
-		sec_keys:{spend: string, view: string},
+		pub_keys: {spend: string, view: string},
+		sec_keys: {spend: string, view: string},
 		dsts : {address: string, amount: number}[],
 		outputs : {
 			amount: number,
