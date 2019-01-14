@@ -1,3 +1,4 @@
+/*
 type EcdhInfo = {
 	mask: string,
 	amount: string
@@ -41,3 +42,4 @@ type RawDaemonTransaction = {
 };
 
 type RawDaemonBlock = any;
+*/

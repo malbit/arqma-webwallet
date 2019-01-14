@@ -2,7 +2,7 @@ importScripts('../lib/require.js');
 importScripts('../lib/biginteger.js');
 importScripts('../config.js');
 importScripts('../lib/base58.js');
-importScripts('../lib/cn_util.js');
+//importScripts('../lib/cn_util.js');
 importScripts('../lib/crypto.js');
 importScripts('../lib/nacl-fast.js');
 importScripts('../lib/nacl-util.min.js');
