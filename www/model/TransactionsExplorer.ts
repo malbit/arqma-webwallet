@@ -140,7 +140,7 @@ export class TransactionsExplorer {
 		if (tx_pub_key === '') {
 			return null;
 		}
-		tx_pub_key = CryptoUtils.bintohex(tx_pub_key);
+		tx_pub_key = cnUtil.bintohex(tx_pub_key);
 		let encryptedPaymentId: string | null = null;
 
 		for (let extra of tx_extras) {
@@ -150,13 +150,13 @@ export class TransactionsExplorer {
 					for (let i = 1; i < extra.data.length; ++i) {
 						paymentId += String.fromCharCode(extra.data[i]);
 					}
-					paymentId = CryptoUtils.bintohex(paymentId);
+					paymentId = cnUtil.bintohex(paymentId);
 				} else if (extra.data[0] === TX_EXTRA_NONCE_ENCRYPTED_PAYMENT_ID) {
 					encryptedPaymentId = '';
 					for (let i = 1; i < extra.data.length; ++i) {
 						encryptedPaymentId += String.fromCharCode(extra.data[i]);
 					}
-					encryptedPaymentId = CryptoUtils.bintohex(encryptedPaymentId);
+					encryptedPaymentId = cnUtil.bintohex(encryptedPaymentId);
 				}
 			}
 		}
@@ -192,7 +192,7 @@ export class TransactionsExplorer {
 					minerTx = true;
 				} else {
 					let mask = rawTransaction.rct_signatures.ecdhInfo[output_idx_in_tx].mask;
-					let r = CryptoUtils.decode_ringct(rawTransaction.rct_signatures,
+					let r = cnUtil.decode_ringct(rawTransaction.rct_signatures,
 						tx_pub_key,
 						wallet.keys.priv.view,
 						output_idx_in_tx,
@@ -391,7 +391,7 @@ export class TransactionsExplorer {
 		neededFee: number,
 		payment_id: string
 	): Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
-		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
+		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function(resolve, reject) {
 			try {
 				console.log('Destinations: ');
 				//need to get viewkey for encrypting here, because of splitting and sorting
@@ -418,7 +418,7 @@ export class TransactionsExplorer {
 				let raw_tx_and_hash = cnUtil.serialize_rct_tx_with_hash(signed);
 				resolve({raw: raw_tx_and_hash, signed: signed});
 
-			} catch (e) {
+			} catch(e) {
 				reject("Failed to create transaction: " + e);
 			}
 		});
@@ -433,7 +433,7 @@ export class TransactionsExplorer {
 		confirmCallback: (amount: number, feesAmount: number) => Promise<void>,
 		mixin : number = config.defaultMixin):
 		Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }> {
-		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function (resolve, reject) {
+		return new Promise<{ raw: { hash: string, prvkey: string, raw: string }, signed: any }>(function(resolve, reject) {
 			// few multiplayers based on uint64_t wallet2::get_fee_multiplier
 			let fee_multiplayers = [1, 4, 20, 166];
 			let default_priority = 2;
@@ -477,7 +477,7 @@ export class TransactionsExplorer {
 
 			if (paymentId === '' && userPaymentId !== '') {
 				if (userPaymentId.length <= 16 && /^[0-9a-fA-F]+$/.test(userPaymentId)) {
-					userPaymentId = ('0000000000000000' + userPaymentId).slice(-16);
+					userPaymentId = ('0000000000000000'+userPaymentId).slice(-16);
 				}
 				// now double check if ok
 				if (
@@ -600,7 +600,7 @@ export class TransactionsExplorer {
 					}
 					console.log('mix_outs', mix_outs);
 
-					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId).then(function (data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
+					TransactionsExplorer.createRawTx(dsts, wallet, true, usingOuts, pid_encrypt, mix_outs, mixin, neededFee, paymentId).then(function(data: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
 						resolve(data);
 					}).catch(function (e : any) {
 						reject(e);

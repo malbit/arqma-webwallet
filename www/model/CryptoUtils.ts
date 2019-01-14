@@ -15,14 +15,14 @@
 
 export class CryptoUtils{
 
-
+/*
 	static bintohex(bin : any) {
 		let out = [];
 		for (let i = 0; i < bin.length; ++i) {
 			out.push(("0" + bin[i].charCodeAt(0).toString(16)).slice(-2));
 		}
 		return out.join("");
-	}
+	} */
 
 //addKeys2
 //aGbB = aG + bB where a, b are scalars, G is the basepoint and B is a point
@@ -33,8 +33,8 @@ export class CryptoUtils{
 		// ge_double_scalarmult_base_vartime(&rv, b.bytes, &B2, a.bytes);
 		// ge_tobytes(aGbB.bytes, &rv);
 	}
-
-	static hextobin(hex:string) {
+/*
+	static hextobin(hex: string) {
 		if (hex.length % 2 !== 0) throw "Hex string has invalid length!";
 		let res = new Uint8Array(hex.length / 2);
 		for (let i = 0; i < hex.length / 2; ++i) {
@@ -43,7 +43,7 @@ export class CryptoUtils{
 		}
 		return res;
 	}
-
+*/
 	static swapEndian(hex:any){
 		if (hex.length % 2 !== 0){return "length must be a multiple of 2!";}
 		let data = "";
@@ -54,7 +54,7 @@ export class CryptoUtils{
 	}
 
 //switch byte order charwise
-	static swapEndianC(string:any){
+	static swapEndianC(string: any){
 		let data = "";
 		for (let i=1; i <= string.length; i++){
 			data += string.substr(0 - i, 1);
@@ -64,7 +64,7 @@ export class CryptoUtils{
 
 //for most uses you'll also want to swapEndian after conversion
 //mainly to convert integer "scalars" to usable hexadecimal strings
-	static d2h(integer:any){
+	static d2h(integer: any){
 		if (typeof integer !== "string" && integer.toString().length > 15){throw "integer should be entered as a string for precision";}
 		let padding = "";
 		for (let i = 0; i < 63; i++){
@@ -129,7 +129,7 @@ export class CryptoUtils{
   static RCTTypeFullBulletproof = 3;
   static RCTTypeSimpleBulletproof = 4;
 
-	static decode_ringct(rv:any,
+	static decode_ringct(rv: any,
 						   pub : any,
 						   sec : any,
 						   i : number,
@@ -137,7 +137,7 @@ export class CryptoUtils{
 						   amount : any,
 						   derivation : string|null)
 	{
-		if(derivation===null)
+		if(derivation === null)
 			derivation = cnUtil.generate_key_derivation(pub, sec);//[10;11]ms
 
 		let scalar1 = cnUtil.derivation_to_scalar(derivation, i);//[0.2ms;1ms]
@@ -147,7 +147,7 @@ export class CryptoUtils{
 			// console.log(rv.type,'RCTTypeSimple='+RCTTypeSimple,'RCTTypeFull='+RCTTypeFull);
 			switch (rv.type)
 			{
-				case CryptoUtils.RCTTypeSimple:
+				case cnUtil.RCTTypeSimple:
 					// console.log('RCTTypeSimple');
 					let realAmount = amount;
 					// for(let i = 0; i < 1000; ++i)
@@ -156,20 +156,20 @@ export class CryptoUtils{
 						i,
 						mask);//[5;10]ms
 					break;
-				case CryptoUtils.RCTTypeFull:
+				case cnUtil.RCTTypeFull:
 					// console.log('RCTTypeSimple');
 					amount = CryptoUtils.decodeRctSimple(rv,
 						scalar1,
 						i,
 						mask);
 					break;
-        case CryptoUtils.RCTTypeSimpleBulletproof:
+        case cnUtil.RCTTypeSimpleBulletproof:
           amount = CryptoUtils.decodeRctSimple(rv,
             scalar1,
             i,
             mask);
           break;
-        case CryptoUtils.RCTTypeFullBulletproof:
+        case cnUtil.RCTTypeFullBulletproof:
           amount = CryptoUtils.decodeRctSimple(rv,
             scalar1,
             i,
@@ -199,13 +199,13 @@ export class CryptoUtils{
 	}
 
 	static relative_output_offsets_to_absolute(offsets : Array<number>){
-		let res : Array<number> =  offsets.slice();
+		let res : Array<number> = offsets.slice();
 		for(let i = 1; i < res.length; i++)
 			res[i] += res[i-1];
 		return res;
 	}
 
-	static get_output_keys(amount:number,absolute_offsets:Array<number>){
+	static get_output_keys(amount: number, absolute_offsets: Array<number>){
 
 	}
 
@@ -241,9 +241,9 @@ export class CryptoUtils{
 		// console.log(end-start);
 
 		return {
-			ephemeral_pub:in_ephemeral_pub,
-			ephemeral_sec:in_ephemeral_sec,
-			key_image:ki
+			ephemeral_pub: in_ephemeral_pub,
+			ephemeral_sec: in_ephemeral_sec,
+			key_image: ki
 		};
 	}
 

@@ -21,11 +21,11 @@ export class CoinUri{
 	static coinWalletPrefix = config.coinUriPrefix;
 
 	static decodeTx(str : string) : {
-		address:string,
-		paymentId?:string,
-		recipientName?:string,
-		amount?:string,
-		description?:string,
+		address: string,
+		paymentId?: string,
+		recipientName?: string,
+		amount?: string,
+		description?: string,
 	}|null {
 		if(str.indexOf(CoinUri.coinTxPrefix) === 0){
 			let data = str.replace(this.coinTxPrefix,'').trim();
@@ -93,13 +93,13 @@ export class CoinUri{
 	}
 
 	static decodeWallet(str : string) : {
-		address:string,
-		spendKey?:string,
-		viewKey?:string,
-		mnemonicSeed?:string,
-		height?:string,
-		nonce?:string,
-		encryptMethod?:string
+		address: string,
+		spendKey?: string,
+		viewKey?: string,
+		mnemonicSeed?: string,
+		height?: string,
+		nonce?: string,
+		encryptMethod?: string
 	}{
 		if(str.indexOf(CoinUri.coinWalletPrefix) === 0){
 			let data = str.replace(this.coinWalletPrefix,'').trim();

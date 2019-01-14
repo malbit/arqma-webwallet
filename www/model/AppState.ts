@@ -52,7 +52,7 @@ export class WalletWorker{
 
 export class AppState{
 
-	static openWallet(wallet : Wallet, password:string){
+	static openWallet(wallet : Wallet, password: string){
 		let walletWorker = new WalletWorker(wallet, password);
 
 		DependencyInjectorInstance().register(Wallet.name,wallet);

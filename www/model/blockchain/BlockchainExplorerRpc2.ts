@@ -456,7 +456,7 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 
 				let selectedOuts = [];
 				for(let txsOutsHeight in txCandidates){
-					let outIndexSelect = MathUtil.getRandomInt(0, txCandidates[txsOutsHeight].length-1);
+					let outIndexSelect = MathUtil.getRandomInt(0, txCandidates[txsOutsHeight].length - 1);
 					console.log('select '+outIndexSelect+' for '+txsOutsHeight+' with length of '+txCandidates[txsOutsHeight].length);
 					selectedOuts.push(txCandidates[txsOutsHeight][outIndexSelect]);
 				}
@@ -483,7 +483,7 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 					resolve(transactions);
 				}else
 					reject(transactions);
-			}).fail(function (data: any) {
+			}).fail(function(data: any) {
 				reject(data);
 			});
 		});
