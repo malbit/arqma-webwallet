@@ -18,7 +18,7 @@ import {Transaction, TransactionIn, TransactionOut} from "./Transaction";
 import {Wallet} from "./Wallet";
 import {MathUtil} from "./MathUtil";
 import {Cn, CnNativeBride, CnRandom, CnTransactions, CnUtils} from "./Cn";
-import {RawDaemonTransaction} from "./blockchain/BlockchainExplorer";
+import {RawDaemon_Transaction} from "./blockchain/BlockchainExplorer";
 
 export const TX_EXTRA_PADDING_MAX_COUNT = 255;
 export const TX_EXTRA_NONCE_MAX_COUNT = 255;
@@ -224,7 +224,7 @@ export class TransactionsExplorer {
 				}
 
 				if (wallet.keys.priv.spend !== null && wallet.keys.priv.spend !== '') {
-					let m_key_image = CryptoUtils.generate_key_image_helper({
+					let m_key_image = CnTransactions.generate_key_image_helper({
 						view_secret_key: wallet.keys.priv.view,
 						spend_secret_key: wallet.keys.priv.spend,
 						public_spend_key: wallet.keys.pub.spend,
