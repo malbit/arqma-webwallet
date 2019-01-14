@@ -147,7 +147,7 @@ export class CryptoUtils{
 			// console.log(rv.type,'RCTTypeSimple='+RCTTypeSimple,'RCTTypeFull='+RCTTypeFull);
 			switch (rv.type)
 			{
-				case cnUtil.RCTTypeSimple:
+				case CryptoUtils.RCTTypeSimple:
 					// console.log('RCTTypeSimple');
 					let realAmount = amount;
 					// for(let i = 0; i < 1000; ++i)
@@ -156,20 +156,20 @@ export class CryptoUtils{
 						i,
 						mask);//[5;10]ms
 					break;
-				case cnUtil.RCTTypeFull:
+				case CryptoUtils.RCTTypeFull:
 					// console.log('RCTTypeSimple');
 					amount = CryptoUtils.decodeRctSimple(rv,
 						scalar1,
 						i,
 						mask);
 					break;
-        case cnUtil.RCTTypeSimpleBulletproof:
+        case CryptoUtils.RCTTypeSimpleBulletproof:
           amount = CryptoUtils.decodeRctSimple(rv,
             scalar1,
             i,
             mask);
           break;
-        case cnUtil.RCTTypeFullBulletproof:
+        case CryptoUtils.RCTTypeFullBulletproof:
           amount = CryptoUtils.decodeRctSimple(rv,
             scalar1,
             i,
