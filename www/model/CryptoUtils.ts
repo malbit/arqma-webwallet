@@ -243,7 +243,7 @@ export class CryptoUtils{
 		return {
 			pub: ephemeral_pub,
 			sec: ephemeral_sec,
-			image: image
+			key_image: image
 		};
 	}
 
