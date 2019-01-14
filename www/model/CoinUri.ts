@@ -72,7 +72,7 @@ export class CoinUri{
 		try{
 			this.decodeTx(str);
 			return true;
-		}catch (e) {
+		}catch(e) {
 			return false;
 		}
 	}
@@ -160,7 +160,7 @@ export class CoinUri{
 		try{
 			this.decodeWallet(str);
 			return true;
-		}catch (e) {
+		}catch(e){
 			return false;
 		}
 	}

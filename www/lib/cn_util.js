@@ -1294,7 +1294,7 @@ var cnUtil = (function(initConfig) {
 		if (indices.length !== inSk.length){throw "mismatched indices/inSk";}
 
 		rv = {
-			type: inSk.length === 1 ? RCTTypeFull : RCTTypeSimple,
+			type: inSk.length === 3 ? RCTTypeFullBulletproof : RCTTypeSimpleBulletproof,
 			message: message,
 			outPk: [],
 			p: {
