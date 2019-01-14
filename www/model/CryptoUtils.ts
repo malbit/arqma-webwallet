@@ -15,14 +15,14 @@
 
 export class CryptoUtils{
 
-/*
+
 	static bintohex(bin : any) {
 		let out = [];
 		for (let i = 0; i < bin.length; ++i) {
 			out.push(("0" + bin[i].charCodeAt(0).toString(16)).slice(-2));
 		}
 		return out.join("");
-	} */
+	} 
 
 //addKeys2
 //aGbB = aG + bB where a, b are scalars, G is the basepoint and B is a point
@@ -33,7 +33,7 @@ export class CryptoUtils{
 		// ge_double_scalarmult_base_vartime(&rv, b.bytes, &B2, a.bytes);
 		// ge_tobytes(aGbB.bytes, &rv);
 	}
-/*
+
 	static hextobin(hex: string) {
 		if (hex.length % 2 !== 0) throw "Hex string has invalid length!";
 		let res = new Uint8Array(hex.length / 2);
@@ -43,7 +43,7 @@ export class CryptoUtils{
 		}
 		return res;
 	}
-*/
+
 	static swapEndian(hex:any){
 		if (hex.length % 2 !== 0){return "length must be a multiple of 2!";}
 		let data = "";
