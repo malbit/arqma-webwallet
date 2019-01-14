@@ -231,7 +231,7 @@ export class TransactionsExplorer {
 					}, tx_pub_key, output_idx_in_tx, derivation);
 
 					transactionOut.keyImage = m_key_image.key_image;
-					transactionOut.ephemeralPub = m_key_image.ephemeral_pub;
+					transactionOut.ephemeralPub = m_key_image.pub;
 				}
 
 				outs.push(transactionOut);
