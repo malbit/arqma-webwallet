@@ -16,13 +16,13 @@
 export class CryptoUtils{
 
 
-	static bintohex(bin : any) {
+	static bintohex(bin: any) {
 		let out = [];
 		for (let i = 0; i < bin.length; ++i) {
 			out.push(("0" + bin[i].charCodeAt(0).toString(16)).slice(-2));
 		}
 		return out.join("");
-	} 
+	}
 
 //addKeys2
 //aGbB = aG + bB where a, b are scalars, G is the basepoint and B is a point
@@ -129,7 +129,7 @@ export class CryptoUtils{
   static RCTTypeFullBulletproof = 3;
   static RCTTypeSimpleBulletproof = 4;
 
-	static decode_ringct(rv: any,
+	static decode_ringct(rv : any,
 						   pub : any,
 						   sec : any,
 						   i : number,
@@ -223,27 +223,27 @@ export class CryptoUtils{
 		// let start = Date.now();
 
 		// let in_ephemeral_pub = cnUtil.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
-		let in_ephemeral_pub = cnUtil.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
+		let ephemeral_pub = cnUtil.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
 		// console.log('in_ephemeral_pub',in_ephemeral_pub);
 
 
 		// CHECK_AND_ASSERT_MES(r, false, "key image helper: failed to derive_public_key(" << recv_derivation << ", " << real_output_index <<  ", " << ack.m_account_address.m_spend_public_key << ")");
 		//
 		// let in_ephemeral_sec = cnUtil.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
-		let in_ephemeral_sec = cnUtil.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
+		let ephemeral_sec = cnUtil.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
 		// console.log('in_ephemeral_sec',in_ephemeral_sec);
 
 
 
-		let ki = cnUtil.generate_key_image_2(in_ephemeral_pub, in_ephemeral_sec);
+		let image = cnUtil.generate_key_image_2(ephemeral_pub, ephemeral_sec);
 
 		// let end = Date.now();
 		// console.log(end-start);
 
 		return {
-			ephemeral_pub: in_ephemeral_pub,
-			ephemeral_sec: in_ephemeral_sec,
-			key_image: ki
+			pub: ephemeral_pub,
+			sec: ephemeral_sec,
+			image: image
 		};
 	}
 
