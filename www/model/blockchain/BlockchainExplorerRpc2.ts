@@ -17,7 +17,7 @@
 import {BlockchainExplorer} from "./BlockchainExplorer";
 import {Wallet} from "../Wallet";
 import {TransactionsExplorer, TX_EXTRA_TAG_PUBKEY} from "../TransactionsExplorer";
-import {CryptoUtils} from "../CryptoUtils";
+//import {CryptoUtils} from "../CryptoUtils";
 import {Transaction} from "../Transaction";
 import {MathUtil} from "../MathUtil";
 //import {CnTransactions, CnUtils} from "../Cn";

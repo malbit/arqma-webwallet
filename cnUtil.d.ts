@@ -106,4 +106,4 @@ interface CnUtilClass{
 
 }
 
-declare var cnUtil : CnUtilClass;
+declare var Cnutil : CnUtilClass;

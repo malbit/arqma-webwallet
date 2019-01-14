@@ -14,7 +14,7 @@
  */
 
 import {Transaction, TransactionIn, TransactionOut} from "./Transaction";
-import {CryptoUtils} from "./CryptoUtils";
+//import {CryptoUtils} from "./CryptoUtils";
 import {Wallet} from "./Wallet";
 import {MathUtil} from "./MathUtil";
 //import {Cn, CnNativeBride, CnRandom, CnTransactions, CnUtils} from "./Cn";
@@ -140,7 +140,7 @@ export class TransactionsExplorer {
 		if (tx_pub_key === '') {
 			return null;
 		}
-		tx_pub_key = CryptoUtils.bintohex(tx_pub_key);
+		tx_pub_key = cnUtil.bintohex(tx_pub_key);
 		let encryptedPaymentId: string | null = null;
 
 		for (let extra of tx_extras) {
@@ -150,13 +150,13 @@ export class TransactionsExplorer {
 					for (let i = 1; i < extra.data.length; ++i) {
 						paymentId += String.fromCharCode(extra.data[i]);
 					}
-					paymentId = CryptoUtils.bintohex(paymentId);
+					paymentId = cnUtil.bintohex(paymentId);
 				} else if (extra.data[0] === TX_EXTRA_NONCE_ENCRYPTED_PAYMENT_ID) {
 					encryptedPaymentId = '';
 					for (let i = 1; i < extra.data.length; ++i) {
 						encryptedPaymentId += String.fromCharCode(extra.data[i]);
 					}
-					encryptedPaymentId = CryptoUtils.bintohex(encryptedPaymentId);
+					encryptedPaymentId = cnUtil.bintohex(encryptedPaymentId);
 				}
 			}
 		}
@@ -192,7 +192,7 @@ export class TransactionsExplorer {
 					minerTx = true;
 				} else {
 					let mask = rawTransaction.rct_signatures.ecdhInfo[output_idx_in_tx].mask;
-					let r = CryptoUtils.decode_ringct(rawTransaction.rct_signatures,
+					let r = cnUtil.decode_ringct(rawTransaction.rct_signatures,
 						tx_pub_key,
 						wallet.keys.priv.view,
 						output_idx_in_tx,
@@ -224,7 +224,7 @@ export class TransactionsExplorer {
 				}
 
 				if (wallet.keys.priv.spend !== null && wallet.keys.priv.spend !== '') {
-			    let m_key_image = CryptoUtils.generate_key_image_helper_rct({
+			    let m_key_image = cnUtil.generate_key_image_helper_rct({
 					  view_secret_key: wallet.keys.priv.view,
 					  spend_secret_key: wallet.keys.priv.spend,
 					  public_spend_key: wallet.keys.pub.spend,
