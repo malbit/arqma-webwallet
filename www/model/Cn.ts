@@ -690,7 +690,7 @@ export namespace CnNativeBride{
 
 		return CnUtils.bintohex(res);
 	}
-*/
+
 	export function derive_public_key(derivation : string,
 		output_idx_in_tx : number,
 		pubSpend : string){
@@ -718,7 +718,7 @@ export namespace CnNativeBride{
 		Module_native._free(derived_key_m);
 
 		return CnUtils.bintohex(res);
-	}
+	} */
 }
 
 export namespace Cn{
