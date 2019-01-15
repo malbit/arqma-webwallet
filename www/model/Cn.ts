@@ -1110,10 +1110,38 @@ export namespace CnTransactions{
 
 	export function estimateRctSize(inputs : number, mixin : number, outputs : number) {
 		let size = 0;
-		size += outputs * 6306;
-		size += ((mixin + 1) * 4 + 32 + 8) * inputs; //key offsets + key image + amount
-		size += 64 * (mixin + 1) * inputs + 64 * inputs; //signature + pseudoOuts/cc
-		size += 74; //extra + whatever, assume long payment ID
+		// tx prefix
+    // first few bytes
+		size += 1 + 6;
+		size += inputs * (1+6+(mixin+1)*3+32); // original C implementation is *2+32 but author advised to change 2 to 3 as key offsets are variable size and this constitutes a best guess
+		// vout
+		size += outputs * (6+32);
+		// extra
+    size += 40;
+		// rct signatures
+		// type
+		size += 1;
+		// rangeSigs
+		size += (2*64*32+32+64*32) * outputs;
+		// MGs
+		size += inputs * (32 * (mixin+1) + 32);
+		// mixRing - not serialized, can be reconstructed
+		/* size += 2 * 32 * (mixin+1) * inputs; */
+		// pseudoOuts
+		size += 32 * inputs;
+		// ecdhInfo
+		size += 2 * 32 * outputs;
+		// outPk - only commitment is saved
+		size += 32 * outputs;
+		// txnFee
+		size += 4;
+		// const logStr = `estimated rct tx size for ${inputs} at mixin ${mixin} and ${outputs} : ${size}  (${((32 * inputs/*+1*/) + 2 * 32 * (mixin+1) * inputs + 32 * outputs)}) saved)`
+    // console.log(logStr)
+
+		//size += outputs * 6306;
+		//size += ((mixin + 1) * 4 + 32 + 8) * inputs; //key offsets + key image + amount
+		//size += 64 * (mixin + 1) * inputs + 64 * inputs; //signature + pseudoOuts/cc
+		//size += 74; //extra + whatever, assume long payment ID
 		return size;
 	}
 
@@ -1198,29 +1226,29 @@ export namespace CnTransactions{
 	};
 
 	export type Output = {
-		index:string,
-		key:string,
-		commit:string,
+		index: string,
+		key: string,
+		commit: string,
 	};
 
 	export type Source = {
-		outputs:CnTransactions.Output[],
-		amount:'',
-		real_out_tx_key:string,
-		real_out:number,
-		real_out_in_tx:number,
-		mask:string|null,
-		key_image:string,
-		in_ephemeral:CnTransactions.Ephemeral,
+		outputs: CnTransactions.Output[],
+		amount: '',
+		real_out_tx_key: string,
+		real_out: number,
+		real_out_in_tx: number,
+		mask: string|null,
+		key_image: string,
+		in_ephemeral: CnTransactions.Ephemeral,
 	};
 
-	export type Destination = {address:string,amount:number};
+	export type Destination = {address: string, amount: number};
 
 	export type Vin = {
-		type:string,
-		amount:string,
-		k_image:string,
-		key_offsets:any[]
+		type: string,
+		amount: string,
+		k_image: string,
+		key_offsets: any[]
 	};
 
 	export type Vout = {
@@ -1240,7 +1268,7 @@ export namespace CnTransactions{
 		Ci:string[],
 		bsig:{
 			s: string[][],
-			ee:string
+			ee: string
 		}
 	};
 
@@ -1273,11 +1301,11 @@ export namespace CnTransactions{
 	};
 
 	export type RctSignature = {
-		ecdhInfo:EcdhInfo[]
-		outPk:string[],
-		pseudoOuts:string[],
-		txnFee:string,
-		type:number,
+		ecdhInfo: EcdhInfo[]
+		outPk: string[],
+		pseudoOuts: string[],
+		txnFee: string,
+		type: number,
 		message?: string,
 		p?: {
 			rangeSigs: RangeProveSignature[],
@@ -1293,8 +1321,8 @@ export namespace CnTransactions{
 		prvkey: string,
 		vin: Vin[],
 		vout: Vout[],
-		rct_signatures:RctSignature,
-		signatures:any[],
+		rct_signatures: RctSignature,
+		signatures: any[],
 	};
 
 	export function serialize_tx(tx : CnTransactions.Transaction, headeronly : boolean = false) {
@@ -1762,7 +1790,7 @@ export namespace CnTransactions{
 		console.log('======t');
 
 		let rv : RctSignature = {
-			type: inSk.length === 1 ? CnVars.RCT_TYPE.Full : CnVars.RCT_TYPE.Simple,
+			type: inSk.length === 3 ? CnVars.RCT_TYPE.FullBulletproof : CnVars.RCT_TYPE.SimpleBulletproof,
 			message: message,
 			outPk: [],
 			p: {
@@ -1851,9 +1879,9 @@ export namespace CnTransactions{
 		fee_amount : any/*JSBigInt*/,
 		payment_id : string,
 		pid_encrypt : boolean,
-		realDestViewKey : string|undefined,
+		realDestViewKey : string,
 		unlock_time : number = 0,
-		rct:boolean
+		rct: boolean
 	){
 		//we move payment ID stuff here, because we need txkey to encrypt
 		let txkey = Cn.random_keypair();
@@ -1873,7 +1901,21 @@ export namespace CnTransactions{
 			console.log("Extra nonce: " + nonce);
 			extra = CnTransactions.add_nonce_to_extra(extra, nonce);
 		}
+
 		let tx : CnTransactions.Transaction = {
+			unlock_time: unlock_time,
+			version: rct ? CURRENT_TX_VERSION : OLD_TX_VERSION,
+			extra: extra,
+			vin: [],
+			vout: []
+		};
+		if (rct) {
+			tx.rct_signatures = {};
+		} else {
+			tx.signatures = [];
+		}
+		tx.extra = this.add_pub_key_to_extra(tx.extra, txkey.pub);
+/*		let tx : CnTransactions.Transaction = {
 			unlock_time: unlock_time,
 			version: rct ? CURRENT_TX_VERSION : OLD_TX_VERSION,
 			extra: extra,
@@ -1889,7 +1931,7 @@ export namespace CnTransactions{
 			},
 			signatures:[]
 		};
-		tx.prvkey = txkey.sec;
+		tx.prvkey = txkey.sec; */
 
 		let in_contexts = [];
 		let inputs_money = JSBigInt.ZERO;
@@ -1931,12 +1973,11 @@ export namespace CnTransactions{
 		for (i = 0; i < sources.length; i++) {
 			inputs_money = inputs_money.add(sources[i].amount);
 			in_contexts.push(sources[i].in_ephemeral);
-			let input_to_key : CnTransactions.Vin = {
-				type:"input_to_key",
-				amount:sources[i].amount,
-				k_image:sources[i].key_image,
-				key_offsets:[],
-			};
+			let input_to_key = {};
+			input_to_key.type = "input_to_key";
+			input_to_key.amount = sources[i].amount;
+			input_to_key.k_image = sources[i].key_image;
+			input_to_key.key_offsets = [];
 			for (j = 0; j < sources[i].outputs.length; ++j) {
 				console.log('add to key offsets',sources[i].outputs[j].index, j, sources[i].outputs);
 				input_to_key.key_offsets.push(sources[i].outputs[j].index);
@@ -1953,7 +1994,8 @@ export namespace CnTransactions{
 			if (new JSBigInt(dsts[i].amount).compare(0) < 0) {
 				throw "dst.amount < 0"; //amount can be zero if no change
 			}
-			let destKeys = Cn.decode_address(dsts[i].address);
+
+/*			let destKeys = Cn.decode_address(dsts[i].address);
 
 			// R = rD for subaddresses
 			if(Cn.is_subaddress(dsts[i].address)) {
@@ -1966,18 +2008,20 @@ export namespace CnTransactions{
 			}
 			else {
 				out_derivation = Cn.generate_key_derivation(destKeys.view, txkey.sec);
-			}
+			} */
 
+      dsts[i].keys = Cn.decode_address(dsts[i].address);
+			let out_derivation = Cn.generate_key_derivation(dsts[i].keys.view, txkey.sec);
 			if (rct) {
 				amountKeys.push(CnUtils.derivation_to_scalar(out_derivation, out_index));
 			}
 			let out_ephemeral_pub = Cn.derive_public_key(out_derivation, out_index, destKeys.spend);
-			let out : CnTransactions.Vout = {
-				amount: dsts[i].amount.toString(),
-				target:{
+			let out = {
+				amount: dsts[i].amount.toString()
+			};
+			out.target = {
 					type: "txout_to_key",
 					key: out_ephemeral_pub
-				}
 			};
 			// txout_to_key
 			tx.vout.push(out);
@@ -1986,14 +2030,14 @@ export namespace CnTransactions{
 		}
 
 		// add pub key to extra after we know whether to use R = rG or R = rD
-		tx.extra = CnTransactions.add_pub_key_to_extra(tx.extra, txkey.pub);
+		//tx.extra = CnTransactions.add_pub_key_to_extra(tx.extra, txkey.pub);
 
 		if (outputs_money.add(fee_amount).compare(inputs_money) > 0) {
 			throw "outputs money (" + Cn.formatMoneyFull(outputs_money) + ") + fee (" + Cn.formatMoneyFull(fee_amount) + ") > inputs money (" + Cn.formatMoneyFull(inputs_money) + ")";
 		}
 		if (!rct) {
 			for (i = 0; i < sources.length; ++i) {
-				let src_keys : string[] = [];
+				let src_keys = [];
 				for (j = 0; j < sources[i].outputs.length; ++j) {
 					src_keys.push(sources[i].outputs[j].key);
 				}
@@ -2006,7 +2050,7 @@ export namespace CnTransactions{
 			let keyimages = [];
 			let inSk = [];
 			let inAmounts = [];
-			let mixRing : {dest:string, mask:string}[][] = [];
+			let mixRing = [];
 			let indices = [];
 			for (i = 0; i < tx.vin.length; i++) {
 				keyimages.push(tx.vin[i].k_image);
@@ -2043,33 +2087,32 @@ export namespace CnTransactions{
 		return tx;
 	}
 
-	export function create_transaction(pub_keys:{spend:string,view:string},
-									   sec_keys:{spend:string,view:string},
+	export function create_transaction(pub_keys: {spend: string, view: string},
+									   sec_keys: {spend: string, view: string},
 									   dsts : CnTransactions.Destination[],
 									   outputs : {
-										   amount:number,
-										   public_key:string,
-										   index:number,
-										   global_index:number,
-										   rct:string,
-										   tx_pub_key:string,
+										   amount: number,
+										   public_key: string,
+										   index: number,
+										   global_index: number,
+										   rct: string,
+										   tx_pub_key: string,
 									   }[],
-									   mix_outs:{
-										   outputs:{
+									   mix_outs: {
+										   outputs: {
 											   rct: string,
-											   public_key:string,
-											   global_index:number
+											   public_key: string,
+											   global_index: number
 										   }[],
-										   amount:0
 									   }[] = [],
-									   fake_outputs_count:number,
+									   fake_outputs_count: number,
 									   fee_amount : any/*JSBigInt*/,
 									   payment_id : string,
 									   pid_encrypt : boolean,
-									   realDestViewKey : string|undefined,
+									   realDestViewKey : string,
 									   unlock_time : number = 0,
-									   rct:boolean
-	) : CnTransactions.Transaction{
+									   rct: boolean
+	): CnTransactions.Transaction {
 		let i, j;
 		if (dsts.length === 0) {
 			throw 'Destinations empty';
@@ -2110,18 +2153,8 @@ export namespace CnTransactions{
 			if (found_money.compare(UINT64_MAX) !== -1) {
 				throw "Input overflow!";
 			}
-			let src : CnTransactions.Source = {
+			let src = {
 				outputs: [],
-				amount: '',
-				real_out_tx_key:'',
-				real_out:0,
-				real_out_in_tx:0,
-				mask:null,
-				key_image:'',
-				in_ephemeral:{
-					pub: '',
-					sec: '',
-					mask: ''
 				}
 			};
 			src.amount = new JSBigInt(outputs[i].amount).toString();
@@ -2143,11 +2176,9 @@ export namespace CnTransactions{
 						j++;
 						continue;
 					}
-					let oe : Output = {
-						index:out.global_index.toString(),
-						key:out.public_key,
-						commit:''
-					};
+					let oe = {};
+					oe.index = out.global_index.toString();
+					oe.key = out.public_key;
 					if (rct){
 						if (out.rct){
 							oe.commit = out.rct.slice(0,64); //add commitment from rct mix outs
@@ -2160,11 +2191,9 @@ export namespace CnTransactions{
 					j++;
 				}
 			}
-			let real_oe = {
-				index:new JSBigInt(outputs[i].global_index || 0).toString(),
-				key:outputs[i].public_key,
-				commit:'',
-			};
+			let real_oe = {};
+			real_oe.index = new JSBigInt(outputs[i].global_index || 0).toString();
+			real_oe.key = outputs[i].public_key;
 			console.log('OUT FOR REAL:',outputs[i].global_index);
 			if (rct){
 				if (outputs[i].rct) {
