@@ -20,7 +20,7 @@ import {DestructableView} from "../lib/numbersLab/DestructableView";
 import {Wallet} from "../model/Wallet";
 import {AppState} from "../model/AppState";
 
-let wallet : Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
+let wallet : Wallet = DependencyInjectorInstance().getInstance(Wallet.name,'default', false);
 if(wallet !== null){
 	window.location.href = '#account';
 }
@@ -29,10 +29,10 @@ class IndexView extends DestructableView{
 	@VueVar(false) hasLocalWallet !: boolean;
 	@VueVar(false) isWalletLoaded !: boolean;
 
-	constructor(container: string){
+	constructor(container : string){
 		super(container);
-		this.isWalletLoaded = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false) !== null;
-		WalletRepository.hasOneStored().then((status: boolean) => {
+		this.isWalletLoaded = DependencyInjectorInstance().getInstance(Wallet.name,'default', false) !== null;
+		WalletRepository.hasOneStored().then((status : boolean)=>{
 			this.hasLocalWallet = status;
 		});
 		// this.importWallet();

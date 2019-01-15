@@ -85,14 +85,14 @@ export class CoinUri{
 			throw 'invalid_address_length';
 		}
 
-		if(paymentId !== null) encoded += '?tx_payment_id=' + paymentId;
-		if(amount !== null) encoded+= '?tx_amount=' + amount;
-		if(recipientName !== null) encoded += '?recipient_name=' + recipientName;
-		if(description !== null) encoded += '?tx_description=' + description;
+		if(paymentId !== null) encoded += '?tx_payment_id='+paymentId;
+		if(amount !== null) encoded+= '?tx_amount='+amount;
+		if(recipientName !== null) encoded += '?recipient_name='+recipientName;
+		if(description !== null) encoded += '?tx_description='+description;
 		return encoded;
 	}
 
-	static decodeWallet(str: string) : {
+	static decodeWallet(str : string) : {
 		address:string,
 		spendKey?:string,
 		viewKey?:string,
@@ -173,11 +173,11 @@ export class CoinUri{
 			throw 'invalid_address_length';
 		}
 
-		if(spendKey !== null) encoded += '?spend_key=' + spendKey;
-		if(viewKey !== null) encoded+= '?view_key=' + viewKey;
-		if(height !== null) encoded += '?height=' + height;
-		if(nonce !== null) encoded += '?nonce=' + nonce;
-		if(encryptMethod !== null) encoded += '?encrypt_method=' + encryptMethod;
+		if(spendKey !== null) encoded += '?spend_key='+spendKey;
+		if(viewKey !== null) encoded+= '?view_key='+viewKey;
+		if(height !== null) encoded += '?height='+height;
+		if(nonce !== null) encoded += '?nonce='+nonce;
+		if(encryptMethod !== null) encoded += '?encrypt_method='+encryptMethod;
 		return encoded;
 	}
 
