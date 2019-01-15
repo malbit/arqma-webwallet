@@ -16,8 +16,7 @@
 import {Transaction, TransactionIn, TransactionOut} from "./Transaction";
 import {KeysRepository, UserKeys} from "./KeysRepository";
 import {Observable} from "../lib/numbersLab/Observable";
-//import {CryptoUtils} from "./CryptoUtils";
-//import {Cn, CnTransactions} from "./Cn";
+import {Cn, CnTransactions} from "./Cn";
 
 export type RawWalletOptions = {
 	checkMinerTx?:boolean,
@@ -26,7 +25,7 @@ export type RawWalletOptions = {
 
 export class WalletOptions{
 	checkMinerTx:boolean = false;
-	readSpeed:number = 10;
+	readSpeed:number = 50;
 
 	static fromRaw(raw : RawWalletOptions){
 		let options = new WalletOptions();
@@ -49,18 +48,18 @@ export class WalletOptions{
 
 export type RawWallet = {
 	transactions : any[],
-	txPrivateKeys?:any,
+	txPrivateKeys?: any,
 	lastHeight : number,
-	encryptedKeys?:string|Array<number>,
-	nonce:string,
-	keys?:UserKeys,
-	creationHeight?:number,
-	options?:RawWalletOptions,
-	coinAddressPrefix?:any,
+	encryptedKeys?: string | Array<number>,
+	nonce: string,
+	keys?: UserKeys,
+	creationHeight?: number,
+	options?: RawWalletOptions,
+	coinAddressPrefix?: any,
 }
 export type RawFullyEncryptedWallet = {
-	data:number[],
-	nonce:string
+	data: number[],
+	nonce: string
 }
 
 export class Wallet extends Observable{
@@ -74,7 +73,7 @@ export class Wallet extends Observable{
 	private modified = true;
 	creationHeight : number = 0;
 	txPrivateKeys : {[id: string]: string} = {};
-	coinAddressPrefix:any = config.addressPrefix;
+	coinAddressPrefix: any = config.addressPrefix;
 
 	keys !: UserKeys;
 
@@ -169,19 +168,7 @@ export class Wallet extends Observable{
 	}
 
 	getAll(forceReload=false) : Transaction[]{
-		if(this.transactions.length > 0 && !forceReload)
-			return this.transactions;
-
-		let data = window.localStorage.getItem('transactions');
-		if(data === null)
-			return [];
-		let decoded = JSON.parse(data);
-		let news : Array<Transaction> = [];
-		for(let rawTransac of decoded){
-			news.push(Transaction.fromRaw(rawTransac));
-		}
-		this.transactions = news;
-		return news;
+		return this.transactions.slice();
 	}
 
 	getAllOuts() : TransactionOut[]{
@@ -320,7 +307,7 @@ export class Wallet extends Observable{
 	}
 
 	getPublicAddress(){
-		return cnUtil.pubkeys_to_string(this.keys.pub.spend,this.keys.pub.view);
+		return Cn.pubkeys_to_string(this.keys.pub.spend,this.keys.pub.view);
 	}
 
 	recalculateIfNotViewOnly(){
@@ -337,13 +324,13 @@ export class Wallet extends Observable{
 				if(needDerivation) {
 					let derivation = '';
 					try {
-						derivation = cnUtil.generate_key_derivation(tx.txPubKey, this.keys.priv.view);//9.7ms
+						derivation = Cn.generate_key_derivation(tx.txPubKey, this.keys.priv.view);//9.7ms
 					} catch (e) {
 						continue;
 					}
 					for (let out of tx.outs) {
 						if (out.keyImage === '') {
-							let m_key_image = cnUtil.generate_key_image_helper_rct({
+							let m_key_image = CnTransactions.generate_key_image_helper({
 								view_secret_key: this.keys.priv.view,
 								spend_secret_key: this.keys.priv.spend,
 								public_spend_key: this.keys.pub.spend,

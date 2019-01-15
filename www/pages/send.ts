@@ -18,7 +18,7 @@ import {VueRequireFilter, VueVar, VueWatched} from "../lib/numbersLab/VueAnnotat
 import {TransactionsExplorer} from "../model/TransactionsExplorer";
 import {WalletRepository} from "../model/WalletRepository";
 import {BlockchainExplorerRpc2, WalletWatchdog} from "../model/blockchain/BlockchainExplorerRpc2";
-import {DependencyInjectorInstance} from "../lib/numbersLab/DependencyInjector";
+import {Autowire, DependencyInjectorInstance} from "../lib/numbersLab/DependencyInjector";
 import {Constants} from "../model/Constants";
 import {Wallet} from "../model/Wallet";
 import {BlockchainExplorer} from "../model/blockchain/BlockchainExplorer";
@@ -27,15 +27,16 @@ import {CoinUri} from "../model/CoinUri";
 import {QRReader} from "../model/QRReader";
 import {AppState} from "../model/AppState";
 import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvider";
-import {VueFilterNanoarq} from "../filters/Filters";
-//import {Cn} from "../model/Cn";
+import {VueFilterPiconero} from "../filters/Filters";
+import {NdefMessage, Nfc} from "../model/Nfc";
+import {Cn} from "../model/Cn";
 
 let wallet: Wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
 let blockchainExplorer: BlockchainExplorerRpc2 = BlockchainExplorerProvider.getInstance();
 
 AppState.enableLeftMenu();
 
-@VueRequireFilter('nanoarq',VueFilterNanoarq)
+@VueRequireFilter('piconero', VueFilterPiconero)
 class SendView extends DestructableView {
 	@VueVar('') destinationAddressUser !: string;
 	@VueVar('') destinationAddress !: string;
@@ -52,9 +53,14 @@ class SendView extends DestructableView {
 	@VueVar(true) openAliasValid !: boolean;
 
 	@VueVar(false) qrScanning !: boolean;
+	@VueVar(false) nfcAvailable !: boolean;
+
+	@Autowire(Nfc.name) nfc !: Nfc;
 
 	qrReader: QRReader | null = null;
 	redirectUrlAfterSend: string | null = null;
+
+	ndefListener: ((data: NdefMessage) => void) | null = null;
 
 	constructor(container: string) {
 		super(container);
@@ -68,6 +74,8 @@ class SendView extends DestructableView {
 		if (destinationName !== null) this.txDestinationName = destinationName.substr(0, 256);
 		if (description !== null) this.txDescription = description.substr(0, 256);
 		if (redirect !== null) this.redirectUrlAfterSend = decodeURIComponent(redirect);
+
+		this.nfcAvailable = this.nfc.has;
 	}
 
 	reset() {
@@ -86,6 +94,35 @@ class SendView extends DestructableView {
 		this.stopScan();
 	}
 
+	startNfcScan(){
+		let self = this;
+		if (this.ndefListener === null) {
+			this.ndefListener = function (data: NdefMessage) {
+				if (data.text)
+					self.handleScanResult(data.text.content);
+				swal.close();
+			};
+			this.nfc.listenNdef(this.ndefListener);
+			swal({
+				title: i18n.t('sendPage.waitingNfcModal.title'),
+				html: i18n.t('sendPage.waitingNfcModal.content'),
+				onOpen: () => {
+					swal.showLoading();
+				},
+				onClose: () => {
+					this.stopNfcScan();
+				}
+			}).then((result: any) => {
+			});
+		}
+	}
+
+	stopNfcScan(){
+		if (this.ndefListener !== null)
+			this.nfc.removeNdef(this.ndefListener);
+		this.ndefListener = null;
+	}
+
 	initQr() {
 		this.stopScan();
 		this.qrReader = new QRReader();
@@ -94,10 +131,10 @@ class SendView extends DestructableView {
 
 	startScan() {
 		let self = this;
-		if(typeof (<any>window).QRScanner !== 'undefined') {
-			(<any>window).QRScanner.scan(function(err : any, result : any){
+		if (typeof window.QRScanner !== 'undefined') {
+			window.QRScanner.scan(function(err: any, result: any) {
 				if (err) {
-					if (err.name === 'SCAN_CANCELED') {
+					if (err.name === 'SCAN_CANCELED'){
 
 					} else {
 						alert(JSON.stringify(err));
@@ -107,7 +144,7 @@ class SendView extends DestructableView {
 				}
 			});
 
-			(<any>window).QRScanner.show();
+			window.QRScanner.show();
 			$('body').addClass('transparent');
 			$('#appContent').hide();
 			$('#nativeCameraPreview').show();
@@ -149,7 +186,7 @@ class SendView extends DestructableView {
 				self.destinationAddressUser = txDetails.address;
 				parsed = true;
 			}
-		} catch (e) {
+		} catch(e) {
 		}
 
 		if (!parsed)
@@ -158,11 +195,11 @@ class SendView extends DestructableView {
 	}
 
 	stopScan() {
-		if(typeof (<any>window).QRScanner !== 'undefined') {
-			(<any>window).QRScanner.cancelScan(function(status:any){
+		if (typeof window.QRScanner !== 'undefined') {
+			window.QRScanner.cancelScan(function(status: any) {
 				console.log(status);
 			});
-			(<any>window).QRScanner.hide();
+			window.QRScanner.hide();
 			$('body').removeClass('transparent');
 			$('#appContent').show();
 			$('#nativeCameraPreview').hide();
@@ -179,13 +216,14 @@ class SendView extends DestructableView {
 
 	destruct(): Promise<void> {
 		this.stopScan();
+		this.stopNfcScan();
 		swal.close();
 		return super.destruct();
 	}
 
 	send() {
 		let self = this;
-		blockchainExplorer.getHeight().then(function (blockchainHeight: number) {
+		blockchainExplorer.getHeight().then(function(blockchainHeight: number) {
 			let amount = parseFloat(self.amountToSend);
 			if (self.destinationAddress !== null) {
 				//todo use BigInteger
@@ -211,10 +249,10 @@ class SendView extends DestructableView {
 					}
 				});
 				TransactionsExplorer.createTx([{address: destinationAddress, amount: amountToSend}], self.paymentId, wallet, blockchainHeight,
-					function (numberOuts: number): Promise<any[]> {
+					function(numberOuts: number): Promise<any[]> {
 						return blockchainExplorer.getRandomOuts(numberOuts);
 					}
-					, function (amount: number, feesAmount: number): Promise<void> {
+					, function(amount: number, feesAmount: number): Promise<void> {
 						if (amount + feesAmount > wallet.unlockedAmount(blockchainHeight)) {
 							swal({
 								type: 'error',
@@ -228,19 +266,19 @@ class SendView extends DestructableView {
 							throw '';
 						}
 
-						return new Promise<void>(function (resolve, reject) {
-							setTimeout(function () {//prevent bug with swal when code is too fast
+						return new Promise<void>(function(resolve, reject) {
+							setTimeout(function() {//prevent bug with swal when code is too fast
 								swal({
 									title: i18n.t('sendPage.confirmTransactionModal.title'),
 									html: i18n.t('sendPage.confirmTransactionModal.content', {
-										amount: Vue.options.filters.nanoarq(amount),
-										fees: Vue.options.filters.nanoarq(feesAmount),
-										total: Vue.options.filters.nanoarq(amount + feesAmount),
+										amount: Vue.options.filters.piconero(amount),
+										fees: Vue.options.filters.piconero(feesAmount),
+										total: Vue.options.filters.piconero(amount + feesAmount),
 									}),
 									showCancelButton: true,
 									confirmButtonText: i18n.t('sendPage.confirmTransactionModal.confirmText'),
 									cancelButtonText: i18n.t('sendPage.confirmTransactionModal.cancelText'),
-								}).then(function (result: any) {
+								}).then(function(result: any) {
 									if (result.dismiss) {
 										reject('');
 									} else {
@@ -256,9 +294,9 @@ class SendView extends DestructableView {
 								}).catch(reject);
 							}, 1);
 						});
-					}).then(function (rawTxData: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
+					}).then(function(rawTxData: { raw: { hash: string, prvkey: string, raw: string }, signed: any }) {
 					console.log('raw tx', rawTxData);
-					blockchainExplorer.sendRawTx(rawTxData.raw.raw).then(function () {
+					blockchainExplorer.sendRawTx(rawTxData.raw.raw).then(function() {
 						//save the tx private key
 						wallet.addTxPrivateKeyWithTxHash(rawTxData.raw.hash, rawTxData.raw.prvkey);
 
@@ -269,7 +307,9 @@ class SendView extends DestructableView {
 
 						let promise = Promise.resolve();
 						let donationAddresses = config.donationAddresses ? config.donationAddresses : [];
-						if (donationAddresses.indexOf(destinationAddress) != -1) {
+						if (
+							donationAddresses.indexOf(destinationAddress)
+						) {
 							promise = swal({
 								type: 'success',
 								title: i18n.t('sendPage.thankYouDonationModal.title'),
@@ -283,12 +323,12 @@ class SendView extends DestructableView {
 								confirmButtonText: i18n.t('sendPage.transferSentModal.confirmText'),
 							});
 
-						promise.then(function () {
+						promise.then(function() {
 							if (self.redirectUrlAfterSend !== null) {
 								window.location.href = self.redirectUrlAfterSend.replace('{TX_HASH}', rawTxData.raw.hash);
 							}
 						});
-					}).catch(function (data: any) {
+					}).catch(function(data: any) {
 						swal({
 							type: 'error',
 							title: i18n.t('sendPage.transferExceptionModal.title'),
@@ -296,8 +336,8 @@ class SendView extends DestructableView {
 							confirmButtonText: i18n.t('sendPage.transferExceptionModal.confirmText'),
 						});
 					});
-					//swal.close();
-				}).catch(function (error: any) {
+					swal.close();
+				}).catch(function(error: any) {
 					console.log(error);
 					if (error && error !== '') {
 						if (typeof error === 'string')
@@ -336,8 +376,8 @@ class SendView extends DestructableView {
 			if (this.timeoutResolveAlias !== 0)
 				clearTimeout(this.timeoutResolveAlias);
 
-			this.timeoutResolveAlias = setTimeout(function () {
-				blockchainExplorer.resolveOpenAlias(self.destinationAddressUser).then(function (data: { address: string, name: string | null }) {
+			this.timeoutResolveAlias = setTimeout(function() {
+				blockchainExplorer.resolveOpenAlias(self.destinationAddressUser).then(function(data: { address: string, name: string | null }) {
 					try {
 						// cnUtil.decode_address(data.address);
 						self.txDestinationName = data.name;
@@ -345,12 +385,12 @@ class SendView extends DestructableView {
 						self.domainAliasAddress = data.address;
 						self.destinationAddressValid = true;
 						self.openAliasValid = true;
-					} catch (e) {
+					} catch(e) {
 						self.destinationAddressValid = false;
 						self.openAliasValid = false;
 					}
 					self.timeoutResolveAlias = 0;
-				}).catch(function () {
+				}).catch(function() {
 					self.openAliasValid = false;
 					self.timeoutResolveAlias = 0;
 				});
@@ -358,7 +398,7 @@ class SendView extends DestructableView {
 		} else {
 			this.openAliasValid = true;
 			try {
-				cnUtil.decode_address(this.destinationAddressUser);
+				Cn.decode_address(this.destinationAddressUser);
 				this.destinationAddressValid = true;
 				this.destinationAddress = this.destinationAddressUser;
 			} catch (e) {
@@ -383,7 +423,7 @@ class SendView extends DestructableView {
 				(this.paymentId.length === 16 && (/^[0-9a-fA-F]{16}$/.test(this.paymentId))) ||
 				(this.paymentId.length === 64 && (/^[0-9a-fA-F]{64}$/.test(this.paymentId)))
 			;
-		} catch (e) {
+		} catch(e) {
 			this.paymentIdValid = false;
 		}
 	}
@@ -394,12 +434,12 @@ class SendView extends DestructableView {
 if (wallet !== null && blockchainExplorer !== null)
 	new SendView('#app');
 else {
-	AppState.askUserOpenWallet(false).then(function () {
+	AppState.askUserOpenWallet(false).then(function() {
 		wallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
 		if (wallet === null)
 			throw 'e';
 		new SendView('#app');
-	}).catch(function () {
+	}).catch(function() {
 		window.location.href = '#index';
 	});
 }

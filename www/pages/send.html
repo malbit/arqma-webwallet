@@ -1,6 +1,6 @@
 <div id="app" class="body-root sendTab" v-cloak="">
 	<div class="qrCodeScanningContainer native" id="nativeCameraPreview" >
-		<div class="text" >{{ $t("sendPage.qrCodeScanning.explication") }}</div>
+		<h2 class="text" >{{ $t("sendPage.qrCodeScanning.explication") }}</h2>
 		<div class="close" @click="stopScan()">
 			<i class="fa fa-close" aria-hidden="true"></i>
 		</div>
@@ -18,8 +18,9 @@
 					<div class="field action" >
 						<label>{{ $t("sendPage.sendBlock.address.label") }}</label>
 						<div class="subfield" >
-							<input type="text" v-model="destinationAddressUser" placeholder="Write the address where you want to send funds" :readonly="lockedForm"/>
+							<input type="text" v-model="destinationAddressUser" placeholder="Write the address where you want to send funds" :readonly="lockedForm" :class="{ twoActions: nfcAvailable}"/>
 							<span class="action" @click="startScan()"><i class="scanButton fa fa-camera" aria-hidden="true"></i></span>
+							<span class="action" @click="startNfcScan()" v-if="nfcAvailable"><i class="scanButton fa fa-rss" aria-hidden="true"></i></span>
 						</div>
 						<div v-if="!destinationAddressValid && destinationAddressUser != ''" class="message error">
 							{{ $t("sendPage.sendBlock.address.invalid") }}
@@ -37,7 +38,7 @@
 
 					<div class="field" >
 						<label>{{ $t("sendPage.sendBlock.amount.label") }}</label>
-						<input class="amountInput" type="text" v-model="amountToSend" placeholder="" :readonly="lockedForm"/>
+						<input class="amountInput" type="text" v-model="amountToSend" placeholder=" ARQ" :readonly="lockedForm"/>
 						<div v-if="!amountToSendValid && amountToSend != ''" class="message error">
 							{{ $t("sendPage.sendBlock.amount.invalid") }}
 						</div>

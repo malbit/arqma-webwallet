@@ -19,8 +19,7 @@ import {Wallet} from "./Wallet";
 import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvider";
 import {Observable} from "../lib/numbersLab/Observable";
 import {WalletRepository} from "./WalletRepository";
-//import {BlockchainExplorer, RawDaemon_Transaction} from "./blockchain/BlockchainExplorer";
-import {BlockchainExplorer} from "./blockchain/BlockchainExplorer";
+import {BlockchainExplorer, RawDaemon_Transaction} from "./blockchain/BlockchainExplorer";
 import {Constants} from "./Constants";
 import {TransactionsExplorer} from "./TransactionsExplorer";
 
@@ -30,7 +29,7 @@ export class WalletWorker{
 
 	intervalSave = 0;
 
-	constructor(wallet: Wallet, password:string) {
+	constructor(wallet: Wallet, password: string) {
 		this.wallet = wallet;
 		this.password = password;
 		let self = this;
@@ -117,54 +116,61 @@ export class AppState{
 						// let password = prompt();
 						let memoryWallet = DependencyInjectorInstance().getInstance(Wallet.name, 'default', false);
 						if(memoryWallet === null){
-							let wallet = WalletRepository.getLocalWalletWithPassword(savePassword);
-							if(wallet !== null) {
-								wallet.recalculateIfNotViewOnly();
+							WalletRepository.getLocalWalletWithPassword(savePassword).then((wallet : Wallet|null) => {
+								console.log(wallet);
+								if (wallet !== null) {
+									wallet.recalculateIfNotViewOnly();
 
-								//checking the wallet to find integrity/problems and try to update it before loading
-								let blockchainHeightToRescanObj : any = {};
-								for(let tx of wallet.getTransactionsCopy()){
-									if(tx.hash === ''){
-										blockchainHeightToRescanObj[tx.blockHeight] = true;
+									//checking the wallet to find integrity/problems and try to update it before loading
+									let blockchainHeightToRescanObj: any = {};
+									for (let tx of wallet.getTransactionsCopy()) {
+										if (tx.hash === '') {
+											blockchainHeightToRescanObj[tx.blockHeight] = true;
+										}
 									}
-								}
-								let blockchainHeightToRescan = Object.keys(blockchainHeightToRescanObj);
-								if(blockchainHeightToRescan.length > 0){
-									let blockchainExplorer : BlockchainExplorerRpc2 = DependencyInjectorInstance().getInstance(Constants.BLOCKCHAIN_EXPLORER);
-									let promisesBlocks = [];
-									for(let height of blockchainHeightToRescan){
-										promisesBlocks.push(blockchainExplorer.getTransactionsForBlocks(parseInt(height)));
-									}
-									//Promise.all(promisesBlocks).then(function(arrayOfTxs : Array<RawDaemon_Transaction[]>){
-									Promise.all(promisesBlocks).then(function(arrayOfTxs : Array<RawDaemonTransaction[]>){
-										for(let txs of arrayOfTxs){
-											for(let rawTx of txs){
-												if(wallet !== null) {
-													let tx = TransactionsExplorer.parse(rawTx, wallet);
-													if(tx !== null)
-														wallet.addNew(tx);
+									let blockchainHeightToRescan = Object.keys(blockchainHeightToRescanObj);
+									if (blockchainHeightToRescan.length > 0) {
+										let blockchainExplorer: BlockchainExplorerRpc2 = BlockchainExplorerProvider.getInstance();
+
+										let promisesBlocks = [];
+										for (let height of blockchainHeightToRescan) {
+											promisesBlocks.push(blockchainExplorer.getTransactionsForBlocks(parseInt(height)));
+										}
+										Promise.all(promisesBlocks).then(function (arrayOfTxs: Array<RawDaemon_Transaction[]>) {
+											for (let txs of arrayOfTxs) {
+												for (let rawTx of txs) {
+													if (wallet !== null) {
+														let tx = TransactionsExplorer.parse(rawTx, wallet);
+														if (tx !== null)
+															wallet.addNew(tx);
+													}
 												}
 											}
+										});
+									}
+									swal.close();
+									resolve();
+
+									AppState.openWallet(wallet, savePassword);
+									if (redirectToHome)
+										window.location.href = '#account';
+								} else {
+									swal({
+										type: 'error',
+										title: i18n.t('global.invalidPasswordModal.title'),
+										text: i18n.t('global.invalidPasswordModal.content'),
+										confirmButtonText: i18n.t('global.invalidPasswordModal.confirmText'),
+										onOpen: () => {
+											swal.hideLoading();
 										}
 									});
+									reject();
 								}
-								swal.close();
-								resolve();
-
-								AppState.openWallet(wallet, savePassword);
-								if(redirectToHome)
-									window.location.href = '#account';
-							}else{
-								swal({
-									type: 'error',
-									title: i18n.t('global.invalidPasswordModal.title'),
-									text: i18n.t('global.invalidPasswordModal.content'),
-									confirmButtonText:i18n.t('global.invalidPasswordModal.confirmText'),
-								});
-								reject();
-							}
-						}else
+							});
+						}else {
 							swal.close();
+							window.location.href = '#account';
+						}
 					}else
 						reject();
 				},1);

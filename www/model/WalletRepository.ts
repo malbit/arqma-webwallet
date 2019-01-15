@@ -15,10 +15,14 @@
 
 import {RawFullyEncryptedWallet, RawWallet, Wallet} from "./Wallet";
 import {CoinUri} from "./CoinUri";
+import {Storage} from "./Storage";
 
 export class WalletRepository{
-	static hasOneStored(){
-		return window.localStorage.getItem('wallet') !== null;
+
+	static hasOneStored() : Promise<boolean>{
+		return Storage.getItem('wallet', null).then(function (wallet : any) {
+			return wallet !== null;
+		});
 	}
 
 	static decodeWithPassword(rawWallet : RawWallet|RawFullyEncryptedWallet, password : string) : Wallet|null{
@@ -68,17 +72,18 @@ export class WalletRepository{
 		return null;
 	}
 
-	static getLocalWalletWithPassword(password : string) : Wallet|null{
-		let existingWallet = window.localStorage.getItem('wallet');
+	static getLocalWalletWithPassword(password : string) : Promise<Wallet|null>{
+		return Storage.getItem('wallet', null).then((existingWallet : any) => {
 			if(existingWallet !== null){
 				return this.decodeWithPassword(JSON.parse(existingWallet), password);
 			}else{
 				return null;
 			}
+		});
 	}
 
-	static save(wallet : Wallet, password : string){
-		window.localStorage.setItem('wallet', JSON.stringify(this.getEncrypted(wallet, password)));
+	static save(wallet : Wallet, password : string) : Promise<void>{
+		return Storage.setItem('wallet', JSON.stringify(this.getEncrypted(wallet, password)));
 	}
 
 	static getEncrypted(wallet : Wallet, password : string) : RawFullyEncryptedWallet{
@@ -109,8 +114,8 @@ export class WalletRepository{
 		return fullEncryptedWallet;
 	}
 
-	static deleteLocalCopy(){
-		window.localStorage.removeItem('wallet');
+	static deleteLocalCopy() : Promise<void>{
+		return Storage.remove('wallet');
 	}
 
 
@@ -140,7 +145,7 @@ export class WalletRepository{
 		let doc = new jsPDF('landscape');
 
 		//creating background
-		doc.setFillColor(35,31,39);
+		doc.setFillColor(17,0,117);
 		doc.rect(0,0,297,210, 'F');
 
 		//white blocks
@@ -149,16 +154,16 @@ export class WalletRepository{
 		doc.rect(10,115,80,80, 'F');
 
 		//blue blocks
-		doc.setFillColor(17, 0, 161);
+		doc.setFillColor(0, 85, 255);
 		doc.rect(108,115,80,80, 'F');
 
-		//blue background for texts
-		doc.setFillColor(17, 0, 161);
+		//light blue background for texts
+		doc.setFillColor(70, 132, 255);
 
 		doc.rect(108,15,80,20, 'F');
 		doc.rect(10,120,80,20, 'F');
 
-		doc.setTextColor(255, 255, 255);
+		doc.setTextColor(8, 0, 78);
 		doc.setFontSize(30);
 		doc.text(15, 135, "Public address");
 		doc.text(123,30, "Private key");
@@ -186,7 +191,7 @@ export class WalletRepository{
 		let c : HTMLCanvasElement|null = <HTMLCanvasElement>document.getElementById('canvasExport');
 		if(c !== null) {
 			let ctx = c.getContext("2d");
-			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("verticalArqmaLogo");
+			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("logoQrCode.png");
 			if (ctx !== null && img !== null) {
 				c.width = img.width;
 				c.height = img.height;

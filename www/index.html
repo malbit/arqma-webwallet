@@ -7,14 +7,16 @@
 	<meta property="twitter:title" content="" />
 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, user-scalable=yes">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://myarqma.com 'unsafe-eval' ; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
 	<meta name="referrer" content="none">
+	<meta name="msapplication-tap-highlight" content="no">
 
 	<link rel="stylesheet" href="assets/css/main.css" />
 	<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
 
-	<link rel="manifest" href="/manifest.json">
+<!--	<link rel="manifest" href="/manifest.json"> -->
 
 	<!-- Add to home screen for Safari on iOS -->
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,9 +41,9 @@
 	<meta property="og:image" content="https://myarqma.com/images/icons/icon-144x144.png" />
 
 	<meta property="twitter:card" content="summary" />
-	<meta property="twitter:site" content="https://arqma.com/" />
+	<meta property="twitter:site" content="https://myarqma.com/" />
 
-	<meta property="twitter:creator" content="@ArQmA_Network" />
+	<meta property="twitter:creator" content="@ARQMA_Network" />
 
 	<meta name="fragment" content="!">
 
@@ -63,6 +65,7 @@
 	<a href="#!donate" ><span class="icon" ><i class="fa fa-heart" aria-hidden="true"></i></span> {{ $t("menu.donate") }}</a>
 	<a href="#!disconnect"  class="onlyWhenConnected"><span class="icon" ><i class="fa fa-cog" aria-hidden="true"></i></span> {{ $t("menu.disconnect") }}</a>
 	<a href="#!network" ><span class="icon" ><i class="fa fa-pie-chart" aria-hidden="true"></i></span> {{ $t("menu.network") }}</a>
+<!--	<a href="#!mining" class="hideOnNative" ><span class="icon" ><i class="fa fa-institution" aria-hidden="true"></i></span> {{ $t("menu.mining") }}</a> -->
 </div>
 
 <div id="pageLoading" >
@@ -72,7 +75,7 @@
 
 <div id="page" ></div>
 
-<div id="copyright">
+<div id="copyright" v-cloak="" class="hideOnNative">
 	<div>© 2018 <a href='https://arqma.com/' target='_new'>arqma.com</a></div>
 	<div class="right" >
 		<select v-model="language">
@@ -88,10 +91,16 @@
 		<a href="#!donate" >{{ $t("bottom.donate") }}</a>
 		<a href="#!network" >{{ $t("bottom.network") }}</a>
 		<a href="https://pool.arqma.com" target="_blank" >{{ $t("bottom.miningPool") }}</a>
-		<a href="https://github.com/arqma/arqma-webwallet" target="_blank">{{ $t("bottom.github") }}</a>
+		<a href="https://github.com/arqma/myarqma-webwallet" target="_blank">{{ $t("bottom.github") }}</a>
 	</div>
 	<div class="cb" ></div>
 </div>
+
+<!--<script src="lib/polyfills/weakmap.min.js"></script>-->
+<script src="lib/polyfills/core.min.js"></script>
+<script src="lib/polyfills/textEncoding/encoding-indexes.js"></script>
+<script src="lib/polyfills/textEncoding/encoding.js"></script>
+<script src="lib/polyfills/crypto.js"></script>
 
 <script src="lib/biginteger.js"></script>
 <script src="config.js"></script>
@@ -109,8 +118,8 @@
 <script src="lib/nacl-util.min.js"></script>
 <script src="lib/base58.js"></script>
 <script src="lib/jspdf.min.js"></script>
-<script src="lib/cryptonote_utils.js"></script>
 <!--<script src="lib/mnemonic.js"></script>-->
+<script src="lib/cn_utils_native.js"></script>
 <script src="lib/FileSaver.min.js"></script>
 <script data-main="index.js" src="lib/require.js"></script>
 
