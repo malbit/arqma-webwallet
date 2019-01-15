@@ -388,7 +388,6 @@ export namespace CnUtils{
 }
 
 export namespace CnNativeBride{
-
 	export function sc_reduce32(hex : string) {
 		let input = CnUtils.hextobin(hex);
 		if (input.length !== 32) {
@@ -667,7 +666,7 @@ export namespace CnNativeBride{
 		return sigs;
 	}
 
-/*	export function generate_key_derivation(pub : any, sec : any){
+	export function generate_key_derivation(pub : any, sec : any){
 		let generate_key_derivation_bind = (<any>self).Module_native.cwrap('generate_key_derivation', null, ['number', 'number', 'number']);
 
 		let pub_b = CnUtils.hextobin(pub);
@@ -719,7 +718,7 @@ export namespace CnNativeBride{
 		Module_native._free(derived_key_m);
 
 		return CnUtils.bintohex(res);
-	} */
+	}
 }
 
 export namespace Cn{
@@ -823,48 +822,31 @@ export namespace Cn{
 		return keys;
 	}
 
-	export function create_addr_prefix(seed : string) {
-		let first;
-		if (seed.length !== 64) {
-			first = CnUtils.cn_fast_hash(seed);
-		} else {
-			first = seed;
-		}
-		let spend = Cn.generate_keys(first);
-		let prefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
-		return cnBase58.encode(prefix + spend.pub).slice(0, 44);
-	}
-
 	export function decode_address(address : string) : {
 		spend: string,
 		view: string,
 		intPaymentId: string|null
 	}{
 		let dec = cnBase58.decode(address);
-			console.log(dec,CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX,CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
+		console.log(dec,CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX,CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
 		let expectedPrefix = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
-
 		let expectedPrefixInt = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX);
 		let expectedPrefixSub = CnUtils.encode_varint(CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX);
 		let prefix = dec.slice(0, expectedPrefix.length);
-			let prefixs = dec.slice(0, expectedPrefixInt.length);
 		console.log(prefix,expectedPrefixInt,expectedPrefix);
-		if (prefix !== expectedPrefix && prefixs !== expectedPrefixInt && prefix !== expectedPrefixSub) {
+		if (prefix !== expectedPrefix && prefix !== expectedPrefixInt && prefix !== expectedPrefixSub) {
 			throw "Invalid address prefix";
 		}
-			let decs = dec.slice(expectedPrefixInt.length);
 		dec = dec.slice(expectedPrefix.length);
 		let spend = dec.slice(0, 64);
 		let view = dec.slice(64, 128);
 		let checksum : string|null = null;
 		let expectedChecksum : string|null = null;
 		let intPaymentId : string|null = null;
-		if (prefixs === expectedPrefixInt){
-			spend = decs.slice(0, 64);
-			view = decs.slice(64, 128);
-			let intPaymentId = decs.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
-			let checksum = decs.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
-			let expectedChecksum = CnUtils.cn_fast_hash(prefixs + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
+		if (prefix === expectedPrefixInt){
+			intPaymentId = dec.slice(128, 128 + (INTEGRATED_ID_SIZE * 2));
+			checksum = dec.slice(128 + (INTEGRATED_ID_SIZE * 2), 128 + (INTEGRATED_ID_SIZE * 2) + (ADDRESS_CHECKSUM_SIZE * 2));
+			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view + intPaymentId).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
 		} else {
 			checksum = dec.slice(128, 128 + (ADDRESS_CHECKSUM_SIZE * 2));
 			expectedChecksum = CnUtils.cn_fast_hash(prefix + spend + view).slice(0, ADDRESS_CHECKSUM_SIZE * 2);
@@ -1007,7 +989,7 @@ export namespace CnTransactions{
 		derivation : string|null) : number|false
 	{
 		if(derivation===null)
-			derivation = Cn.generate_key_derivation(pub, sec);//[10;11]ms
+			derivation = CnNativeBride.generate_key_derivation(pub, sec);//[10;11]ms
 
 		let scalar1 = CnUtils.derivation_to_scalar(derivation, i);//[0.2ms;1ms]
 
@@ -1056,10 +1038,10 @@ export namespace CnTransactions{
 		return amount;
 	}
 
-	export function generate_key_image_helper(ack : {view_secret_key : any, spend_secret_key : string, public_spend_key : string}, tx_public_key : any, real_output_index : any, recv_derivation : string|null)
+	export function generate_key_image_helper(ack:{view_secret_key:any,spend_secret_key:string, public_spend_key:string}, tx_public_key:any, real_output_index:any,recv_derivation:string|null)
 	{
 		if(recv_derivation === null)
-		recv_derivation = Cn.generate_key_derivation(tx_public_key, ack.view_secret_key);
+		recv_derivation = CnNativeBride.generate_key_derivation(tx_public_key, ack.view_secret_key);
 			// recv_derivation = CnUtilNative.generate_key_derivation(tx_public_key, ack.view_secret_key);
 		// console.log('recv_derivation', recv_derivation);
 
@@ -1068,7 +1050,7 @@ export namespace CnTransactions{
 
 		// let start = Date.now();
 
-		let in_ephemeral_pub = Cn.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
+		let in_ephemeral_pub = CnNativeBride.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
 		// let in_ephemeral_pub = CnUtilNative.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
 		// console.log('in_ephemeral_pub',in_ephemeral_pub);
 
@@ -1096,7 +1078,7 @@ export namespace CnTransactions{
 
 	//TODO duplicate above
 	export function generate_key_image_helper_rct(keys : {view:{sec:string}, spend:{pub:string,sec:string}}, tx_pub_key : string, out_index : number, enc_mask : string) {
-		let recv_derivation = Cn.generate_key_derivation(tx_pub_key, keys.view.sec);
+		let recv_derivation = CnNativeBride.generate_key_derivation(tx_pub_key, keys.view.sec);
 		if (!recv_derivation) throw "Failed to generate key image";
 
 		let mask;
@@ -1112,7 +1094,7 @@ export namespace CnTransactions{
 			mask = enc_mask ? CnNativeBride.sc_sub(enc_mask, Cn.hash_to_scalar(CnUtils.derivation_to_scalar(recv_derivation, out_index))) : CnVars.I; //decode mask, or d2s(1) if no mask
 		}
 
-		let ephemeral_pub = Cn.derive_public_key(recv_derivation, out_index, keys.spend.pub);
+		let ephemeral_pub = CnNativeBride.derive_public_key(recv_derivation, out_index, keys.spend.pub);
 		if (!ephemeral_pub) throw "Failed to generate key image";
 		let ephemeral_sec = CnNativeBride.derive_secret_key(recv_derivation, out_index, keys.spend.sec);
 		let image = CnNativeBride.generate_key_image_2(ephemeral_pub, ephemeral_sec);
@@ -1566,12 +1548,12 @@ export namespace CnTransactions{
 		return sig;
 	}
 
-/*	export function proveRangeBulletproof(commitMaskObj : {C:string,mask:string}, amount : string, nrings : number, enc_seed : number, exponent : number) : CnTransactions.RangeProveBulletproofSignature{
+	/*export function proveRangeBulletproof(commitMaskObj : {C:string,mask:string}, amount : string, nrings : number, enc_seed : number, exponent : number) : CnTransactions.RangeProveBulletproofSignature{
 		let mask = CnRandom.random_scalar();
 
 		let proof : CnTransactions.RangeProveBulletproofSignature = bulletproof_PROVE(amount, mask);
 
-		//CHECK_AND_ASSERT_THROW_MES(proof.V.length == 1, "V has not exactly one element");
+		CHECK_AND_ASSERT_THROW_MES(proof.V.length == 1, "V has not exactly one element");
 		commitMaskObj.C = proof.V[0];
 		commitMaskObj.mask = mask;
 		return proof;
@@ -1580,7 +1562,7 @@ export namespace CnTransactions{
 		try { return bulletproof_VERIFY(proof); }
 			// we can get deep throws from ge_frombytes_vartime if input isn't valid
 		catch (e) { return false; }
-	} */
+	}*/
 
 	// Gen creates a signature which proves that for some column in the keymatrix "pk"
 	//   the signer knows a secret key for each row in that column
@@ -1780,7 +1762,7 @@ export namespace CnTransactions{
 		console.log('======t');
 
 		let rv : RctSignature = {
-			type: inSk.length === 3 ? CnVars.RCT_TYPE.FullBulletproof : CnVars.RCT_TYPE.Simple,
+			type: inSk.length === 1 ? CnVars.RCT_TYPE.Full : CnVars.RCT_TYPE.Simple,
 			message: message,
 			outPk: [],
 			p: {
@@ -1809,8 +1791,8 @@ export namespace CnTransactions{
 				let teststart = new Date().getTime();
 				if(!bulletproof)
 					p.rangeSigs[i] = CnTransactions.proveRange(cmObj, outAmounts[i], nrings, 0, 0);
-				//else
-				//p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
+				// else
+				// 	p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
 
 				let testfinish = new Date().getTime() - teststart;
 				console.log("Time take for range proof " + i + ": " + testfinish);

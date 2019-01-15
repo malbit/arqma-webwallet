@@ -337,7 +337,7 @@ export class Wallet extends Observable{
 				if(needDerivation) {
 					let derivation = '';
 					try {
-						derivation = Cn.generate_key_derivation(tx.txPubKey, this.keys.priv.view);//9.7ms
+						derivation = CnNativeBride.generate_key_derivation(tx.txPubKey, this.keys.priv.view);//9.7ms
 					} catch (e) {
 						continue;
 					}
