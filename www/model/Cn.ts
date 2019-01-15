@@ -1901,14 +1901,13 @@ export namespace CnTransactions{
 			console.log("Extra nonce: " + nonce);
 			extra = CnTransactions.add_nonce_to_extra(extra, nonce);
 		}
-
 		let tx : CnTransactions.Transaction = {
 			unlock_time: unlock_time,
 			version: rct ? CURRENT_TX_VERSION : OLD_TX_VERSION,
 			extra: extra,
 			vin: [],
 			vout: []
-		};
+		}
 		if (rct) {
 			tx.rct_signatures = {};
 		} else {
@@ -2086,7 +2085,7 @@ export namespace CnTransactions{
 		}
 		console.log(tx);
 		return tx;
-	};
+	}
 
 	export function create_transaction(pub_keys: {spend: string, view: string},
 									   sec_keys: {spend: string, view: string},
@@ -2196,11 +2195,9 @@ export namespace CnTransactions{
 				}
 			}
 			let real_oe = {
-				index:new JSBigInt(outputs[i].global_index || 0).toString(),
-				key:outputs[i].public_key,
+				index: new JSBigInt(outputs[i].global_index || 0).toString(),
+				key: outputs[i].public_key,
       };
-			real_oe.index = new JSBigInt(outputs[i].global_index || 0).toString();
-			real_oe.key = outputs[i].public_key;
 			console.log('OUT FOR REAL:',outputs[i].global_index);
 			if (rct){
 				if (outputs[i].rct) {
