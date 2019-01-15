@@ -665,7 +665,7 @@ export namespace CnNativeBride{
 		Module._free(sec_m);
 		return sigs;
 	}
-
+/*
 	export function generate_key_derivation(pub : any, sec : any){
 		let generate_key_derivation_bind = (<any>self).Module_native.cwrap('generate_key_derivation', null, ['number', 'number', 'number']);
 
@@ -690,7 +690,7 @@ export namespace CnNativeBride{
 
 		return CnUtils.bintohex(res);
 	}
-
+*/
 	export function derive_public_key(derivation : string,
 		output_idx_in_tx : number,
 		pubSpend : string){
@@ -989,7 +989,7 @@ export namespace CnTransactions{
 		derivation : string|null) : number|false
 	{
 		if(derivation===null)
-			derivation = CnNativeBride.generate_key_derivation(pub, sec);//[10;11]ms
+			derivation = Cn.generate_key_derivation(pub, sec);//[10;11]ms
 
 		let scalar1 = CnUtils.derivation_to_scalar(derivation, i);//[0.2ms;1ms]
 
@@ -1041,7 +1041,7 @@ export namespace CnTransactions{
 	export function generate_key_image_helper(ack:{view_secret_key:any,spend_secret_key:string, public_spend_key:string}, tx_public_key:any, real_output_index:any,recv_derivation:string|null)
 	{
 		if(recv_derivation === null)
-		recv_derivation = CnNativeBride.generate_key_derivation(tx_public_key, ack.view_secret_key);
+		recv_derivation = Cn.generate_key_derivation(tx_public_key, ack.view_secret_key);
 			// recv_derivation = CnUtilNative.generate_key_derivation(tx_public_key, ack.view_secret_key);
 		// console.log('recv_derivation', recv_derivation);
 
@@ -1078,7 +1078,7 @@ export namespace CnTransactions{
 
 	//TODO duplicate above
 	export function generate_key_image_helper_rct(keys : {view:{sec:string}, spend:{pub:string,sec:string}}, tx_pub_key : string, out_index : number, enc_mask : string) {
-		let recv_derivation = CnNativeBride.generate_key_derivation(tx_pub_key, keys.view.sec);
+		let recv_derivation = Cn.generate_key_derivation(tx_pub_key, keys.view.sec);
 		if (!recv_derivation) throw "Failed to generate key image";
 
 		let mask;
