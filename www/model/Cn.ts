@@ -2242,5 +2242,5 @@ export namespace CnTransactions{
 			throw "Need more money than found! (have: " + Cn.formatMoney(found_money) + " need: " + Cn.formatMoney(needed_money) + ")";
 		}
 		return CnTransactions.construct_tx(keys, sources, dsts, fee_amount, payment_id, pid_encrypt, realDestViewKey, unlock_time, rct);
-	}
-};
+	};
+}
