@@ -13,7 +13,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Cn} from "./Cn";
+//import {Cn} from "./Cn";
 
 export class CoinUri{
 
@@ -21,11 +21,11 @@ export class CoinUri{
 	static coinWalletPrefix = config.coinUriPrefix;
 
 	static decodeTx(str : string) : {
-		address: string,
-		paymentId?: string,
-		recipientName?: string,
-		amount?: string,
-		description?: string,
+		address:string,
+		paymentId?:string,
+		recipientName?:string,
+		amount?:string,
+		description?:string,
 	}|null {
 		if(str.indexOf(CoinUri.coinTxPrefix) === 0){
 			let data = str.replace(this.coinTxPrefix,'').trim();
@@ -35,7 +35,7 @@ export class CoinUri{
 				throw 'missing_address';
 
 			try {
-				Cn.decode_address(exploded[0]);
+				cnUtil.decode_address(exploded[0]);
 			}catch(e){
 				throw 'invalid_address_length';
 			}
@@ -72,7 +72,7 @@ export class CoinUri{
 		try{
 			this.decodeTx(str);
 			return true;
-		}catch(e) {
+		}catch (e) {
 			return false;
 		}
 	}
@@ -80,7 +80,7 @@ export class CoinUri{
 	static encodeTx(address : string, paymentId:string|null = null, amount : string|null=null, recipientName:string|null = null, description : string|null=null) : string{
 		let encoded = this.coinTxPrefix + address;
 		try {
-			Cn.decode_address(address);
+			cnUtil.decode_address(address);
 		}catch(e){
 			throw 'invalid_address_length';
 		}
@@ -93,13 +93,13 @@ export class CoinUri{
 	}
 
 	static decodeWallet(str : string) : {
-		address: string,
-		spendKey?: string,
-		viewKey?: string,
-		mnemonicSeed?: string,
-		height?: string,
-		nonce?: string,
-		encryptMethod?: string
+		address:string,
+		spendKey?:string,
+		viewKey?:string,
+		mnemonicSeed?:string,
+		height?:string,
+		nonce?:string,
+		encryptMethod?:string
 	}{
 		if(str.indexOf(CoinUri.coinWalletPrefix) === 0){
 			let data = str.replace(this.coinWalletPrefix,'').trim();
@@ -109,7 +109,7 @@ export class CoinUri{
 				throw 'missing_address';
 
 			try {
-				Cn.decode_address(exploded[0]);
+				cnUtil.decode_address(exploded[0]);
 			}catch(e){
 				throw 'invalid_address_length';
 			}
@@ -160,7 +160,7 @@ export class CoinUri{
 		try{
 			this.decodeWallet(str);
 			return true;
-		}catch(e){
+		}catch (e) {
 			return false;
 		}
 	}
@@ -168,7 +168,7 @@ export class CoinUri{
 	static encodeWalletKeys(address : string, spendKey : string, viewKey : string|null=null, height:number|null=null, encryptMethod:string|null=null,nonce:string|null=null){
 		let encoded = this.coinWalletPrefix + address;
 		try {
-			Cn.decode_address(address);
+			cnUtil.decode_address(address);
 		}catch(e){
 			throw 'invalid_address_length';
 		}

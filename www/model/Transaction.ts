@@ -18,11 +18,12 @@ export class TransactionOut{
 	keyImage : string = '';
 	outputIdx : number = 0;
 	globalIndex : number = 0;
-	ephemeralPub: string = '';
-	pubKey: string = '';
-	rtcOutPk: string = '';
-	rtcMask: string = '';
-	rtcAmount: string = '';
+
+	ephemeralPub:string='';
+	pubKey:string='';
+	rtcOutPk:string='';
+	rtcMask:string='';
+	rtcAmount:string='';
 
 	static fromRaw(raw : any){
 		let nout = new TransactionOut();
@@ -42,10 +43,10 @@ export class TransactionOut{
 
 	export(){
 		let data : any = {
-			keyImage: this.keyImage,
-			outputIdx: this.outputIdx,
-			globalIndex: this.globalIndex,
-			amount: this.amount,
+			keyImage:this.keyImage,
+			outputIdx:this.outputIdx,
+			globalIndex:this.globalIndex,
+			amount:this.amount,
 		};
 		if(this.rtcOutPk !== '') data.rtcOutPk = this.rtcOutPk;
 		if(this.rtcMask !== '') data.rtcMask = this.rtcMask;
@@ -71,8 +72,8 @@ export class TransactionIn{
 
 	export(){
 		return {
-			keyImage: this.keyImage,
-			amount: this.amount,
+			keyImage:this.keyImage,
+			amount:this.amount,
 		};
 	}
 }
@@ -122,14 +123,14 @@ export class Transaction{
 			hash: this.hash,
 		};
 		if(this.ins.length > 0){
-			let rins : any[] = [];
+			let rins : any[]= [];
 			for(let nin of this.ins){
 				rins.push(nin.export());
 			}
 			data.ins = rins;
 		}
 		if(this.outs.length > 0){
-			let routs : any[] = [];
+			let routs : any[]= [];
 			for(let nout of this.outs){
 				routs.push(nout.export());
 			}
