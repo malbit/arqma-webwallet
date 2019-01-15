@@ -1110,10 +1110,38 @@ export namespace CnTransactions{
 
 	export function estimateRctSize(inputs : number, mixin : number, outputs : number) {
 		let size = 0;
-		size += outputs * 6306;
-		size += ((mixin + 1) * 4 + 32 + 8) * inputs; //key offsets + key image + amount
-		size += 64 * (mixin + 1) * inputs + 64 * inputs; //signature + pseudoOuts/cc
-		size += 74; //extra + whatever, assume long payment ID
+		// tx prefix
+    // first few bytes
+		size += 1 + 6;
+		size += inputs * (1+6+(mixin+1)*3+32); // original C implementation is *2+32 but author advised to change 2 to 3 as key offsets are variable size and this constitutes a best guess
+		// vout
+		size += outputs * (6+32);
+		// extra
+    size += 40;
+		// rct signatures
+		// type
+		size += 1;
+		// rangeSigs
+		size += (2*64*32+32+64*32) * outputs;
+		// MGs
+		size += inputs * (32 * (mixin+1) + 32);
+		// mixRing - not serialized, can be reconstructed
+		/* size += 2 * 32 * (mixin+1) * inputs; */
+		// pseudoOuts
+		size += 32 * inputs;
+		// ecdhInfo
+		size += 2 * 32 * outputs;
+		// outPk - only commitment is saved
+		size += 32 * outputs;
+		// txnFee
+		size += 4;
+		// const logStr = `estimated rct tx size for ${inputs} at mixin ${mixin} and ${outputs} : ${size}  (${((32 * inputs/*+1*/) + 2 * 32 * (mixin+1) * inputs + 32 * outputs)}) saved)`
+    // console.log(logStr)
+
+		//size += outputs * 6306;
+		//size += ((mixin + 1) * 4 + 32 + 8) * inputs; //key offsets + key image + amount
+		//size += 64 * (mixin + 1) * inputs + 64 * inputs; //signature + pseudoOuts/cc
+		//size += 74; //extra + whatever, assume long payment ID
 		return size;
 	}
 
@@ -1877,25 +1905,6 @@ export namespace CnTransactions{
 			unlock_time: unlock_time,
 			version: rct ? CURRENT_TX_VERSION : OLD_TX_VERSION,
 			extra: extra,
-<<<<<<< HEAD
-			vin: [],
-			vout: [],
-			rct_signatures: {
-				ecdhInfo: [],
-				outPk: [],
-				pseudoOuts: [],
-				txnFee: '',
-				type: 0,
-			},
-			signatures: []
-		};
-		tx.extra = this.add_pub_key_to_extra(tx.extra, txkey.pub);
-/*		let tx : CnTransactions.Transaction = {
-			unlock_time: unlock_time,
-			version: rct ? CURRENT_TX_VERSION : OLD_TX_VERSION,
-			extra: extra,
-=======
->>>>>>> parent of e174bdf... CN rewritten
 			prvkey: '',
 			vin: [],
 			vout: [],
@@ -1951,19 +1960,11 @@ export namespace CnTransactions{
 			inputs_money = inputs_money.add(sources[i].amount);
 			in_contexts.push(sources[i].in_ephemeral);
 			let input_to_key : CnTransactions.Vin = {
-<<<<<<< HEAD
-				type: "input_to_key",
-				amount: sources[i].amount,
-				k_image: sources[i].key_image,
-				key_offsets: [],
-      };
-=======
 				type:"input_to_key",
 				amount:sources[i].amount,
 				k_image:sources[i].key_image,
 				key_offsets:[],
 			};
->>>>>>> parent of e174bdf... CN rewritten
 			for (j = 0; j < sources[i].outputs.length; ++j) {
 				console.log('add to key offsets',sources[i].outputs[j].index, j, sources[i].outputs);
 				input_to_key.key_offsets.push(sources[i].outputs[j].index);
@@ -1995,30 +1996,17 @@ export namespace CnTransactions{
 				out_derivation = Cn.generate_key_derivation(destKeys.view, txkey.sec);
 			}
 
-<<<<<<< HEAD
-      let dsts[i].keys = Cn.decode_address(dsts[i].address);
-			let out_derivation = Cn.generate_key_derivation(dsts[i].keys.view, txkey.sec);
-=======
->>>>>>> parent of e174bdf... CN rewritten
 			if (rct) {
 				amountKeys.push(CnUtils.derivation_to_scalar(out_derivation, out_index));
 			}
 			let out_ephemeral_pub = Cn.derive_public_key(out_derivation, out_index, destKeys.spend);
 			let out : CnTransactions.Vout = {
 				amount: dsts[i].amount.toString(),
-<<<<<<< HEAD
-				target: {
-					type: "txout_to_key",
-					key: out_ephemeral_pub
-				}
-      };
-=======
 				target:{
 					type: "txout_to_key",
 					key: out_ephemeral_pub
 				}
 			};
->>>>>>> parent of e174bdf... CN rewritten
 			// txout_to_key
 			tx.vout.push(out);
 			++out_index;
@@ -2184,16 +2172,10 @@ export namespace CnTransactions{
 						continue;
 					}
 					let oe : Output = {
-<<<<<<< HEAD
-						index: out.global_index.toString(),
-						key: out.public_key,
-          };
-=======
 						index:out.global_index.toString(),
 						key:out.public_key,
 						commit:''
 					};
->>>>>>> parent of e174bdf... CN rewritten
 					if (rct){
 						if (out.rct){
 							oe.commit = out.rct.slice(0,64); //add commitment from rct mix outs
@@ -2207,16 +2189,10 @@ export namespace CnTransactions{
 				}
 			}
 			let real_oe = {
-<<<<<<< HEAD
-				index: new JSBigInt(outputs[i].global_index || 0).toString(),
-				key: outputs[i].public_key,
-      };
-=======
 				index:new JSBigInt(outputs[i].global_index || 0).toString(),
 				key:outputs[i].public_key,
 				commit:'',
 			};
->>>>>>> parent of e174bdf... CN rewritten
 			console.log('OUT FOR REAL:',outputs[i].global_index);
 			if (rct){
 				if (outputs[i].rct) {
