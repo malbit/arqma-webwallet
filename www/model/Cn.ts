@@ -1050,14 +1050,14 @@ export namespace CnTransactions{
 
 		// let start = Date.now();
 
-		let in_ephemeral_pub = CnNativeBride.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
+		let in_ephemeral_pub = Cn.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
 		// let in_ephemeral_pub = CnUtilNative.derive_public_key(recv_derivation, real_output_index, ack.public_spend_key);
 		// console.log('in_ephemeral_pub',in_ephemeral_pub);
 
 
 		// CHECK_AND_ASSERT_MES(r, false, "key image helper: failed to derive_public_key(" << recv_derivation << ", " << real_output_index <<  ", " << ack.m_account_address.m_spend_public_key << ")");
 		//
-		let in_ephemeral_sec = CnNativeBride.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
+		let in_ephemeral_sec = Cn.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
 		// let in_ephemeral_sec = CnNativeBride.derive_secret_key(recv_derivation, real_output_index, ack.spend_secret_key);
 		// console.log('in_ephemeral_sec',in_ephemeral_sec);
 
