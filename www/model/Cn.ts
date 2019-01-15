@@ -1913,7 +1913,7 @@ export namespace CnTransactions{
 			tx.rct_signatures = {};
 		} else {
 			tx.signatures = [];
-		}
+		};
 		tx.extra = this.add_pub_key_to_extra(tx.extra, txkey.pub);
 /*		let tx : CnTransactions.Transaction = {
 			unlock_time: unlock_time,
@@ -1973,11 +1973,12 @@ export namespace CnTransactions{
 		for (i = 0; i < sources.length; i++) {
 			inputs_money = inputs_money.add(sources[i].amount);
 			in_contexts.push(sources[i].in_ephemeral);
-			let input_to_key = {};
-			input_to_key.type = "input_to_key";
-			input_to_key.amount = sources[i].amount;
-			input_to_key.k_image = sources[i].key_image;
-			input_to_key.key_offsets = [];
+			let input_to_key : CnTransactions.Vin = {
+				type: "input_to_key",
+				amount: sources[i].amount,
+				k_image: sources[i].key_image,
+				key_offsets: [],
+      };
 			for (j = 0; j < sources[i].outputs.length; ++j) {
 				console.log('add to key offsets',sources[i].outputs[j].index, j, sources[i].outputs);
 				input_to_key.key_offsets.push(sources[i].outputs[j].index);
@@ -2016,13 +2017,13 @@ export namespace CnTransactions{
 				amountKeys.push(CnUtils.derivation_to_scalar(out_derivation, out_index));
 			}
 			let out_ephemeral_pub = Cn.derive_public_key(out_derivation, out_index, destKeys.spend);
-			let out = {
-				amount: dsts[i].amount.toString()
-			};
-			out.target = {
+			let out : CnTransactions.Vout = {
+				amount: dsts[i].amount.toString(),
+				target: {
 					type: "txout_to_key",
 					key: out_ephemeral_pub
-			};
+				}
+      };
 			// txout_to_key
 			tx.vout.push(out);
 			++out_index;
@@ -2085,7 +2086,7 @@ export namespace CnTransactions{
 		}
 		console.log(tx);
 		return tx;
-	}
+	};
 
 	export function create_transaction(pub_keys: {spend: string, view: string},
 									   sec_keys: {spend: string, view: string},
@@ -2113,6 +2114,8 @@ export namespace CnTransactions{
 									   unlock_time : number = 0,
 									   rct: boolean
 	): CnTransactions.Transaction {
+		unlock_time = unlock_time || 0;
+		mix_outs = mix_outs || [];
 		let i, j;
 		if (dsts.length === 0) {
 			throw 'Destinations empty';
@@ -2153,7 +2156,7 @@ export namespace CnTransactions{
 			if (found_money.compare(UINT64_MAX) !== -1) {
 				throw "Input overflow!";
 			}
-			let src = {
+			let src : CnTransactions.Source = {
 				outputs: [],
 				}
 			};
@@ -2176,9 +2179,10 @@ export namespace CnTransactions{
 						j++;
 						continue;
 					}
-					let oe = {};
-					oe.index = out.global_index.toString();
-					oe.key = out.public_key;
+					let oe : Output = {
+						index: out.global_index.toString(),
+						key: out.public_key,
+          };
 					if (rct){
 						if (out.rct){
 							oe.commit = out.rct.slice(0,64); //add commitment from rct mix outs
@@ -2191,7 +2195,10 @@ export namespace CnTransactions{
 					j++;
 				}
 			}
-			let real_oe = {};
+			let real_oe = {
+				index:new JSBigInt(outputs[i].global_index || 0).toString(),
+				key:outputs[i].public_key,
+      };
 			real_oe.index = new JSBigInt(outputs[i].global_index || 0).toString();
 			real_oe.key = outputs[i].public_key;
 			console.log('OUT FOR REAL:',outputs[i].global_index);
@@ -2242,5 +2249,5 @@ export namespace CnTransactions{
 			throw "Need more money than found! (have: " + Cn.formatMoney(found_money) + " need: " + Cn.formatMoney(needed_money) + ")";
 		}
 		return CnTransactions.construct_tx(keys, sources, dsts, fee_amount, payment_id, pid_encrypt, realDestViewKey, unlock_time, rct);
-	};
+	}
 }
