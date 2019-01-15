@@ -1094,7 +1094,7 @@ export namespace CnTransactions{
 			mask = enc_mask ? CnNativeBride.sc_sub(enc_mask, Cn.hash_to_scalar(CnUtils.derivation_to_scalar(recv_derivation, out_index))) : CnVars.I; //decode mask, or d2s(1) if no mask
 		}
 
-		let ephemeral_pub = n.derive_public_key(recv_derivation, out_index, keys.spend.pub);
+		let ephemeral_pub = Cn.derive_public_key(recv_derivation, out_index, keys.spend.pub);
 		if (!ephemeral_pub) throw "Failed to generate key image";
 		let ephemeral_sec = CnNativeBride.derive_secret_key(recv_derivation, out_index, keys.spend.sec);
 		let image = CnNativeBride.generate_key_image_2(ephemeral_pub, ephemeral_sec);
