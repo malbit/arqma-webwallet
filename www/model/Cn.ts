@@ -1906,12 +1906,15 @@ export namespace CnTransactions{
 			version: rct ? CURRENT_TX_VERSION : OLD_TX_VERSION,
 			extra: extra,
 			vin: [],
-			vout: []
-		}
-		if (rct) {
-			tx.rct_signatures = {};
-		} else {
-			tx.signatures = [];
+			vout: [],
+			rct_signatures: {
+				ecdhInfo: [],
+				outPk: [],
+				pseudoOuts: [],
+				txnFee: '',
+				type: 0,
+			},
+			signatures: []
 		};
 		tx.extra = this.add_pub_key_to_extra(tx.extra, txkey.pub);
 /*		let tx : CnTransactions.Transaction = {
@@ -2010,7 +2013,7 @@ export namespace CnTransactions{
 				out_derivation = Cn.generate_key_derivation(destKeys.view, txkey.sec);
 			} */
 
-      dsts[i].keys = Cn.decode_address(dsts[i].address);
+      let dsts[i].keys = Cn.decode_address(dsts[i].address);
 			let out_derivation = Cn.generate_key_derivation(dsts[i].keys.view, txkey.sec);
 			if (rct) {
 				amountKeys.push(CnUtils.derivation_to_scalar(out_derivation, out_index));
@@ -2113,8 +2116,6 @@ export namespace CnTransactions{
 									   unlock_time : number = 0,
 									   rct: boolean
 	): CnTransactions.Transaction {
-		unlock_time = unlock_time || 0;
-		mix_outs = mix_outs || [];
 		let i, j;
 		if (dsts.length === 0) {
 			throw 'Destinations empty';
