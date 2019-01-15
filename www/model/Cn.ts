@@ -2243,4 +2243,4 @@ export namespace CnTransactions{
 		}
 		return CnTransactions.construct_tx(keys, sources, dsts, fee_amount, payment_id, pid_encrypt, realDestViewKey, unlock_time, rct);
 	}
-}
+};
