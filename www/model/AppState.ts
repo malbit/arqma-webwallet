@@ -20,7 +20,6 @@ import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvide
 import {Observable} from "../lib/numbersLab/Observable";
 import {WalletRepository} from "./WalletRepository";
 import {BlockchainExplorer, RawDaemon_Transaction} from "./blockchain/BlockchainExplorer";
-import {BlockchainExplorer} from "./blockchain/BlockchainExplorer";
 import {Constants} from "./Constants";
 import {TransactionsExplorer} from "./TransactionsExplorer";
 

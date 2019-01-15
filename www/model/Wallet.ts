@@ -350,7 +350,7 @@ export class Wallet extends Observable{
 							}, tx.txPubKey, out.outputIdx, derivation);
 
 							out.keyImage = m_key_image.key_image;
-							out.ephemeralPub = m_key_image.pub;
+							out.ephemeralPub = m_key_image.ephemeral_pub;
 							this.modified = true;
 						}
 					}

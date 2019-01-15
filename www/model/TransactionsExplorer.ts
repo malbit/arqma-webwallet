@@ -163,7 +163,7 @@ export class TransactionsExplorer {
 
 		let derivation = null;
 		try {
-			derivation = CnNativeBride.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);//9.7ms
+			derivation = Cn.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);//9.7ms
 			// derivation = CnUtilNative.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);
 		} catch (e) {
 			console.log('UNABLE TO CREATE DERIVATION', e);
@@ -179,7 +179,7 @@ export class TransactionsExplorer {
 			let amount : number = parseInt(out.amount);
 			let output_idx_in_tx = iOut;
 
-			let generated_tx_pubkey = CnNativeBride.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
+			let generated_tx_pubkey = Cn.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
 			// let generated_tx_pubkey = CnUtilNative.derive_public_key(derivation,output_idx_in_tx,wallet.keys.pub.spend);//5.5ms
 
 			// check if generated public key matches the current output's key
@@ -231,7 +231,7 @@ export class TransactionsExplorer {
 					}, tx_pub_key, output_idx_in_tx, derivation);
 
 					transactionOut.keyImage = m_key_image.key_image;
-					transactionOut.ephemeralPub = m_key_image.pub;
+					transactionOut.ephemeralPub = m_key_image.ephemeral_pub;
 				}
 
 				outs.push(transactionOut);
