@@ -26,7 +26,7 @@ export class WalletWatchdog{
 	wallet : Wallet;
 	explorer : BlockchainExplorerRpc2;
 
-	constructor(wallet: Wallet, explorer: BlockchainExplorerRpc2) {
+	constructor(wallet: Wallet, explorer : BlockchainExplorerRpc2) {
 		this.wallet = wallet;
 		this.explorer = explorer;
 
@@ -74,15 +74,22 @@ export class WalletWatchdog{
 		this.intervalTransactionsProcess = setInterval(function(){
 			self.checkTransactionsInterval();
 		}, this.wallet.options.readSpeed);
+
+		//force mempool update after a wallet update (new tx, ...)
+		self.checkMempool();
 	}
 
 	intervalMempool = 0;
-	initMempool(){
+	initMempool(force : boolean = false){
 		let self = this;
-		if(this.intervalMempool === 0){
+		if(this.intervalMempool === 0 || force){
+			if(force && this.intervalMempool !== 0){
+				clearInterval(this.intervalMempool);
+			}
+
 			this.intervalMempool = setInterval(function(){
 				self.checkMempool();
-			}, 2*60*1000);
+			}, config.avgBlockTime/2*1000);
 		}
 		self.checkMempool();
 	}
@@ -108,6 +115,8 @@ export class WalletWatchdog{
 				for(let rawTx of data.transactions){
 					let tx = TransactionsExplorer.parse(rawTx.tx_json,self.wallet);
 					if(tx !== null){
+						tx.hash = rawTx.id_hash;
+						tx.fees = rawTx.fee;
 						self.wallet.txsMem.push(tx);
 					}
 				}
@@ -171,7 +180,7 @@ export class WalletWatchdog{
 				type:'process',
 				transactions:transactionsToProcess
 			});
-			++this.workerCountProcessed;
+			this.workerCountProcessed+=this.transactionsToProcess.length;
 			this.workerProcessingWorking = true;
 		}else{
 			clearInterval(this.intervalTransactionsProcess);
@@ -232,24 +241,27 @@ export class WalletWatchdog{
 						if(typeof lastTx.height !== 'undefined') {
 							self.lastBlockLoading = lastTx.height + 1;
 						}
+						self.processTransactions(transactions);
+						setTimeout(function () {
+							self.loadHistory();
+						}, 1);
+					}else{
+						setTimeout(function () {
+							self.loadHistory();
+						}, 30*1000);
 					}
-
-					self.processTransactions(transactions);
-					setTimeout(function() {
-						self.loadHistory();
-					}, 1);
 				}).catch(function(){
-					setTimeout(function() {
+					setTimeout(function () {
 						self.loadHistory();
 					}, 30*1000);//retry 30s later if an error occurred
 				});
-			} else {
-				setTimeout(function() {
+			}else{
+				setTimeout(function () {
 					self.loadHistory();
 				}, 30*1000);
 			}
 		}).catch(function(){
-			setTimeout(function() {
+			setTimeout(function () {
 				self.loadHistory();
 			}, 30*1000);//retry 30s later if an error occurred
 		});
@@ -277,12 +289,12 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 				method: 'POST',
 				data: JSON.stringify({
 				})
-			}).done(function(raw: any) {
+			}).done(function (raw: any) {
 				// self.heightCache = raw.height;
 				// resolve(raw.height);
 				self.heightCache = parseInt(raw);
 				resolve(self.heightCache);
-			}).fail(function(data: any) {
+			}).fail(function (data: any) {
 				reject(data);
 			});
 		});
@@ -352,11 +364,16 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 
 		return this.getHeight().then(function(height : number){
 			let txs : RawDaemon_Transaction[] = [];
-			let promises = [];
+			let promiseGetCompressedBlocks : Promise<void> = Promise.resolve();
 
 			let randomBlocksIndexesToGet : number[] = [];
 			let numOuts = height;
 
+			let compressedBlocksToGet : {[key : string] : boolean} = {};
+
+			console.log('Requires '+nbOutsNeeded+' outs');
+
+			//select blocks for the final mixin. selection is made with a triangular selection
 			for(let i = 0; i < nbOutsNeeded; ++i){
 				let selectedIndex : number = -1;
 				do{
@@ -366,13 +383,23 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 				}while(selectedIndex === -1 || randomBlocksIndexesToGet.indexOf(selectedIndex) !== -1);
 				randomBlocksIndexesToGet.push(selectedIndex);
 
-				let promise = self.getTransactionsForBlocks(Math.floor(selectedIndex/100)*100).then(function(rawTransactions : RawDaemon_Transaction[]){
-					txs.push.apply(txs,rawTransactions);
-				});
-				promises.push(promise);
+				compressedBlocksToGet[Math.floor(selectedIndex/100)*100] = true;
 			}
 
-			return Promise.all(promises).then(function(){
+			console.log('Random blocks required: ', randomBlocksIndexesToGet);
+			console.log('Blocks to get for outputs selections:', compressedBlocksToGet);
+
+			//load compressed blocks (100 blocks) containing the blocks referred by their index
+			for(let compressedBlock in compressedBlocksToGet) {
+				promiseGetCompressedBlocks = promiseGetCompressedBlocks.then(()=>{
+					return self.getTransactionsForBlocks(parseInt(compressedBlock)).then(function (rawTransactions: RawDaemon_Transaction[]) {
+						txs.push.apply(txs, rawTransactions);
+					});
+				});
+			}
+
+			return promiseGetCompressedBlocks.then(function(){
+				console.log('txs selected for outputs: ', txs);
 				let txCandidates : any = {};
 				for(let iOut  = 0; iOut < txs.length; ++iOut) {
 					let tx = txs[iOut];
@@ -471,15 +498,15 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 		});
 	}
 
-	resolveOpenAlias(domain: string) : Promise<{address:string, name:string|null}>{
+	resolveOpenAlias(domain : string) : Promise<{address:string, name:string|null}>{
 		let self = this;
 		return new Promise(function(resolve, reject){
 			$.ajax({
 				url: self.serverAddress+'openAlias.php?domain='+domain,
 				method: 'GET',
-			}).done(function(response: any) {
+			}).done(function (response: any) {
 				resolve(response);
-			}).fail(function(data: any) {
+			}).fail(function (data: any) {
 				reject(data);
 			});
 		});
