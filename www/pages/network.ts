@@ -26,7 +26,7 @@ import {AppState} from "../model/AppState";
 AppState.enableLeftMenu();
 
 class NetworkView extends DestructableView{
-	@VueVar(0) networkHashrate !: number;
+	@VueVar(0) networkHashrate !: any;
 	@VueVar(0) blockchainHeight !: number;
 	@VueVar(0) networkDifficulty !: number;
 	@VueVar(0) lastReward !: number;
