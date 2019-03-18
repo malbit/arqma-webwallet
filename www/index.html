@@ -39,9 +39,10 @@
 	<meta property="twitter:card" content="summary" />
 	<meta property="twitter:site" content="https://myarqma.com/" />
 
-	<meta property="twitter:creator" content="@Arqma_Network" />
+	<meta name="fragment" content="!">
+
 </head>
-<body class="menuHidden">
+<body class="menuHidden menuDisabled">
 
 <div id="topBar" >
 	<a href="#!index" class="toggleMenu"><i class="fa fa-bars" aria-hidden="true"></i></a>
@@ -59,11 +60,11 @@
 	<a href="#!disconnect"  class="onlyWhenConnected"><span class="icon" ><i class="fa fa-cog" aria-hidden="true"></i></span> {{ $t("menu.disconnect") }}</a>
 	<a href="#!network" ><span class="icon" ><i class="fa fa-pie-chart" aria-hidden="true"></i></span> {{ $t("menu.network") }}</a>
 <!--	<a href="#!mining" ><span class="icon" ><i class="fa fa-institution" aria-hidden="true"></i></span> {{ $t("menu.mining") }}</a> -->
+</div>
 
-	<div id="pageLoading" >
-		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-		<span class="sr-only">{{ $t("global.loading") }}...</span>
-	</div>
+<div id="pageLoading" >
+	<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+	<span class="sr-only">{{ $t("global.loading") }}...</span>
 </div>
 
 <div id="page" ></div>
