@@ -7,7 +7,7 @@
 	<meta property="twitter:title" content="" />
 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, user-scalable=yes">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://myarqma.com 'unsafe-eval' ; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
 	<meta name="referrer" content="none">
@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="assets/css/main.css" />
 	<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
 
-	<link rel="manifest" href="/manifest.json">
+<!--	<link rel="manifest" href="/manifest.json"> -->
 
 	<!-- Add to home screen for Safari on iOS -->
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,9 +41,9 @@
 	<meta property="og:image" content="https://myarqma.com/images/icons/icon-144x144.png" />
 
 	<meta property="twitter:card" content="summary" />
-	<meta property="twitter:site" content="https://arqma.com/" />
+	<meta property="twitter:site" content="https://myarqma.com/" />
 
-	<meta property="twitter:creator" content="@Arqma_Network" />
+	<meta property="twitter:creator" content="@ARQMA_Network" />
 
 	<meta name="fragment" content="!">
 
@@ -56,47 +56,40 @@
 
 <div id="menu" >
 	<a><img src="./assets/img/logo.png"/></a>
-	<a href="#!index" class="onlyNotConnected"><span class="icon" ><i class="fa fa-bank" aria-hidden="true"></i></span> {{ $t("menu.home") }}</a>
-	<a href="#!account" class="onlyWhenConnected"><span class="icon" ><i class="fa fa-bank" aria-hidden="true"></i></span> {{ $t("menu.account") }}</a>
-	<a href="#!send" class="onlyWhenConnected notViewOnlyWallet"><span class="icon" ><i class="fa fa-level-up" aria-hidden="true"></i></span> {{ $t("menu.send") }}</a>
-	<a href="#!receive" class="onlyWhenConnected"><span class="icon" ><i class="fa fa-level-down" aria-hidden="true"></i></span> {{ $t("menu.receive") }}</a>
+
+	<a href="#!index" class="onlyNotConnected"><span class="icon" ><i class="fa fa-home" aria-hidden="true"></i></span> {{ $t("menu.home") }}</a>
+	<a href="#!account" class="onlyWhenConnected"><span class="icon" ><i class="fa fa-home" aria-hidden="true"></i></span> {{ $t("menu.account") }}</a>
+	<a href="#!send" class="onlyWhenConnected notViewOnlyWallet"><span class="icon" ><i class="fa fa-hand-o-up" aria-hidden="true"></i></span> {{ $t("menu.send") }}</a>
+	<a href="#!receive" class="onlyWhenConnected"><span class="icon" ><i class="fa fa-hand-o-down" aria-hidden="true"></i></span> {{ $t("menu.receive") }}</a>
 	<a href="#!export" class="onlyWhenConnected"><span class="icon" ><i class="fa fa-download" aria-hidden="true"></i></span> {{ $t("menu.export") }}</a>
-	<a href="#!settings" class="onlyWhenConnected"><span class="icon" ><i class="fa fa-cog" aria-hidden="true"></i></span> {{ $t("menu.settings") }}</a>
-	<a href="#!donate" ><span class="icon" ><i class="fa fa-heart" aria-hidden="true"></i></span> {{ $t("menu.donate") }}</a>
-	<a href="#!disconnect"  class="onlyWhenConnected"><span class="icon" ><i class="fa fa-cog" aria-hidden="true"></i></span> {{ $t("menu.disconnect") }}</a>
+	<a href="#!settings" class="onlyWhenConnected"><span class="icon" ><i class="fa fa-cogs" aria-hidden="true"></i></span> {{ $t("menu.settings") }}</a>
 	<a href="#!network" ><span class="icon" ><i class="fa fa-pie-chart" aria-hidden="true"></i></span> {{ $t("menu.network") }}</a>
+	<a href="#!disconnect"  class="onlyWhenConnected"><span class="icon" ><i class="fa fa-power-off" aria-hidden="true"></i></span> {{ $t("menu.disconnect") }}</a>
 </div>
 
 <div id="pageLoading" >
-	<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+	<i class="fa fa-dice-d20 fa-pulse fa-3x fa-fw"></i>
 	<span class="sr-only">{{ $t("global.loading") }}...</span>
 </div>
 
 <div id="page" ></div>
 
-<div id="copyright" v-cloak="" >
-	<div class="hideOnNative" >©2019 <a href='https://arqma.com' target='_new'>ArQmA</a></div>
-	<div class="links" >
-		<select v-model="language" class="hideOnNative">
+<div id="copyright" v-cloak="" class="hideOnNative">
+	<div>© 2019 Arqma-Network</div>
+	<div class="right" >
+		<select v-model="language">
 			<option value="en">English</option>
 			<option value="sr">Српски</option>
 			<option value="de">Deutch</option>
 			<option value="fr">Français</option>
-			<option value="it">Italian</option>
 			<option value="hu">Magyar</option>
 			<option value="gr">Ελληνικά</option>
 		</select>
 		<a href="#!termsOfUse" >{{ $t("bottom.termsOfUse") }}</a>
-		<a href="#!privacyPolicy" >{{ $t("bottom.privacyPolicy") }}</a>
-		<a class="hideOnNative" href="#!support" >{{ $t("bottom.support") }}</a>
-		<a class="hideOnNative" href="#!donate" >{{ $t("bottom.donate") }}</a>
-		<a class="hideOnNative" href="#!network" >{{ $t("bottom.network") }}</a>
-		<a class="hideOnNative" href="https://arqma.com" target="_blank" >{{ $t("bottom.miningPool") }}</a>
-		<a class="hideOnNative" href="https://github.com/arqma/arqma-webwallet" target="_blank">{{ $t("bottom.github") }}</a>
-	</div>
+		<a href="#!support" >{{ $t("bottom.support") }}</a>
+		</div>
 	<div class="cb" ></div>
 </div>
-
 <!--<script src="lib/polyfills/weakmap.min.js"></script>-->
 <script src="lib/polyfills/core.min.js"></script>
 <script src="lib/polyfills/textEncoding/encoding-indexes.js"></script>
