@@ -13,80 +13,47 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {RawFullyEncryptedWallet, RawWallet, Wallet} from "./Wallet";
+import {RawWallet, Wallet} from "./Wallet";
 import {CoinUri} from "./CoinUri";
-import {Storage} from "./Storage";
 
 export class WalletRepository{
-
-	static hasOneStored() : Promise<boolean>{
-		return Storage.getItem('wallet', null).then(function (wallet : any) {
-			return wallet !== null;
-		});
+	static hasOneStored(){
+		return window.localStorage.getItem('wallet') !== null;
 	}
 	
-	static decodeWithPassword(rawWallet : RawWallet|RawFullyEncryptedWallet, password : string) : Wallet|null{
+	static getWithPassword(rawWallet : RawWallet, password : string) : Wallet|null{
 		if(password.length > 32)
 			password = password.substr(0 , 32);
 		if(password.length < 32){
 			password = ('00000000000000000000000000000000'+password).slice(-32);
 		}
+
 		let privKey = new (<any>TextEncoder)("utf8").encode(password);
-		console.log('open wallet with nonce', rawWallet.nonce);
 		let nonce = new (<any>TextEncoder)("utf8").encode(rawWallet.nonce);
-
-		let decodedRawWallet = null;
-
-		//detect if old type or new type of wallet
-		if(typeof (<any>rawWallet).data !== 'undefined'){//RawFullyEncryptedWallet
-			console.log('new wallet format');
-			let rawFullyEncrypted : RawFullyEncryptedWallet = <any>rawWallet;
-			let encrypted = new Uint8Array(<any>rawFullyEncrypted.data);
-			let decrypted = nacl.secretbox.open(encrypted, nonce, privKey);
-			if(decrypted === null)
-				return null;
-
-			try {
-				decodedRawWallet = JSON.parse(new TextDecoder("utf8").decode(decrypted));
-			}catch (e) {
-				decodedRawWallet = null;
-			}
-		}else{//RawWallet
-			console.log('old wallet format');
-			let oldRawWallet : RawWallet = <any>rawWallet;
-			let encrypted = new Uint8Array(<any>oldRawWallet.encryptedKeys);
-			let decrypted = nacl.secretbox.open(encrypted, nonce, privKey);
-			if(decrypted === null)
-				return null;
-
-			oldRawWallet.encryptedKeys = new TextDecoder("utf8").decode(decrypted);
-			decodedRawWallet = oldRawWallet;
-		}
-
-		if(decodedRawWallet !== null){
-			let wallet = Wallet.loadFromRaw(decodedRawWallet);
-			if(wallet.coinAddressPrefix !== config.addressPrefix)
-				return null;
-			return wallet;
-		}
-		return null;
+		// rawWallet.encryptedKeys = this.b64DecodeUnicode(rawWallet.encryptedKeys);
+		let encrypted = new Uint8Array(<any>rawWallet.encryptedKeys);
+		let decrypted = nacl.secretbox.open(encrypted, nonce, privKey);
+		if(decrypted === null)
+			return null;
+		rawWallet.encryptedKeys = new TextDecoder("utf8").decode(decrypted);
+		return Wallet.loadFromRaw(rawWallet);
 	}
 
-	static getLocalWalletWithPassword(password : string) : Promise<Wallet|null>{
-		return Storage.getItem('wallet', null).then((existingWallet : any) => {
-			if(existingWallet !== null){
-				return this.decodeWithPassword(JSON.parse(existingWallet), password);
-			}else{
-				return null;
-			}
-		});
+	static getLocalWalletWithPassword(password : string) : Wallet|null{
+		let existingWallet = window.localStorage.getItem('wallet');
+		if(existingWallet !== null){
+			return this.getWithPassword(JSON.parse(existingWallet), password);
+		}else{
+			return null;
+		}
 	}
 	
-	static save(wallet : Wallet, password : string) : Promise<void>{
-		return Storage.setItem('wallet', JSON.stringify(this.getEncrypted(wallet, password)));
+	static save(wallet : Wallet, password : string){
+		let rawWallet = this.getEncrypted(wallet, password);
+		window.localStorage.setItem('wallet', JSON.stringify(rawWallet));
 	}
 
-	static getEncrypted(wallet : Wallet, password : string) : RawFullyEncryptedWallet{
+	static getEncrypted(wallet : Wallet, password : string){
 		if(password.length > 32)
 			password = password.substr(0 , 32);
 		if(password.length < 32){
@@ -96,26 +63,22 @@ export class WalletRepository{
 		let privKey = new (<any>TextEncoder)("utf8").encode(password);
 		let rawNonce = nacl.util.encodeBase64(nacl.randomBytes(16));
 		let nonce = new (<any>TextEncoder)("utf8").encode(rawNonce);
-
 		let rawWallet = wallet.exportToRaw();
-		let uint8EncryptedContent = new (<any>TextEncoder)("utf8").encode(JSON.stringify(rawWallet));
+		let uint8EncryptedKeys = new (<any>TextEncoder)("utf8").encode(rawWallet.encryptedKeys);
 
-		let encrypted : Uint8Array = nacl.secretbox(uint8EncryptedContent, nonce, privKey);
+		let encrypted : Uint8Array = nacl.secretbox(uint8EncryptedKeys, nonce, privKey);
+		rawWallet.encryptedKeys = <any>encrypted.buffer;
 		let tabEncrypted = [];
 		for(let i = 0; i < encrypted.length; ++i){
 			tabEncrypted.push(encrypted[i]);
 		}
-
-		let fullEncryptedWallet : RawFullyEncryptedWallet = {
-			data:tabEncrypted,
-			nonce:rawNonce
-		};
-
-		return fullEncryptedWallet;
+		rawWallet.encryptedKeys = <any>tabEncrypted;
+		rawWallet.nonce = rawNonce;
+		return rawWallet;
 	}
 
-	static deleteLocalCopy() : Promise<void>{
-		return Storage.remove('wallet');
+	static deleteLocalCopy(){
+		window.localStorage.removeItem('wallet');
 	}
 
 

@@ -18,14 +18,15 @@ import {DependencyInjectorInstance} from "../lib/numbersLab/DependencyInjector";
 import {Wallet} from "../model/Wallet";
 import {DestructableView} from "../lib/numbersLab/DestructableView";
 import {Constants} from "../model/Constants";
+import {VueFilterDate, VueFilterPiconero} from "../filters/Filters";
 import {AppState} from "../model/AppState";
-import {Transaction, TransactionIn} from "../model/Transaction";
-import {Cn} from "../model/Cn";
+import {Transaction} from "../model/Transaction";
 
 let wallet : Wallet = DependencyInjectorInstance().getInstance(Wallet.name,'default', false);
 let blockchainExplorer = DependencyInjectorInstance().getInstance(Constants.BLOCKCHAIN_EXPLORER);
-(<any>window).wallet = wallet;
 
+@VueRequireFilter('date',VueFilterDate)
+@VueRequireFilter('piconero',VueFilterPiconero)
 class AccountView extends DestructableView{
 	@VueVar([]) transactions !: Transaction[];
 	@VueVar(0) walletAmount !: number;
@@ -33,7 +34,6 @@ class AccountView extends DestructableView{
 
 	@VueVar(0) currentScanBlock !: number;
 	@VueVar(0) blockchainHeight !: number;
-	@VueVar(Math.pow(10, config.coinUnitPlaces)) currencyDivider !: number;
 
 	intervalRefresh : number = 0;
 
@@ -57,37 +57,39 @@ class AccountView extends DestructableView{
 		blockchainExplorer.getHeight().then(function(height : number){
 			self.blockchainHeight = height;
 		});
+		// self.blockchainHeight = blockchainExplorer.getScannedHeight();
 
-		this.refreshWallet();
+		// if(this.currentScanBlock === 0){
+			this.refreshWallet();
+		// }
+
+		//save wallet if modified
+		// if(wallet.hasBeenModified()){
+		// 	this.refreshWallet();
+			// let walletExported = wallet.exportToRaw();
+			// window.localStorage.setItem('wallet', JSON.stringify(walletExported));
+		// }
 	}
 
 	moreInfoOnTx(transaction : Transaction){
-		let explorerUrlHash = config.testnet ? config.testnetExplorerUrlHash : config.mainnetExplorerUrlHash;
-		let explorerUrlBlock = config.testnet ? config.testnetExplorerUrlBlock : config.mainnetExplorerUrlBlock;
+		let explorerUrl = config.testnet ? config.testnetExplorerUrl : config.mainnetExplorerUrl;
 		let feesHtml = '';
 		if(transaction.getAmount() < 0)
-			feesHtml = `<div>`+i18n.t('accountPage.txDetails.feesOnTx')+`: `+Cn.formatMoneySymbol(transaction.fees)+`</a></div>`;
+			feesHtml = `<div>`+i18n.t('accountPage.txDetails.feesOnTx')+`: `+Vue.options.filters.piconero(transaction.fees)+`</a></div>`;
 
 		let paymentId = '';
 		if(transaction.paymentId !== ''){
 			paymentId = `<div>`+i18n.t('accountPage.txDetails.paymentId')+`: `+transaction.paymentId+`</a></div>`;
 		}
 
-		let txPrivKeyMessage = '';
-		let txPrivKey = wallet.findTxPrivateKeyWithHash(transaction.hash);
-		if(txPrivKey !== null){
-			txPrivKeyMessage = `<div>`+i18n.t('accountPage.txDetails.txPrivKey')+`: `+txPrivKey+`</a></div>`;
-		}
-
 		swal({
 			title:i18n.t('accountPage.txDetails.title'),
 			html:`
 <div class="tl" >
-	<div>`+i18n.t('accountPage.txDetails.txHash')+`: <a href="`+explorerUrlHash.replace('{ID}', transaction.hash)+`" target="_blank">`+transaction.hash+`</a></div>
+	<div>`+i18n.t('accountPage.txDetails.txHash')+`: <a href="`+explorerUrl+`tx/`+transaction.hash+`" target="_blank">`+transaction.hash+`</a></div>
 	`+paymentId+`
 	`+feesHtml+`
-	`+txPrivKeyMessage+`
-	<div>`+i18n.t('accountPage.txDetails.blockHeight')+`: <a href="`+explorerUrlBlock.replace('{ID}', ''+transaction.blockHeight)+`" target="_blank">`+transaction.blockHeight+`</a></div>
+	<div>`+i18n.t('accountPage.txDetails.blockHeight')+`: `+transaction.blockHeight+`</a></div>
 </div>`
 		});
 	}

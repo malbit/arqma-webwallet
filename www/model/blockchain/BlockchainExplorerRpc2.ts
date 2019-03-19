@@ -13,20 +13,19 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {BlockchainExplorer, RawDaemon_Transaction} from "./BlockchainExplorer";
+import {BlockchainExplorer} from "./BlockchainExplorer";
 import {Wallet} from "../Wallet";
 import {TransactionsExplorer, TX_EXTRA_TAG_PUBKEY} from "../TransactionsExplorer";
-// import {CryptoUtils} from "../CryptoUtils";
+import {CryptoUtils} from "../CryptoUtils";
 import {Transaction} from "../Transaction";
 import {MathUtil} from "../MathUtil";
-import {CnTransactions, CnUtils} from "../Cn";
 
 export class WalletWatchdog{
 
 	wallet : Wallet;
 	explorer : BlockchainExplorerRpc2;
 
-	constructor(wallet: Wallet, explorer: BlockchainExplorerRpc2) {
+	constructor(wallet: Wallet, explorer : BlockchainExplorerRpc2) {
 		this.wallet = wallet;
 		this.explorer = explorer;
 
@@ -39,6 +38,7 @@ export class WalletWatchdog{
 		this.workerProcessing = new Worker('./workers/TransferProcessingEntrypoint.js');
 		this.workerProcessing.onmessage = function(data : MessageEvent){
 			let message : string|any = data.data;
+			// console.log(message);
 			if(message === 'ready'){
 				self.signalWalletUpdate();
 			}else if(message === 'readyWallet'){
@@ -47,12 +47,11 @@ export class WalletWatchdog{
 				if(message.type === 'processed'){
 					let transactions = message.transactions;
 					if(transactions.length > 0) {
-						for(let tx of transactions)
-							self.wallet.addNew(Transaction.fromRaw(tx));
+						self.wallet.addNew(Transaction.fromRaw(transactions[0]));
 						self.signalWalletUpdate();
 					}
-					if(self.workerCurrentProcessing.length>0) {
-						let transactionHeight = self.workerCurrentProcessing[self.workerCurrentProcessing.length-1].height;
+					if(self.workerCurrentProcessing) {
+						let transactionHeight = self.workerCurrentProcessing.height;
 						if(typeof transactionHeight !== 'undefined')
 							self.wallet.lastHeight = transactionHeight;
 					}
@@ -68,7 +67,7 @@ export class WalletWatchdog{
 		this.lastBlockLoading = -1;//reset scanning
 		this.workerProcessing.postMessage({
 			type:'initWallet',
-			wallet:this.wallet.exportToRaw()
+			wallet:this.wallet.exportToRaw(true)
 		});
 		clearInterval(this.intervalTransactionsProcess);
 		this.intervalTransactionsProcess = setInterval(function(){
@@ -118,21 +117,21 @@ export class WalletWatchdog{
 	terminateWorker(){
 		this.workerProcessing.terminate();
 		this.workerProcessingReady = false;
-		this.workerCurrentProcessing = [];
+		this.workerCurrentProcessing = null;
 		this.workerProcessingWorking = false;
 		this.workerCountProcessed = 0;
 	}
 
-	transactionsToProcess : RawDaemon_Transaction[] = [];
+	transactionsToProcess : RawDaemonTransaction[] = [];
 	intervalTransactionsProcess = 0;
 
 	workerProcessing !: Worker;
 	workerProcessingReady = false;
 	workerProcessingWorking = false;
-	workerCurrentProcessing : RawDaemon_Transaction[] = [];
+	workerCurrentProcessing : null|RawDaemonTransaction = null;
 	workerCountProcessed = 0;
 
-	checkTransactions(rawTransactions : RawDaemon_Transaction[]){
+	checkTransactions(rawTransactions : RawDaemonTransaction[]){
 		for(let rawTransaction of rawTransactions){
 			let height = rawTransaction.height;
 			if(typeof height !== 'undefined') {
@@ -164,12 +163,12 @@ export class WalletWatchdog{
 			return;
 		}
 
-		let transactionsToProcess : RawDaemon_Transaction[] = this.transactionsToProcess.splice(0, 30);
-		if(transactionsToProcess.length > 0) {
+		let transactionsToProcess = this.transactionsToProcess.shift();
+		if(transactionsToProcess !== undefined) {
 			this.workerCurrentProcessing = transactionsToProcess;
 			this.workerProcessing.postMessage({
 				type:'process',
-				transactions:transactionsToProcess
+				transactions:[transactionsToProcess]
 			});
 			++this.workerCountProcessed;
 			this.workerProcessingWorking = true;
@@ -179,7 +178,7 @@ export class WalletWatchdog{
 		}
 	}
 
-	processTransactions(transactions : RawDaemon_Transaction[]){
+	processTransactions(transactions : RawDaemonTransaction[]){
 		let transactionsToAdd = [];
 		for(let tr of transactions){
 			if(typeof tr.height !== 'undefined')
@@ -223,33 +222,31 @@ export class WalletWatchdog{
 			if(self.lastBlockLoading !== height){
 				let previousStartBlock = self.lastBlockLoading;
 				let startBlock = Math.floor(self.lastBlockLoading/100)*100;
+				let endBlock = height;
+				if(endBlock - startBlock > 100){
+					endBlock = startBlock + 100;
+				}
 				// console.log('=>',self.lastBlockLoading, endBlock, height, startBlock, self.lastBlockLoading);
-				console.log('load block from '+startBlock);
-				self.explorer.getTransactionsForBlocks(previousStartBlock).then(function(transactions : RawDaemon_Transaction[]){
+				console.log('load block from '+startBlock+' to '+endBlock);
+				self.explorer.getTransactionsForBlocks(previousStartBlock).then(function(transactions : RawDaemonTransaction[]){
 					//to ensure no pile explosion
-					if(transactions.length > 0){
-						let lastTx = transactions[transactions.length-1];
-						if(typeof lastTx.height !== 'undefined') {
-							self.lastBlockLoading = lastTx.height + 1;
-						}
-					}
-
+					self.lastBlockLoading = endBlock;
 					self.processTransactions(transactions);
-					setTimeout(function() {
+					setTimeout(function () {
 						self.loadHistory();
 					}, 1);
 				}).catch(function(){
-					setTimeout(function() {
+					setTimeout(function () {
 						self.loadHistory();
 					}, 30*1000);//retry 30s later if an error occurred
 				});
-			} else {
-				setTimeout(function() {
+			}else{
+				setTimeout(function () {
 					self.loadHistory();
 				}, 30*1000);
 			}
 		}).catch(function(){
-			setTimeout(function() {
+			setTimeout(function () {
 				self.loadHistory();
 			}, 30*1000);//retry 30s later if an error occurred
 		});
@@ -277,12 +274,12 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 				method: 'POST',
 				data: JSON.stringify({
 				})
-			}).done(function(raw: any) {
+			}).done(function (raw: any) {
 				// self.heightCache = raw.height;
 				// resolve(raw.height);
 				self.heightCache = parseInt(raw);
 				resolve(self.heightCache);
-			}).fail(function(data: any) {
+			}).fail(function (data: any) {
 				reject(data);
 			});
 		});
@@ -304,9 +301,9 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 		return watchdog;
 	}
 
-	getTransactionsForBlocks(startBlock : number) : Promise<RawDaemon_Transaction[]>{
+	getTransactionsForBlocks(startBlock : number) : Promise<RawDaemonTransaction[]>{
 		let self = this;
-		return new Promise<RawDaemon_Transaction[]>(function (resolve, reject) {
+		return new Promise<RawDaemonTransaction[]>(function (resolve, reject) {
 			$.ajax({
 				url: self.serverAddress+'blockchain.php?height='+startBlock,
 				method: 'GET',
@@ -320,9 +317,9 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 		});
 	}
 
-	getTransactionPool() : Promise<RawDaemon_Transaction[]>{
+	getTransactionPool() : Promise<RawDaemonTransaction[]>{
 		let self = this;
-		return new Promise<RawDaemon_Transaction[]>(function (resolve, reject) {
+		return new Promise<RawDaemonTransaction[]>(function (resolve, reject) {
 			$.ajax({
 				url: self.serverAddress+'getTransactionPool.php',
 				method: 'GET',
@@ -351,7 +348,7 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 		}
 
 		return this.getHeight().then(function(height : number){
-			let txs : RawDaemon_Transaction[] = [];
+			let txs : RawDaemonTransaction[] = [];
 			let promises = [];
 
 			let randomBlocksIndexesToGet : number[] = [];
@@ -366,7 +363,7 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 				}while(selectedIndex === -1 || randomBlocksIndexesToGet.indexOf(selectedIndex) !== -1);
 				randomBlocksIndexesToGet.push(selectedIndex);
 
-				let promise = self.getTransactionsForBlocks(Math.floor(selectedIndex/100)*100).then(function(rawTransactions : RawDaemon_Transaction[]){
+				let promise = self.getTransactionsForBlocks(Math.floor(selectedIndex/100)*100).then(function(rawTransactions : RawDaemonTransaction[]){
 					txs.push.apply(txs,rawTransactions);
 				});
 				promises.push(promise);
@@ -402,8 +399,8 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 						if(typeof tx.global_index_start !== 'undefined')
 							globalIndex += tx.global_index_start;
 
-						if(parseInt(tx.vout[output_idx_in_tx].amount) !== 0){//check if miner tx
-							rct = CnTransactions.zeroCommit(CnUtils.d2s(tx.vout[output_idx_in_tx].amount));
+						if(tx.vout[output_idx_in_tx].amount !== 0){//check if miner tx
+							rct = cnUtil.zeroCommit(cnUtil.d2s(tx.vout[output_idx_in_tx].amount));
 						}else {
 							let rtcOutPk = tx.rct_signatures.outPk[output_idx_in_tx];
 							let rtcMask = tx.rct_signatures.ecdhInfo[output_idx_in_tx].mask;
@@ -471,15 +468,15 @@ export class BlockchainExplorerRpc2 implements BlockchainExplorer{
 		});
 	}
 
-	resolveOpenAlias(domain: string) : Promise<{address:string, name:string|null}>{
+	resolveOpenAlias(domain : string) : Promise<{address:string, name:string|null}>{
 		let self = this;
 		return new Promise(function(resolve, reject){
 			$.ajax({
 				url: self.serverAddress+'openAlias.php?domain='+domain,
 				method: 'GET',
-			}).done(function(response: any) {
+			}).done(function (response: any) {
 				resolve(response);
-			}).fail(function(data: any) {
+			}).fail(function (data: any) {
 				reject(data);
 			});
 		});

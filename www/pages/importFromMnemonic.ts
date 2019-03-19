@@ -24,7 +24,6 @@ import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvide
 import {BlockchainExplorerRpc2} from "../model/blockchain/BlockchainExplorerRpc2";
 import {Mnemonic} from "../model/Mnemonic";
 import {MnemonicLang} from "../model/MnemonicLang";
-import {Cn} from "../model/Cn";
 
 AppState.enableLeftMenu();
 
@@ -79,12 +78,12 @@ class ImportView extends DestructableView{
 		blockchainExplorer.getHeight().then(function(currentHeight){
 			let newWallet = new Wallet();
 
-			let mnemonic = self.mnemonicPhrase.trim();
+			let mnemonic = self.mnemonicPhrase;
 			// let current_lang = 'english';
 			let current_lang = 'english';
 
 			if(self.language === 'auto') {
-				let detectedLang = Mnemonic.detectLang(self.mnemonicPhrase.trim());
+				let detectedLang = Mnemonic.detectLang(self.mnemonicPhrase);
 				if(detectedLang !== null)
 					current_lang = detectedLang;
 			}
@@ -93,7 +92,7 @@ class ImportView extends DestructableView{
 
 			let mnemonic_decoded = Mnemonic.mn_decode(mnemonic, current_lang);
 			if(mnemonic_decoded !== null) {
-				let keys = Cn.create_address(mnemonic_decoded);
+				let keys = cnUtil.create_address(mnemonic_decoded);
 
 				let newWallet = new Wallet();
 				newWallet.keys = KeysRepository.fromPriv(keys.spend.sec, keys.view.sec);
@@ -146,11 +145,11 @@ class ImportView extends DestructableView{
 	}
 
 	checkMnemonicValidity(){
-		let splitted = this.mnemonicPhrase.trim().split(' ');
+		let splitted = this.mnemonicPhrase.split(' ');
 		if(splitted.length != 25){
 			this.validMnemonicPhrase = false;
 		}else {
-			let detected = Mnemonic.detectLang(this.mnemonicPhrase.trim());
+			let detected = Mnemonic.detectLang(this.mnemonicPhrase);
 			if(this.language === 'auto')
 				this.validMnemonicPhrase = detected !== null;
 			else

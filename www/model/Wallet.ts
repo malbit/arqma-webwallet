@@ -16,7 +16,7 @@
 import {Transaction, TransactionIn, TransactionOut} from "./Transaction";
 import {KeysRepository, UserKeys} from "./KeysRepository";
 import {Observable} from "../lib/numbersLab/Observable";
-import {Cn, CnTransactions} from "./Cn";
+import {CryptoUtils} from "./CryptoUtils";
 
 export type RawWalletOptions = {
 	checkMinerTx?:boolean,
@@ -48,18 +48,12 @@ export class WalletOptions{
 
 export type RawWallet = {
 	transactions : any[],
-	txPrivateKeys?:any,
 	lastHeight : number,
 	encryptedKeys?:string|Array<number>,
 	nonce:string,
 	keys?:UserKeys,
 	creationHeight?:number,
-	options?:RawWalletOptions,
-	coinAddressPrefix?:any,
-}
-export type RawFullyEncryptedWallet = {
-	data:number[],
-	nonce:string
+	options?:RawWalletOptions
 }
 
 export class Wallet extends Observable{
@@ -72,14 +66,12 @@ export class Wallet extends Observable{
 	txsMem : Transaction[] = [];
 	private modified = true;
 	creationHeight : number = 0;
-	txPrivateKeys : {[id: string]: string} = {};
-	coinAddressPrefix:any = config.addressPrefix;
 
 	keys !: UserKeys;
 
 	private _options : WalletOptions = new WalletOptions();
 
-	exportToRaw() : RawWallet{
+	exportToRaw(includeKeys=false) : RawWallet{
 		let transactions : any[] = [];
 		for(let transaction of this.transactions){
 			transactions.push(transaction.export());
@@ -87,28 +79,33 @@ export class Wallet extends Observable{
 
 		let data : RawWallet = {
 			transactions: transactions,
-			txPrivateKeys:this.txPrivateKeys,
 			lastHeight: this._lastHeight,
 			nonce:'',
-			options : this._options,
-			coinAddressPrefix:this.coinAddressPrefix
+			options : this._options
 		};
 
-		data.keys = this.keys;
+		if(includeKeys){
+			data.keys = this.keys;
+		}else{
+			if(this.keys.priv.spend !== '')
+				data.encryptedKeys=this.keys.priv.view+this.keys.priv.spend;
+			else
+				data.encryptedKeys=this.keys.priv.view+this.keys.pub.view+this.keys.pub.spend;
+		}
 
 		if(this.creationHeight !== 0) data.creationHeight = this.creationHeight;
 
 		return data;
 	}
 
-	static loadFromRaw(raw : RawWallet) : Wallet{
+	static loadFromRaw(raw : RawWallet, includeKeys=false) : Wallet{
 		let wallet = new Wallet();
 		wallet.transactions = [];
 		for(let rawTransac of raw.transactions){
 			wallet.transactions.push(Transaction.fromRaw(rawTransac));
 		}
 		wallet._lastHeight = raw.lastHeight;
-		if(typeof raw.encryptedKeys === 'string' && raw.encryptedKeys !== '') {
+		if(typeof raw.encryptedKeys === 'string') {
 			if(raw.encryptedKeys.length === 128) {
 				let privView = raw.encryptedKeys.substr(0, 64);
 				let privSpend = raw.encryptedKeys.substr(64, 64);
@@ -129,16 +126,13 @@ export class Wallet extends Observable{
 					}
 				};
 			}
-		}else if(typeof raw.keys !== 'undefined'){
+		}
+		if(includeKeys && typeof raw.keys !== 'undefined'){
 			wallet.keys = raw.keys;
 		}
 		if(typeof raw.creationHeight !== 'undefined') wallet.creationHeight = raw.creationHeight;
 
 		if(typeof raw.options !== 'undefined') wallet._options = WalletOptions.fromRaw(raw.options);
-		if(typeof raw.txPrivateKeys !== 'undefined') wallet.txPrivateKeys = raw.txPrivateKeys;
-
-		if(typeof raw.coinAddressPrefix !== 'undefined') wallet.coinAddressPrefix = raw.coinAddressPrefix;
-		else wallet.coinAddressPrefix = config.addressPrefix;
 
 		wallet.recalculateKeyImages();
 		return wallet;
@@ -168,7 +162,19 @@ export class Wallet extends Observable{
 	}
 
 	getAll(forceReload=false) : Transaction[]{
-		return this.transactions.slice();
+		if(this.transactions.length > 0 && !forceReload)
+			return this.transactions;
+
+		let data = window.localStorage.getItem('transactions');
+		if(data === null)
+			return [];
+		let decoded = JSON.parse(data);
+		let news : Array<Transaction> = [];
+		for(let rawTransac of decoded){
+			news.push(Transaction.fromRaw(rawTransac));
+		}
+		this.transactions = news;
+		return news;
 	}
 
 	getAllOuts() : TransactionOut[]{
@@ -203,16 +209,6 @@ export class Wallet extends Observable{
 			if(tr.txPubKey === pubKey)
 				return tr;
 		return null;
-	}
-
-	findTxPrivateKeyWithHash(hash : string) : string|null{
-		if(typeof this.txPrivateKeys[hash] !== 'undefined')
-			return this.txPrivateKeys[hash];
-		return null;
-	}
-
-	addTxPrivateKeyWithTxHash(txHash : string, txPrivKey : string) : void{
-		this.txPrivateKeys[txHash] = txPrivKey;
 	}
 
 	getTransactionKeyImages(){
@@ -307,7 +303,7 @@ export class Wallet extends Observable{
 	}
 
 	getPublicAddress(){
-		return Cn.pubkeys_to_string(this.keys.pub.spend,this.keys.pub.view);
+		return cnUtil.pubkeys_to_string(this.keys.pub.spend,this.keys.pub.view);
 	}
 
 	recalculateIfNotViewOnly(){
@@ -324,13 +320,13 @@ export class Wallet extends Observable{
 				if(needDerivation) {
 					let derivation = '';
 					try {
-						derivation = Cn.generate_key_derivation(tx.txPubKey, this.keys.priv.view);//9.7ms
+						derivation = cnUtil.generate_key_derivation(tx.txPubKey, this.keys.priv.view);//9.7ms
 					} catch (e) {
 						continue;
 					}
 					for (let out of tx.outs) {
 						if (out.keyImage === '') {
-							let m_key_image = CnTransactions.generate_key_image_helper({
+							let m_key_image = CryptoUtils.generate_key_image_helper({
 								view_secret_key: this.keys.priv.view,
 								spend_secret_key: this.keys.priv.spend,
 								public_spend_key: this.keys.pub.spend,

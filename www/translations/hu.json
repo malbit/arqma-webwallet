@@ -13,7 +13,8 @@
 	  "donate": "Adományozás",
 	  "settings": "Beállítások",
 	  "disconnect": "Szétkapcsolás",
-	  "network": "Hálózati statisztika"
+	  "network": "Hálózati statisztika",
+	  "mining": "Bányászás"
 	},
 	"global": {
 	  "loading": "Betöltés",
@@ -111,8 +112,7 @@
 		"txHash":"Tranzakció hash",
 		"feesOnTx":"Tranzakció díjai",
 		"blockHeight":"Blokk",
-		"paymentId":"Fizetési azonosító",
-		"txPrivKey":"Transaction Private Key"
+		"paymentId":"Fizetési azonosító"
 	  }
 	},
 	"changeWalletPasswordPage":{
@@ -151,10 +151,8 @@
 		"validPassword":"Megadott jelszó használata",
 		"backupBlock":{
 		  "title":"Mentsd el a visszaállításra szolgáló privát adataidat.",
-		  "option1":"1. ",
-		  "option2":"2. ",
-		  "titlePdf":"lehetőség: másolat letöltése PDF-ben",
-		  "titleManualWrite":"lehetőség: kulcsok lejegyzése",
+		  "titlePdf":"1. lehetőség: másolat letöltése PDF-ben",
+		  "titleManualWrite":"2. lehetőség: kulcsok lejegyzése",
 		  "privateKeys":"Privát kulcs",
 		  "mnemonicPhrase":"Mnemonikus szósor",
 		  "separatorManualMethodsSolution":" vagy ",
@@ -261,10 +259,6 @@
 		"content":"Mennyiség: {amount}<br/>Díj: {fees}<br/>Összesen: {total}",
 		"confirmText":"Megerősítés",
 		"cancelText":"Mégsem"
-	  },
-	  "waitingNfcModal":{
-		"title":"Waiting Nfc",
-		"content":"Bring closer to the other device"
 	  }
 	},
 	"receivePage":{
@@ -284,14 +278,6 @@
 	  },
 	  "qrBlock":{
 		"title":"Egyéni QR-kód"
-	  },
-	  "waitingNfcToWriteModal":{
-		"title":"Waiting Nfc",
-		"titleSuccess":"Nfc Tag written",
-		"content":"Bring closer the NFC tag to write"
-	  },
-	  "nfcErrorModal":{
-		"titleInsufficientCapacity":"Tag capacity insufficient"
 	  }
 	},
 	"miningPage":{
@@ -316,10 +302,6 @@
 	"settingsPage":{
 	  "title":"Beállítások",
 	  "subtitle":"Módosítsd a beállításaidat",
-	  "versionBlock":{
-		"versionNumber":"Version number: ",
-		"versionCode":"Version code: "
-	  },
 	  "settingsBlock":{
 		"speed":{
 		  "label":"Tárcafrissítés sebessége (több erőforrást igényel)",
@@ -327,9 +309,6 @@
 		  "fast":"Gyors",
 		  "medium":"Közepes",
 		  "slow":"Lassú"
-		},
-		"language":{
-		  "label":"Language"
 		},
 		"readMinerTx":{
 		  "label":"Bányászási tranzakciók beolvasása (csak egyedülálló bányászás esetén)"
@@ -475,6 +454,7 @@
 	}
   },
   "number":{
+
   },
   "date":{
 	"short": {
@@ -482,7 +462,7 @@
 	},
 	"long": {
 	  "year": "numeric", "month": "short", "day": "numeric",
-	  "weekday": "short", "hour": "numeric", "minute": "numeric", "hour12": false
+	  "weekday": "short", "hour": "numeric", "minute": "numeric", "hour12": true
 	}
   }
 }

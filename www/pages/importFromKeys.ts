@@ -22,7 +22,6 @@ import {Wallet} from "../model/Wallet";
 import {KeysRepository} from "../model/KeysRepository";
 import {BlockchainExplorerProvider} from "../providers/BlockchainExplorerProvider";
 import {BlockchainExplorerRpc2} from "../model/blockchain/BlockchainExplorerRpc2";
-import {Cn, CnUtils} from "../model/Cn";
 
 AppState.enableLeftMenu();
 
@@ -68,11 +67,11 @@ class ImportView extends DestructableView{
 		blockchainExplorer.getHeight().then(function(currentHeight){
 			let newWallet = new Wallet();
 			if(self.viewOnly){
-				let decodedPublic = Cn.decode_address(self.publicAddress.trim());
+				let decodedPublic = cnUtil.decode_address(self.publicAddress);
 				newWallet.keys = {
 					priv:{
 						spend:'',
-						view:self.privateViewKey.trim()
+						view:self.privateViewKey
 					},
 					pub:{
 						spend:decodedPublic.spend,
@@ -81,12 +80,12 @@ class ImportView extends DestructableView{
 				};
 			}else {
 				console.log(1);
-				let viewkey = self.privateViewKey.trim();
+				let viewkey = self.privateViewKey;
 				if(viewkey === ''){
-					viewkey = Cn.generate_keys(CnUtils.cn_fast_hash(self.privateSpendKey.trim())).sec;
+					viewkey = cnUtil.generate_keys(cnUtil.cn_fast_hash(self.privateSpendKey)).sec;
 				}
 				console.log(1, viewkey);
-				newWallet.keys = KeysRepository.fromPriv(self.privateSpendKey.trim(), viewkey);
+				newWallet.keys = KeysRepository.fromPriv(self.privateSpendKey, viewkey);
 				console.log(1);
 			}
 
@@ -125,18 +124,18 @@ class ImportView extends DestructableView{
 
 	@VueWatched()
 	privateSpendKeyWatch(){
-		this.validPrivateSpendKey = this.privateSpendKey.trim().length == 64;
+		this.validPrivateSpendKey = this.privateSpendKey.length == 64;
 	}
 
 	@VueWatched()
 	privateViewKeyWatch(){
-		this.validPrivateViewKey = this.privateViewKey.trim().length == 64 || (!this.viewOnly && this.privateViewKey.trim().length == 0);
+		this.validPrivateViewKey = this.privateViewKey.length == 64 || (!this.viewOnly && this.privateViewKey.length == 0);
 	}
 
 	@VueWatched()
 	publicAddressWatch(){
 		try{
-			Cn.decode_address(this.publicAddress.trim());
+			cnUtil.decode_address(this.publicAddress);
 			this.validPublicAddress = true;
 		}catch(e){
 			this.validPublicAddress = false;

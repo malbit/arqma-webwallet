@@ -13,7 +13,8 @@
 	  "donate": "Spenden",
 	  "settings": "Einstellungen",
 	  "disconnect": "Verbindung trennen",
-	  "network": "Netzwerkstatus"
+	  "network": "Netzwerkstatus",
+	  "mining": "Minen"
 	},
 	"global": {
 	  "loading": "wird geladen",
@@ -111,8 +112,7 @@
 		"txHash":"Tx hash",
 		"feesOnTx":"Gebühren der tx",
 		"blockHeight":"Blockhöhe",
-		"paymentId":"Payment ID",
-		"txPrivKey":"Transaction Private Key"
+		"paymentId":"Payment ID"
 	  }
 	},
 	"changeWalletPasswordPage":{
@@ -151,10 +151,8 @@
 		"validPassword":"Benutze diese Passwort",
 		"backupBlock":{
 		  "title":"Bitte lade eine verschlüsselte Kopie deiner Zugangsdaten für zukünftige Verwendung herunter",
-		  "option1":"Option 1: ",
-		  "option2":"Option 2: ",
-		  "titlePdf":"Download einer PDF Kopie",
-		  "titleManualWrite":"Schreibe meine Schlüssel auf",
+		  "titlePdf":"Option 1: Download einer PDF Kopie",
+		  "titleManualWrite":"Option 2: Schreibe meine Schlüssel auf",
 		  "privateKeys":"Private key",
 		  "mnemonicPhrase":"Mnemonic phrase",
 		  "separatorManualMethodsSolution":" oder ",
@@ -261,10 +259,6 @@
 		"content":"Amount: {amount}<br/>Fees: {fees}<br/>Total: {total}",
 		"confirmText":"Bestätigen",
 		"cancelText":"Abbrechen"
-	  },
-	  "waitingNfcModal":{
-		"title":"Waiting Nfc",
-		"content":"Bring closer to the other device"
 	  }
 	},
 	"receivePage":{
@@ -284,14 +278,6 @@
 	  },
 	  "qrBlock":{
 		"title":"Dein personlisierter QR code"
-	  },
-	  "waitingNfcToWriteModal":{
-		"title":"Waiting Nfc",
-		"titleSuccess":"Nfc Tag written",
-		"content":"Bring closer the NFC tag to write"
-	  },
-	  "nfcErrorModal":{
-		"titleInsufficientCapacity":"Tag capacity insufficient"
 	  }
 	},
 	"miningPage":{
@@ -316,10 +302,6 @@
 	"settingsPage":{
 	  "title":"Einstellungen",
 	  "subtitle":"Hier änderst du deine Parameter",
-	  "versionBlock":{
-		"versionNumber":"Version number: ",
-		"versionCode":"Version code: "
-	  },
 	  "settingsBlock":{
 		"speed":{
 		  "label":"Geschwindigkeit des Walletupdates (braucht mehr Energie)",
@@ -327,9 +309,6 @@
 		  "fast":"schnell",
 		  "medium":"mittel",
 		  "slow":"langsam"
-		},
-		"language":{
-		  "label":"Language"
 		},
 		"readMinerTx":{
 		  "label":"Miner Transaktionen lesen (nur für Leute die solo minen)"
@@ -483,7 +462,7 @@
 	},
 	"long": {
 	  "year": "numeric", "month": "short", "day": "numeric",
-	  "weekday": "short", "hour": "numeric", "minute": "numeric", "hour12": false
+	  "weekday": "short", "hour": "numeric", "minute": "numeric", "hour12": true
 	}
   }
 }

@@ -24,7 +24,7 @@ $resp = curl_exec($curl);
 curl_close($curl);
 
 $blobString1 = '"tx_blob": "';
-$blobString2 = '"tx_blob":"';
+$blobString2 = '"tx_blob": "';
 $posTxBlob = 0;
 $searchTxBlock1 = 0;
 $searchTxBlock2 = 0;
@@ -38,14 +38,14 @@ while(($searchTxBlock1 = strpos($resp,$blobString1)) !== false || ($searchTxBloc
 		$posTxBlob = $searchTxBlock2;
 		$posEndTxBlock = $posTxBlob + strlen($blobString2);
 	}
-	
+
 	$i = 0;
 	do{
 		++$posEndTxBlock;
 		$posEndTxBlock = strpos($resp, '"', $posEndTxBlock);
 		++$i;
 	}while($posEndTxBlock !== false && $resp[$posEndTxBlock-1] === '\\');
-	
+
 	$resp = substr($resp, 0, $posTxBlob).substr($resp, $posEndTxBlock+2);
 }
 
@@ -61,4 +61,3 @@ if(isset($jsonMempool['transactions'])){
 
 header('Content-Type: application/json');
 echo json_encode($jsonMempool);
-
