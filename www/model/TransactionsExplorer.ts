@@ -166,7 +166,7 @@ export class TransactionsExplorer {
 
 		let derivation = null;
 		try {
-			derivation = CnNativeBride.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);//9.7ms
+			derivation = Cn.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);//9.7ms
 			// derivation = CnUtilNative.generate_key_derivation(tx_pub_key, wallet.keys.priv.view);
 		} catch (e) {
 			console.log('UNABLE TO CREATE DERIVATION', e);
