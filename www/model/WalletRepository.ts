@@ -20,7 +20,7 @@ export class WalletRepository{
 	static hasOneStored(){
 		return window.localStorage.getItem('wallet') !== null;
 	}
-	
+
 	static getWithPassword(rawWallet : RawWallet, password : string) : Wallet|null{
 		if(password.length > 32)
 			password = password.substr(0 , 32);
@@ -47,7 +47,7 @@ export class WalletRepository{
 			return null;
 		}
 	}
-	
+
 	static save(wallet : Wallet, password : string){
 		let rawWallet = this.getEncrypted(wallet, password);
 		window.localStorage.setItem('wallet', JSON.stringify(rawWallet));
@@ -154,7 +154,7 @@ export class WalletRepository{
 		let c : HTMLCanvasElement|null = <HTMLCanvasElement>document.getElementById('canvasExport');
 		if(c !== null) {
 			let ctx = c.getContext("2d");
-			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("verticalMasariLogo");
+			let img: ImageBitmap | null = <ImageBitmap | null>document.getElementById("verticalArqmaLogo");
 			if (ctx !== null && img !== null) {
 				c.width = img.width;
 				c.height = img.height;
