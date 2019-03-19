@@ -126,6 +126,8 @@ export class CryptoUtils{
 
 	static RCTTypeFull = 1;
 	static RCTTypeSimple = 2;
+	static RCTTypeFullBulletproof = 3;
+	static RCTTypeSimpleBulletproof = 4;
 
 	static decode_ringct(rv:any,
 						   pub : any,
@@ -157,6 +159,22 @@ export class CryptoUtils{
 
 					break;
 				case CryptoUtils.RCTTypeFull:
+					// console.log('RCTTypeSimple');
+					amount = CryptoUtils.decodeRctSimple(rv,
+						scalar1,
+						i,
+						mask);
+					break;
+
+				case CryptoUtils.RCTTypeFullBulletproof:
+					// console.log('RCTTypeSimple');
+					amount = CryptoUtils.decodeRctSimple(rv,
+						scalar1,
+						i,
+						mask);
+					break;
+
+				case CryptoUtils.RCTTypeSimpleBulletproof:
 					// console.log('RCTTypeSimple');
 					amount = CryptoUtils.decodeRctSimple(rv,
 						scalar1,
