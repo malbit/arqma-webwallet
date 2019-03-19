@@ -34,7 +34,7 @@ if (config.testnet === true)
 	CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = config.subAddressPrefixTestnet;
 }
 let UINT64_MAX = new JSBigInt(2).pow(64);
-let CURRENT_TX_VERSION = 1;
+let CURRENT_TX_VERSION = 2;
 let OLD_TX_VERSION = 1;
 let TX_EXTRA_NONCE_MAX_COUNT = 255;
 let TX_EXTRA_TAGS = {
@@ -264,7 +264,7 @@ export namespace CnUtils{
 		let exp = new RegExp("[0-9a-fA-F]{" + hex.length + "}");
 		return exp.test(hex);
 	}
-	
+
 	export function ge_scalarmult_base(sec : string) : string{
 		return CnUtils.sec_key_to_pub(sec);
 	}
@@ -786,7 +786,7 @@ export namespace Cn{
 		let checksum = CnUtils.cn_fast_hash(data);
 		return cnBase58.encode(data + checksum.slice(0, ADDRESS_CHECKSUM_SIZE * 2));
 	}
-	
+
 	export function create_address(seed : string) : {
 		spend:{
 			sec:string,
@@ -1417,7 +1417,7 @@ export namespace CnTransactions{
 			prvkey: tx.prvkey
 		};
 	}
-	
+
 	export function get_tx_prefix_hash(tx : CnTransactions.Transaction) {
 		let prefix = CnTransactions.serialize_tx(tx, true);
 		return CnUtils.cn_fast_hash(prefix);
