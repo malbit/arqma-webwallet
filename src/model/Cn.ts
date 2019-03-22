@@ -264,7 +264,7 @@ export namespace CnUtils{
 		let exp = new RegExp("[0-9a-fA-F]{" + hex.length + "}");
 		return exp.test(hex);
 	}
-	
+
 	export function ge_scalarmult_base(sec : string) : string{
 		return CnUtils.sec_key_to_pub(sec);
 	}
@@ -786,7 +786,7 @@ export namespace Cn{
 		let checksum = CnUtils.cn_fast_hash(data);
 		return cnBase58.encode(data + checksum.slice(0, ADDRESS_CHECKSUM_SIZE * 2));
 	}
-	
+
 	export function create_address(seed : string) : {
 		spend:{
 			sec:string,
@@ -1417,7 +1417,7 @@ export namespace CnTransactions{
 			prvkey: tx.prvkey
 		};
 	}
-	
+
 	export function get_tx_prefix_hash(tx : CnTransactions.Transaction) {
 		let prefix = CnTransactions.serialize_tx(tx, true);
 		return CnUtils.cn_fast_hash(prefix);
@@ -1566,7 +1566,7 @@ export namespace CnTransactions{
 		return sig;
 	}
 
-	/*export function proveRangeBulletproof(commitMaskObj : {C:string,mask:string}, amount : string, nrings : number, enc_seed : number, exponent : number) : CnTransactions.RangeProveBulletproofSignature{
+	export function proveRangeBulletproof(commitMaskObj : {C:string,mask:string}, amount : string, nrings : number, enc_seed : number, exponent : number) : CnTransactions.RangeProveBulletproofSignature{
 		let mask = CnRandom.random_scalar();
 
 		let proof : CnTransactions.RangeProveBulletproofSignature = bulletproof_PROVE(amount, mask);
@@ -1580,7 +1580,7 @@ export namespace CnTransactions{
 		try { return bulletproof_VERIFY(proof); }
 			// we can get deep throws from ge_frombytes_vartime if input isn't valid
 		catch (e) { return false; }
-	}*/
+	}
 
 	// Gen creates a signature which proves that for some column in the keymatrix "pk"
 	//   the signer knows a secret key for each row in that column
@@ -1766,7 +1766,7 @@ export namespace CnTransactions{
 		amountKeys : string[],
 		indices : number[],
 		txnFee : string,
-		bulletproof : boolean = false
+		bulletproof : boolean = true
 	){
 		console.log('MIXIN:', mixRing);
 		if (outAmounts.length !== amountKeys.length ){throw "different number of amounts/amount_keys";}
@@ -1809,8 +1809,8 @@ export namespace CnTransactions{
 				let teststart = new Date().getTime();
 				if(!bulletproof)
 					p.rangeSigs[i] = CnTransactions.proveRange(cmObj, outAmounts[i], nrings, 0, 0);
-				// else
-				// 	p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
+				 else
+				 	p.bulletproofs[i] = CnTransactions.proveRangeBulletproof(cmObj, outAmounts[i], nrings, 0, 0);
 
 				let testfinish = new Date().getTime() - teststart;
 				console.log("Time take for range proof " + i + ": " + testfinish);
@@ -2103,7 +2103,7 @@ export namespace CnTransactions{
 			console.log('rc signature----');
 			let tx_prefix_hash = CnTransactions.get_tx_prefix_hash(tx);
 			console.log('rc signature----');
-			tx.rct_signatures = CnTransactions.genRct(tx_prefix_hash, inSk, keyimages, /*destinations, */inAmounts, outAmounts, mixRing, amountKeys, indices, txnFee);
+			tx.rct_signatures = CnTransactions.genRct(tx_prefix_hash, inSk, keyimages, /*destinations, */inAmounts, outAmounts, mixRing, amountKeys, indices, txnFee, true);
 
 		}
 		console.log(tx);
