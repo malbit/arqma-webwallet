@@ -1,0 +1,468 @@
+{
+  "website":{
+	"title":"Oficiální Arqma peněženka",
+	"description":"Oficiální online peněženka pro měnu Arqma - anonymní, zabezpečená a plně vybavená ve vašem prohlížeči pro optimální zabezpečení"
+  },
+  "messages": {
+	"menu": {
+	  "home": "Domů",
+	  "account": "Účet",
+	  "send": "Odeslat",
+	  "receive": "Přijmout",
+	  "export": "Export",
+	  "donate": "Darovat",
+	  "settings": "Nastavení",
+	  "disconnect": "Odpojit",
+	  "network": "Statistiky sítě"
+	},
+	"global": {
+	  "loading": "Načítá se",
+	  "disableSecurity":"Zakázat toto zabezpečení, chápu riziko",
+	  "passwordInvalidRequirements":"Heslo potřebuje nejméně 8 znaků - 1 velké písmeno, 1 malé písmeno, jedno číslo a jeden speciální znak",
+	  "passwordConfirmationNotMatching":"Heslo neodpovídá prvnímu heslu, které jste napsali",
+	  "download":"Stáhnout",
+	  "newVersionModal":{
+		"title":"K dispozici je nová verze",
+		"content":"Chcete znovu spustit a nahrát novou verzi?",
+		"confirmText":"Ano",
+		"cancelText":"Zpět"
+	  },
+	  "openWalletModal":{
+		"title":"Heslo peněženky",
+		"confirmText":"Otevřít",
+		"cancelText":"Zrušit"
+	  },
+	  "invalidPasswordModal":{
+		"title":"Jejda ...",
+		"content":"Vaše heslo se jeví jako neplatné",
+		"confirmText":"OK"
+	  },
+	  "invalidMnemonicModal":{
+		"title":"Jejda...",
+		"content":"Mnemotechnická fráze je neplatná",
+		"confirmText":"OK"
+	  },
+	  "passwordNotComplexEnoughModal":{
+		"title":"Heslo není dostatečně složité",
+		"confirmText":"OK"
+	  },
+	  "permissionRequiredForCameraModal":{
+		"title":"Jejda...",
+		"content":"Oprávnění pro přístup k fotoaparátu je nutné pro skenování QR kód",
+		"confirmText":"OK"
+	  }
+	},
+	"bottom": {
+	  "termsOfUse": "Podmínky použití",
+	  "support": "Podpora",
+	  "donate": "Darovat",
+	  "network": "Statistiky sítě",
+	  "miningPool": "Těžařský pool",
+	  "github": "GitHub"
+	},
+	"homepage": {
+	  "mainTitle": "Zabezpečená Arqma peněženka ",
+	  "tagLine": "Nejjednodušší způsob použití Arqma - kdekoliv a kdykoliv",
+	  "actions": {
+		"loadWallet": "Nahrát moji peněženku",
+		"importWallet": "Import peněženky",
+		"create": "Vytvořit",
+		"createWallet": "Vytvořte peněženku"
+	  },
+	  "notes": {
+		"secure": {
+		  "title": "Zabezpečit",
+		  "description": "Žádné servery, plně šifrované!"
+		},
+		"fast": {
+		  "title": "Rychle",
+		  "description": "Poslat všude, kdykoliv!"
+		},
+		"technology": {
+		  "title": "Unikátní technologie",
+		  "description": "Připojeno přímo k Arqma blockchain!"
+		},
+		"openSource": {
+		  "title": "Plně otevřený zdroj",
+		  "description": "K dispozici na Github!"
+		}
+	  }
+	},
+	"accountPage": {
+	  "title": "Účet",
+	  "subtitle": "Přehled účtu a historie transakcí",
+	  "synchronizingBlock": {
+		"text": "Synchronizace ..."
+	  },
+	  "balanceBlock": {
+		"title": "Tvůj zůstatek",
+		"unlocked": "Odemčeno"
+	  },
+	  "historyBlock": {
+		"title": "Historie transakcí",
+		"pendingTxStatus": "Čekající",
+		"emptyWallet": "Momentálně nemáte v této peněžence žádné finanční prostředky.",
+		"waitSync": "Počkejte prosím na aktualizaci peněženky.",
+		"beReallyPatient": "Počáteční nastavení může nějakou dobu trvat ...",
+		"getARQAddress": "Přijmout ARQ"
+	  },
+	  "txDetails":{
+		"title":"Detaily transakce",
+		"txHash":"Tx hash",
+		"feesOnTx":"Tx poplatky",
+		"blockHeight":"Výška bloku",
+		"paymentId":"ID platby",
+		"txPrivKey":"Soukromý klíč transakce"
+	  }
+	},
+	"changeWalletPasswordPage":{
+	  "title":"Změňte si své heslo",
+	  "oldPassword":{
+		"label":"Staré heslo",
+		"invalid":"Heslo je neplatné"
+	  },
+	  "newPassword":{
+		"label":"Vyberte si nové heslo pro ochranu peněženky"
+	  },
+	  "newPasswordConfirm":{
+		"label":"Potvrdit nové heslo"
+	  },
+	  "confirm":"Změnit heslo",
+	  "modalSuccess":{
+		"title":"Heslo změněno!",
+		"confirmText":"OK"
+	  }
+	},
+	"createWalletPage":{
+	  "generatingStep":{
+		"title":"Vaše peněženka je generována ...",
+		"subtitle":"Je téměř hotovo",
+		"waitingMessage":"Vytváření peněženky ..."
+	  },
+	  "finalizationStep":{
+		"title":"To bylo jednoduché. Váš účet je připraven!",
+		"subtitle":"Buďte připraveni použít Arqma jako nikdy",
+		"passwordSelectionBlock":{
+		  "label":"Chraňte svou peněženku"
+		},
+		"passwordConfirmBlock":{
+		  "label":"Potvrďte heslo"
+		},
+		"validPassword":"Použít toto heslo",
+		"backupBlock":{
+		  "title":"Uložte svá soukromá pověření pro obnovu.",
+      "titlePdf":"Varianta 1: Stažení kopie ve formátu PDF",
+      "titleManualWrite":"Varianta 2: Zapište si své klíče",
+		  "privateKeys":"Soukromý klíč",
+		  "mnemonicPhrase":"Mnemonická fráze",
+		  "separatorManualMethodsSolution":" nebo ",
+		  "confirmManuallyWritten":"Opsal jsem si seed",
+		  "warningMessage":"**Neztraťte ho!** Nelze jej obnovit, pokud ho ztratíte.<br/>**Nesdílejte ho!** Vaše finanční prostředky budou odcizeny, pokud použijete tento soubor nebo seedo na škodlivém/phishingovém webu.<br/>**Vytvořte si zálohu!** Zajistěte si ji stejně jako miliony dolarů, kterou může jeden den stát. <br/>",
+		  "finishButton":"Chápu. Pokračovat."
+		}
+	  },
+	  "disclaimerBlock":{
+		"title":"Riziko používání peněženky Arqma",
+		"content":"Arqma-Wallet je webové rozhraní. To vám pomůže používat Arqma bez spuštění plného uzlu Arqma. <br/> Doporučujeme Vám zacházet s Arqma-Wallet, jako byste zacházeli se svou skutečnou peněženkou."
+	  }
+	},
+	"donatePage":{
+	  "title":"Darovat",
+	  "subtitle":"Přispět k financování rozvoje a platit účty",
+	  "webwalletBlock":{
+		"title":"Webwallet",
+		"content":"Tuto webovou peněženku vyvinul Gnock ve svém volném čase. <br/> Pokud chcete pomoci vývoji, pomoci při platbě za servery a podobně líbí se vám tato aplikace, zvažte prosím dar: <br/><br/>"
+	  },
+	  "arqmaFundBlock":{
+		"title":"Arqma Dev fond",
+		"content":"Chcete-li pomoci Arqma, můžete darovat na těchto adresách"
+	  }
+	},
+	"supportPage":{
+	  "title":"Podpora",
+	  "subtitle":"Jsme tu, abychom vám pomohli!",
+	  "getInTouchBlock":{
+		"title":"Pojďme se dostat do kontaktu!",
+		"content":"Máte nápady nebo zpětnou vazbu, která by nám mohla pomoci zlepšit peněženku? Kontaktujte nás!",
+		"discord":"Arqma Discord kanál"
+	  }
+	},
+	"networkPage":{
+	  "title":"Statistiky sítě",
+	  "subtitle":"Přehled o síti Arqma",
+	  "statsBlock":{
+		"hashrate":"Síťové hašování",
+		"height":"Výška blockchainu",
+		"difficulty":"Obtížnost sítě",
+		"lastTimeBlock":"Nalezen poslední blok",
+		"lastReward":"Odměna za poslední blok"
+	  }
+	},
+	"sendPage":{
+	  "title":"Odeslat ARQ",
+	  "sendBlock":{
+		"address":{
+		  "label":"Cílová adresa",
+		  "invalid":"Adresa cíle je neplatná",
+		  "fundsTo":"Finanční prostředky budou zaslány",
+		  "receiver":"Přijímač",
+		  "description":"Popis"
+		},
+		"amount":{
+		  "label":"Částka k odeslání",
+		  "invalid":"Částka je neplatná"
+		},
+		"paymentId":{
+		  "label":"ID platby (volitelné)",
+		  "invalid":"ID platby je neplatné. Délka musí být 16 nebo 64 znaků"
+		},
+		"sendButton":"Odeslat",
+		"cancelButton":"Zrušit"
+	  },
+	  "qrCodeScanning":{
+		"explication":"Předložit QR kód"
+	  },
+	  "notEnoughMoneyModal":{
+		"title":"Jejda...",
+		"content":"Nemáte dostatek prostředků ve své peněžence k provedení tohoto převodu",
+		"confirmText":"OK"
+	  },
+	  "thankYouDonationModal":{
+		"title":"Děkujeme za váš dar!",
+		"content":"Vaše pomoc je vítána.<br/> Tento dar pomůže vytvořit lepší Arqmu",
+		"confirmText":"OK"
+	  },
+	  "transferSentModal":{
+		"title":"Převod úspěšně odeslán!",
+		"confirmText":"OK"
+	  },
+	  "transferExceptionModal":{
+		"title":"Jejda...",
+		"content":"Vyskytla se chyba. Nahlásit tuto chybu: {details}",
+		"confirmText":"OK"
+	  },
+	  "invalidAmountModal":{
+		"title":"Jejda...",
+		"content":"Neplatná částka",
+		"confirmText":"OK"
+	  },
+	  "creatingTransferModal":{
+		"title":"Vytváření převod ...",
+		"content":"Prosím, čekejte ..."
+	  },
+	  "finalizingTransferModal":{
+		"title":"Dokončení převodu ...",
+		"content":"Prosím, čekejte ..."
+	  },
+	  "confirmTransactionModal":{
+		"title":"Potvrdit přenos?",
+		"content":"Množství: {amount}<br/>Poplatky: {fees}<br/>Celkem: {total}",
+		"confirmText":"Potvrdit",
+		"cancelText":"Zrušit"
+	  }
+	},
+	"receivePage":{
+	  "title":"Přijmout ARQ",
+	  "receiveBlock":{
+		"address":{
+		  "title":"Vaše adresa pro příjem finančních prostředků:",
+		  "label":"Uveďte tuto adresu pro příjem prostředků"
+		},
+		"qrCode":{
+		  "title":"Nebo personalizujte QR kód:",
+		  "labelAmount":"Částka (volitelné)",
+		  "labelRecipient":"Jméno příjemce (volitelné)",
+		  "labelDescription":"Popis transakce (volitelné)",
+		  "updateButton":"Aktualizace"
+		}
+	  },
+	  "qrBlock":{
+		"title":"Váš vlastní QR kód"
+	  }
+	},
+	"miningPage":{
+	  "title":"Těžit přímo ve vašem prohlížeči",
+	  "subtitle":"Podporovat síť těžbou a být získat odměnu ARQ",
+	  "parameterBlock":{
+		"title":"Parametry",
+		"labelDestinationAddress":"Peněženka pro těžbu",
+		"labelThreads":"Počet vláken (více = vyšší hashrate)",
+		"start":"Start",
+		"stop":"Stop"
+	  },
+	  "statisticsBlocks":{
+		"title":"Statistika",
+		"validShares":"Valid shares",
+		"hashrate":"Hashrate",
+		"maxHashrate":"Maximální Hashrate",
+		"dedicatedHardware":"S dedikovaným těžebním software a hardware můžete získat více a pomoci decentralizovat síť.",
+		"miningHandledBy":"Toto těžení je zpracováno těžebním poolem pool.arqma.com"
+	  }
+	},
+	"settingsPage":{
+	  "title":"Nastavení",
+	  "subtitle":"Zde změňte své parametry",
+	  "settingsBlock":{
+		"speed":{
+		  "label":"Rychlost aktualizace peněženky (spotřebuje více zdrojů)",
+		  "fastest":"Nejrychlejší",
+		  "fast":"Rychle",
+		  "medium":"Středně",
+		  "slow":"Pomalu"
+		},
+		"readMinerTx":{
+		  "label":"Read miner transactions (only for solo mining)"
+		}
+	  },
+	  "changePasswordButton":"Změnit heslo peněženky",
+	  "deleteWalletButton":"Smazat peněženku (místní kopie)",
+	  "walletSettings":{
+		"creationHeight":{
+		  "label":"Creation height of the wallet"
+		},
+		"currentScanningHeight": {
+		  "label": "Aktuální výška skenování"
+		},
+		"updateButton":"Aktualizace"
+	  },
+	  "deleteWalletModal":{
+		"title":"Smazat peněženku (lokální kopie)",
+		"content":"Jste si jisti, že opravdu chcete vymazat vaši peněženku?",
+		"confirmText":"Ano jsem si jistý",
+		"cancelButtonText":"Zrušit"
+	  }
+	},
+	"importBasePage":{
+	  "parametersBlock":{
+		"title":"Parametry",
+		"password":{
+		  "label":"Heslo pro ochranu peněženky"
+		},
+		"passwordConfirm":{
+		  "label":"Potvrďte heslo",
+		  "invalid":"Heslo neodpovídá prvnímu heslu, které jste napsali"
+		},
+		"importHeight":{
+		  "label":"Výška pro import:"
+		}
+	  }
+	},
+	"importFromQrPage":{
+	  "title":"Import peněženky z QR kódu",
+	  "subtitle":"Importujte peněženku z offline zálohy",
+	  "qrCodeBlock":{
+		"title":"QR kód",
+		"startScanButton":"Spusťte skenování",
+		"importButton":"Import"
+	  },
+	  "qrScanningBlock":{
+		"title":"Předložte QR kód"
+	  }
+	},
+	"exportPage":{
+	  "title":"Zálohujte svá pověření",
+	  "publicAddressBlock":{
+		"title":"Vaše veřejná adresa"
+	  },
+	  "pdfBlock":{
+		"title":"Zálohování PDF",
+		"downloadButton":"Stažení"
+	  },
+	  "warningBlock":{
+		"title":"Varování",
+		"content":"If you choose to save your private keys or your mnemonic phrase, PLEASE DO NOT store them in clear-text for your own safety.<br/>The file is an alternate solution where your keys are encrypted and contains a backup of all your transactions to spare you a future synchronisation."
+	  },
+	  "exportBlock":{
+		"title":"Exportujte vaše RAW pověření",
+		"privateKeysButton":"Získat své soukromé klíče",
+		"mnemonicKeysButton":"Získat mou mnemotechnickou frázi",
+		"fileButton":"Export do souboru"
+	  },
+	  "walletKeysModal":{
+		"title":"Soukromé klíče",
+		"confirmText":"OK",
+		"content":"Please carefully store these keys. <b>Possessing them means possessing the funds associated</b> !<br/>Spend key: {privSpendKey}<br/>Private view key: {privViewKey}"
+	  },
+	  "mnemonicKeyModal":{
+		"title":"Mnemonická fráze",
+		"confirmText":"OK",
+		"content":"Please store carefully this mnemonic phrase. <b>Possessing it means possessing the funds associated</b> ! The phrase is:<br/>{mnemonic}"
+	  },
+	  "mnemonicLangSelectionModal":{
+		"title":"V jakém jazyce chcete vaši mnemotechnickou frázi?",
+		"confirmText":"Export"
+	  }
+	},
+	"importPage":{
+	  "title":"Vytvořte peněženku",
+	  "subtitle":"Z dříve vytvořených klíčů, souborů nebo mnemonických frází",
+	  "chooseMethod":"Vyberte metodu importu:",
+	  "fromKeys":"Z klíčů",
+	  "fromFile":"Ze souboru",
+	  "fromMnemonic":"Z mnemotechnické fráze",
+	  "fromQr":"Z QR kódu"
+	},
+	"termsOfUsePage":{
+	  "title":"Podmínky použití",
+	  "subtitle":"Přečtěte si je prosím pozorně."
+	},
+	"importFromFilePage":{
+	  "title":"Import peněženky ze záložního souboru",
+	  "subtitle":"Pomocí záložního souboru vytvořte peněženku",
+	  "walletBlock":{
+		"title":"Soubor peněženky",
+		"label":"Vyberte soubor",
+		"importButton":"Import"
+	  }
+	},
+	"importFromMnemonicPage":{
+	  "title":"Import peněženky z mnemotechnické fráze",
+	  "subtitle":"Pomocí fráze vytvořte peněženku",
+	  "mnemonicBlock":{
+		"title":"Mnemonická fráze",
+		"mnemonic":{
+		  "label":"Mnemonická fráze: 25 slov",
+		  "invalid":"Mnemotechnická fráze je neplatná",
+		  "language":"Jazyk"
+		},
+		"importButton":"Import"
+	  }
+	},
+	"importFromKeysPage":{
+	  "title":"Import peněženky z klíčů",
+	  "subtitle":"Pomocí kláves vytvořte peněženku",
+	  "parametersBlock":{
+		"viewOnlyWallet":{
+		  "label":"Chcete zobrazit pouze peněženku?"
+		}
+	  },
+	  "keysBlock":{
+		"titleNotViewOnly":"Klíče od peněženky",
+		"titleViewOnly":"Zobrazit pouze peněženku",
+		"privateSpend":{
+		  "label":"Private spend key"
+		},
+		"privateView":{
+		  "label":"Private view key",
+		  "optional":"(volitelné)"
+		},
+		"publicKey":{
+		  "label":"Public key"
+		},
+		"importButton":"Import"
+	  }
+	}
+  },
+  "number":{
+
+  },
+  "date":{
+	"short": {
+	  "year": "numeric", "month": "short", "day": "numeric"
+	},
+	"long": {
+	  "year": "numeric", "month": "short", "day": "numeric",
+	  "weekday": "short", "hour": "numeric", "minute": "numeric", "hour12": true
+	}
+  }
+}
