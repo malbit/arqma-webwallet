@@ -71,12 +71,12 @@
 	  },
 	  "notes": {
 		"secure": {
-		  "title": "Zabezpečit",
+		  "title": "Zabezpečení",
 		  "description": "Žádné servery, plně šifrované!"
 		},
 		"fast": {
-		  "title": "Rychle",
-		  "description": "Poslat všude, kdykoliv!"
+		  "title": "Rychlost",
+		  "description": "Odesílání kdekoliv a kdykoliv!"
 		},
 		"technology": {
 		  "title": "Unikátní technologie",
@@ -112,7 +112,7 @@
 		"feesOnTx":"Tx poplatky",
 		"blockHeight":"Výška bloku",
 		"paymentId":"ID platby",
-		"txPrivKey":"Soukromý klíč transakce"
+		"txPrivKey":"Private key transakce"
 	  }
 	},
 	"changeWalletPasswordPage":{
@@ -153,7 +153,7 @@
 		  "title":"Uložte svá soukromá pověření pro obnovu.",
       "titlePdf":"Varianta 1: Stažení kopie ve formátu PDF",
       "titleManualWrite":"Varianta 2: Zapište si své klíče",
-		  "privateKeys":"Soukromý klíč",
+		  "privateKeys":"Private key",
 		  "mnemonicPhrase":"Mnemonická fráze",
 		  "separatorManualMethodsSolution":" nebo ",
 		  "confirmManuallyWritten":"Opsal jsem si seed",
@@ -163,7 +163,7 @@
 	  },
 	  "disclaimerBlock":{
 		"title":"Riziko používání peněženky Arqma",
-		"content":"Arqma-Wallet je webové rozhraní. To vám pomůže používat Arqma bez spuštění plného uzlu Arqma. <br/> Doporučujeme Vám zacházet s Arqma-Wallet, jako byste zacházeli se svou skutečnou peněženkou."
+		"content":"Arqma-Wallet je webové rozhraní, které vám pomůže používat Arqma bez nutnosti spuštění plného uzlu Arqma. <br/> Doporučujeme Vám zacházet s Arqma-Wallet, jako byste zacházeli se svou skutečnou peněženkou."
 	  }
 	},
 	"donatePage":{
@@ -171,7 +171,7 @@
 	  "subtitle":"Přispět k financování rozvoje a platit účty",
 	  "webwalletBlock":{
 		"title":"Webwallet",
-		"content":"Tuto webovou peněženku vyvinul Gnock ve svém volném čase. <br/> Pokud chcete pomoci vývoji, pomoci při platbě za servery a podobně líbí se vám tato aplikace, zvažte prosím dar: <br/><br/>"
+		"content":"Tuto webovou peněženku vyvinul Gnock ve svém volném čase. <br/> Pokud chcete pomoci vývoji, pomoci při platbě za servery a nebo se vám je líbí tato aplikace, zvažte prosím možnost přispět: <br/><br/>"
 	  },
 	  "arqmaFundBlock":{
 		"title":"Arqma Dev fond",
@@ -370,23 +370,23 @@
 	  },
 	  "warningBlock":{
 		"title":"Varování",
-		"content":"If you choose to save your private keys or your mnemonic phrase, PLEASE DO NOT store them in clear-text for your own safety.<br/>The file is an alternate solution where your keys are encrypted and contains a backup of all your transactions to spare you a future synchronisation."
+		"content":"Pokud se rozhodnete uložit svůj private key nebo mnemonickou frázi, NEUKLÁDEJTE je v textové podobě pro vaši vlastní bezpečnost. <br/> Soubor je alternativním řešením, kde jsou vaše klíče šifrovány a obsahují zálohu všech vašich transakcí, které ušetří budoucí synchronizaci."
 	  },
 	  "exportBlock":{
 		"title":"Exportujte vaše RAW pověření",
-		"privateKeysButton":"Získat své soukromé klíče",
+		"privateKeysButton":"Získat svoje private keys",
 		"mnemonicKeysButton":"Získat mou mnemotechnickou frázi",
 		"fileButton":"Export do souboru"
 	  },
 	  "walletKeysModal":{
-		"title":"Soukromé klíče",
+		"title":"Private keys",
 		"confirmText":"OK",
-		"content":"Please carefully store these keys. <b>Possessing them means possessing the funds associated</b> !<br/>Spend key: {privSpendKey}<br/>Private view key: {privViewKey}"
+		"content":"Tyto klíče si pečlivě uložte. <b> Vlastnit je znamená, že vlastníte přidružené prostředky</b>! <br/> Spend key: {privSpendKey} <br/> Private view key: {privViewKey}"
 	  },
 	  "mnemonicKeyModal":{
 		"title":"Mnemonická fráze",
 		"confirmText":"OK",
-		"content":"Please store carefully this mnemonic phrase. <b>Possessing it means possessing the funds associated</b> ! The phrase is:<br/>{mnemonic}"
+		"content":"Prosím pečlivě uložte tuto mnemotechnickou frázi. <b> Vlastnit ji znamená, že vlastníte přidružené prostředky </b>! Fráze je: <br/> {mnemonic}"
 	  },
 	  "mnemonicLangSelectionModal":{
 		"title":"V jakém jazyce chcete vaši mnemotechnickou frázi?",
@@ -449,7 +449,7 @@
 		"publicKey":{
 		  "label":"Public key"
 		},
-		"importButton":"Import"
+		"importButton":"Importovat"
 	  }
 	}
   },
