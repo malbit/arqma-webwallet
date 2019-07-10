@@ -19,14 +19,14 @@ const workboxBuild = require('workbox-build');
 const buildSW = () => {
 	// This will return a Promise
 	return workboxBuild.injectManifest({
-		swSrc: 'www/service-worker-raw.js',
-		swDest: 'www/service-worker.js',
-		globDirectory: 'www',
+		swSrc: 'src/service-worker-raw.js',
+		swDest: 'src/service-worker.js',
+		globDirectory: 'src',
 		globPatterns: [
 			'**\/*.{js,css,html,json,png,ico,jpg}',
 		],
 		globIgnores:[
-			'd/Vue.js', 'www/service-worker-raw.js'
+			'd/Vue.js', 'src/service-worker-raw.js'
 		]
 	});
 };

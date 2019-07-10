@@ -1,7 +1,7 @@
 {
-  "name": "arqma-webwallet",
+  "name": "arqmawebwallet",
   "version": "1.0.0",
-  "description": "Fully client side web wallet for Arqma",
+  "description": "Fully client side web wallet for arqma",
   "main": "index.js",
   "dependencies": {
     "typescript": "^2.9.2",
@@ -10,12 +10,12 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arqma/arqma-webwallet.git"
+    "url": "git+https://github.com/malbit/arqma-webwallet.git"
   },
-  "author": "Gnock + m@lbit (Arqma version) + ArqTras (Website Visuals)",
+  "author": "Gnock",
   "license": "BSD-3",
   "bugs": {
-    "url": "https://github.com/arqma/arqma-webwallet/issues"
+    "url": "https://github.com/malbit/arqma-webwallet/issues"
   },
-  "homepage": "https://github.com/arqma/arqma-webwallet#readme"
+  "homepage": "https://github.com/malbit/arqma-webwallet#readme"
 }
